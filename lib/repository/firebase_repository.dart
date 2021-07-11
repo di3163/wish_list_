@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 import 'package:wish_list_gx/models/wish.dart';
 
 
@@ -12,7 +13,7 @@ class SignUpFailure implements Exception {}
 class WishOperationFailure implements Exception{}
 
 
-class FirebaseRepository{
+class FirebaseRepository  {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   CollectionReference _getReference(String collection){

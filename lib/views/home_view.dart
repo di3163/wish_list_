@@ -4,16 +4,26 @@ import 'package:get/get.dart';
 
 import 'package:wish_list_gx/core.dart';
 
+
+
+
+
 class HomeView extends StatelessWidget {
+  final UserController _userController = Get.find<UserController>();
+
   @override
   Widget build(BuildContext context) {
     //HomeController homeController = Get.put(HomeController());
     //HomeController homeController = Get.find();
+
     return Scaffold(
       body: PageView(
         //controller: homeController.pageController,
         physics: NeverScrollableScrollPhysics(),
-        children: [Container()],
+        children: [
+          //Get.find<UserController>().userStatus == UserStatus.authenticated ?
+          _selectView(),
+            ],
       ),
       bottomNavigationBar:
       GetBuilder<HomeController>(
@@ -37,7 +47,24 @@ class HomeView extends StatelessWidget {
           ),
         ),
       ),
-
     );
+  }
+
+  Widget _selectView() {
+    if (_userController.userStatus.value == UserStatus.unauthenticated){
+      return ProfileView();
+    }
+
+    return ProfileView();
+  //   if (uiAppState.addWish){
+  //     return WishView();
+  //   }
+  //   if (uiAppState.activeTab == AppTab.ContactView) {
+  //     return ContactView();
+  //   } else if(uiAppState.activeTab == AppTab.MyListView) {
+  //     return MyListView();
+  //   }else{
+  //     return ProfileView();
+  //   }
   }
 }

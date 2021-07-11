@@ -4,3 +4,4 @@ export 'models/xcore.dart';
 export 'views/xcore.dart';
 export 'routes/app_routes.dart';
 export 'repository/xcore.dart';
+export 'utils/xcore.dart';

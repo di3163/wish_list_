@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 enum AppTab { ProfileView, ContactView, MyListView }
 
+enum FormType { login, register }
+
 extension AppTabNamesLocal on AppTab{
   String localization(){
     switch(this){

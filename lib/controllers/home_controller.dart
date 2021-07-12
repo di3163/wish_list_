@@ -12,4 +12,9 @@ class HomeController extends GetxController{
     update();
   }
 
+  @override
+  void onClose() {
+    pageController.dispose();
+    super.onClose();
+  }
 }

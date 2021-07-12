@@ -8,7 +8,8 @@ class MainBinding extends Bindings{
   void dependencies() {
     Get.put<FirebaseRepository>(FirebaseRepository());
     Get.put<HomeController>(HomeController());
-    Get.put<UserController>(UserController());
+    Get.put<UserProfileController>(UserProfileController());
+    Get.put<ContactsController>(ContactsController());
 
   }
 

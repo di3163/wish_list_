@@ -3,11 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
-class UserController extends GetxController{
+class UserProfileController extends GetxController{
   final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
   final userStatus = UserStatus.unauthenticated.obs;
   final formKey = GlobalKey<FormState>().obs;
+  final formType = FormType.login.obs;
 
+  void switchForm(){
+    formType.value =
+    formType.value == FormType.login ? FormType.register : FormType.login;
+    update();
+  }
+
+  Future<void> signUp({required String email, required String pass, required String phone}) async{
+    try{
+      //TODO для Андроид добавить нативное получение своего номера
+      await _firebaseRepository.signUp(email: email, password: pass, phone: phone);
+      userStatus.value = UserStatus.authenticated;
+    } on Exception {
+      userStatus.value = UserStatus.unauthenticated;
+    }
+    update();
+  }
 
   Future<void> signIn({required String email, required String pass}) async{
     try {

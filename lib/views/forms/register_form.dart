@@ -3,66 +3,66 @@ import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
 
-// class LoginForm extends StatefulWidget {
-//   LoginForm({Key? key}) : super(key: key);
-//
-//   @override
-//   _LoginFormState createState() => _LoginFormState();
-// }
 
-class LoginForm extends StatelessWidget {
-  LoginForm({Key? key}) : super(key: key);
+class RegisterForm extends StatelessWidget {
+  RegisterForm({Key? key}) : super(key: key);
   final UserProfileController _userProfileController = Get.find<UserProfileController>();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
-  //final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _controllerPhone= TextEditingController();
 
-  void _onLogin() async {
-    if (!_userProfileController.formKey.value.currentState!.validate()) {
-      //setState(() {
+
+  void _onRegister() async{
+    if(!_userProfileController.formKey.value.currentState!.validate()){
       _userProfileController.formKey.value.currentState!.save();
-      //});
-    } else {
+    }else {
       _userProfileController.formKey.value.currentState!.save();
-      _userProfileController.signIn(email: _controllerEmail.text.trim(), pass: _controllerPassword.text);
+      _userProfileController.signUp(email: _controllerEmail.text.trim(), pass: _controllerPassword.text, phone: _controllerPhone.text);
       _userProfileController.formKey.value.currentState!.reset();
     }
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //}
-
   @override
   Widget build(BuildContext context) {
+    //_authRepository = context.read<AuthRepository>();
     return Form(
       key: _userProfileController.formKey.value,
       child: Column(
         children: <Widget>[
           TextFormField(
             key: Key('fieldEmail'),
-            validator: (value) {
-              if (value == '') return 'input_email' .tr;
+            validator: (value){
+              if(value == '') return 'input_email' .tr;
               if (!validateEmail(value!)) return 'wrong_email' .tr;
               return null;
             },
             controller: _controllerEmail,
-            decoration: _buildInputDecoration('email' .tr, Icon(Icons.alternate_email)),
+            decoration: _buildInputDecoration('email' .tr , Icon(Icons.alternate_email)),
           ),
           TextFormField(
             key: Key('fieldPass'),
-            validator: (value) {
-              if (value == '') return 'input_password' .tr;
+            validator: (value){
+              if(value == '') return 'input_password' .tr;
               return null;
             },
             controller: _controllerPassword,
             decoration: _buildInputDecoration('password' .tr, Icon(Icons.vpn_key)),
           ),
+          TextFormField(
+            keyboardType: TextInputType.number,
+            key: Key('phoneNum'),
+            validator: (value){
+              if(value == '') return 'input_phone' .tr;
+              if (!validatePhone(value!)) return 'wrong_phone' .tr;
+              return null;
+            },
+            controller: _controllerPhone,
+            decoration: _buildInputDecoration('phone' .tr , Icon(Icons.phone)),
+          ),
           ElevatedButton(
-            key: Key('buttonLoginSend'),
-            onPressed: _onLogin,
-            child: Text('log_in' .tr),
+            key: Key('buttonRegisterSend'),
+            onPressed: _onRegister,
+            child: Text('sign_up'.tr),
           ),
         ],
       ),

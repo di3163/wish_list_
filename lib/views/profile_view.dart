@@ -3,34 +3,20 @@ import 'package:get/get.dart';
 
 import 'package:wish_list_gx/core.dart';
 
-enum FormType { login, register }
-
 class ProfileView extends StatelessWidget {
-  FormType _formType = FormType.login;
-
-
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 43.0),
-      child: GetBuilder<UserController>(
+      child: GetBuilder<UserProfileController>(
         builder: (controller) {
           return controller.userStatus.value == UserStatus.authenticated ?
-          _profile() :  _login();
+          _profile() :  _login(controller);
         }
       )
-      // Get.find<UserController>().
-      //   userStatus.value == UserStatus.authenticated ?
-      //   _profile() :  _login(),
-
     );
-
-
   }
-
-
-
 
   Column _profile() {
     return Column(
@@ -40,14 +26,14 @@ class ProfileView extends StatelessWidget {
         Text('user'),
         SizedBox(height: 30),
         ElevatedButton(
-          onPressed: () => Get.find<UserController>().signOut(), //_signOut,
+          onPressed: () => Get.find<UserProfileController>().signOut(), //_signOut,
           child: Text('sign_out'.tr),
         ),
       ],
     );
   }
 
-  Widget _login() {
+  Widget _login(UserProfileController controller) {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -55,14 +41,34 @@ class ProfileView extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              _formType == FormType.login ?
+              controller.formType.value == FormType.login ?
                   'log_in' .tr : 'sign_up' .tr,
               textAlign: TextAlign.start,
             ),
           ),
-          LoginForm(),
+          controller.formType.value == FormType.login ? LoginForm() : RegisterForm(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                controller.formType.value == FormType.login
+                    ? 'no_account'.tr
+                    : 'already_registered'.tr,
+              ),
+              TextButton(
+                key: Key('buttonRegister'),
+                child: RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: controller.formType.value == FormType.login ? 'sign_up'.tr : 'log_in'.tr,
+                    )
+                  ],style: TextStyle(color: Colors.grey)),
+                ),
+                onPressed: () => controller.switchForm(),
+              ),
+            ],
+          ),
           //_formType == FormType.login ? LoginForm() : RegisterForm(),
-
 
         ],
       ),

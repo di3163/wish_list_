@@ -5,8 +5,8 @@ class Wish{
   String? link;
   List<String>? filesList;
 
-  List<String>? ListPicURL;
+  List<String>? listPicURL;
 
   Wish({required this.title, this.description, this.link,
-    this.ListPicURL, this.filesList});
+    this.listPicURL, this.filesList});
 }

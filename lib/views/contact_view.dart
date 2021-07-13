@@ -8,20 +8,40 @@ class ContactView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<ContactsController>(
         builder: (controller)  {
-          if(controller.status.isDenied){
+          if(controller.status.isGranted){
+            controller.getContacts().then((value) {
+              // if (value.isNotEmpty) {
+              //   return Center(
+              //     child: Text(controller.errorStatus),
+              //   );
+              // }
+              if (controller.userContactList.isEmpty) {
+                return Center(child: Text('пусто'));
+              } else {
+                return contactList(controller);
+              }
+            }).catchError((onError){
+              return Center(
+                child: Text(onError),
+              );
+            });
+          }else {
             controller.requestContactsPermit();
           }
-          return contactList();
+          return Center(child: CircularProgressIndicator());
         }
     );
   }
 
-  Container contactList(){
+  Container contactList(ContactsController controller){
     return Container(
-      child: Center(
-        child:
-        Text('conta'),
-      ),
+      child: ListView.builder(
+        itemCount: controller.userContactList.length,
+          itemBuilder: (context, index) =>  ListTile(
+              title: Text(controller.userContactList[index].name),
+              subtitle: Text(controller.userContactList[index].phone),
+            ),
+          ),
     );
   }
 }

@@ -30,6 +30,7 @@ dependencies:
   firebase_storage: ^8.1.0
   bottom_navy_bar: ^6.0.0
   permission_handler: ^8.0.1
+  contacts_service: ^0.6.1
   line_icons: ^2.0.1
 
   # The following adds the Cupertino Icons font to your application.

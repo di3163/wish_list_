@@ -50,6 +50,7 @@ class FirebaseRepository  {
     }
   }
 
+
   Future<Map<dynamic, dynamic>> getAllRegistredUsers() async {
     Map<dynamic, dynamic> allregisterMap = Map();
     try {

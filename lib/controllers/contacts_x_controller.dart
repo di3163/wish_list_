@@ -1,29 +1,35 @@
-
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:wish_list_gx/core.dart';
 
-class ContactServiceException implements Exception {}
-
-class ContactsController extends GetxController{
+class ContactsXController extends GetxController{
   final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
+  //List<UserContact> userContactList = <UserContact>[].obs;
+  Rx<List<UserContact>> userContactList = Rx<List<UserContact>>([]);
   PermissionStatus status = PermissionStatus.denied;
-  List<UserContact> userContactList = <UserContact>[].obs;
-  String errorStatus = '';
+  var errorStatus = ''.obs;
+  List<UserContact> get contacts => userContactList.value;
 
-  Future<void> requestContactsPermit()async{
+  requestContactsPermit()async{
     status = await Permission.contacts.request();
-    if(status.isGranted){
-      await getContacts();
-      //get contacts
-    }else {
-      update();
-    }
+    // if(status.isGranted){
+    //   await getContacts();
+    //   //get contacts
+    // }else {
+    //   update();
+    // }
   }
 
   Future<PermissionStatus> checkContactPermit()async{
     return await Permission.contacts.status;
+  }
+
+  checkPermit()async{
+    status  = await checkContactPermit();
+    if(!status.isGranted){
+      status = requestContactsPermit();
+    }
   }
 
   Future<List<Contact>> _getAllContactsFromDevice()async {
@@ -40,7 +46,7 @@ class ContactsController extends GetxController{
   }
 
   List<UserContact> _getUserContacts(List<Contact> contactList, Map<dynamic, dynamic> allRegistredUsers){
-    final Map<String, UserContact> contactMaps = Map();
+    Map<String, UserContact> contactMaps = Map();
     for (Contact element in contactList){
       String email = '';
       String phone = '';
@@ -73,23 +79,23 @@ class ContactsController extends GetxController{
   }
 
   getContacts()async {
-    errorStatus = '';
+    errorStatus.value = '';
     try {
       final contactList = await _getAllContactsFromDevice();
       final allRegistredUsers = await _firebaseRepository.getAllRegistredUsers();
-      userContactList = _getUserContacts(contactList, allRegistredUsers);
-      update();
-
+      userContactList.value = _getUserContacts(contactList, allRegistredUsers);
     }on Exception{
-      errorStatus = 'ошибка';
+      errorStatus.value = 'ошибка';
       //return Future.error('error');
-      update();
     }
   }
 
+
+
   @override
   void onInit() async{
-    status  = await checkContactPermit();
+    //status  = await checkContactPermit();
+    await checkPermit();
     if(status.isGranted){
       await getContacts();
       //get contacts

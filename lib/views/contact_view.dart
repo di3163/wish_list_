@@ -9,22 +9,18 @@ class ContactView extends StatelessWidget {
     return GetBuilder<ContactsController>(
         builder: (controller)  {
           if(controller.status.isGranted){
-            controller.getContacts().then((value) {
-              // if (value.isNotEmpty) {
-              //   return Center(
-              //     child: Text(controller.errorStatus),
-              //   );
-              // }
-              if (controller.userContactList.isEmpty) {
-                return Center(child: Text('пусто'));
-              } else {
-                return contactList(controller);
-              }
-            }).catchError((onError){
+            if(controller.errorStatus.isNotEmpty){
               return Center(
-                child: Text(onError),
+                child: Text(controller.errorStatus),
               );
-            });
+            }
+            //обработку ошибок сделать
+            if(controller.userContactList.isEmpty){
+              //здесь выводить инфу что список пуст
+              return Center(child: Text('empty'));
+            }else{
+              return contactList(controller);
+            }
           }else {
             controller.requestContactsPermit();
           }

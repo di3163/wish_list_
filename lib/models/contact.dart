@@ -11,3 +11,4 @@ class UserContact {
     required this.id
   });
 }
+

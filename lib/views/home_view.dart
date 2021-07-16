@@ -23,7 +23,7 @@ class HomeView extends StatelessWidget {
         },
         children: [
           ProfileView(),
-          ContactView(),
+          ContactXView(),
           WishList(),
         ],
       ),

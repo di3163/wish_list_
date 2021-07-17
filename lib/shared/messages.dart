@@ -26,7 +26,8 @@ class Messages extends Translations{
           "wrong_code": "wrong code",
           "contact": "Contacts",
           "wish_title": "Wish title",
-          "wish_description": "Wish description"
+          "wish_description": "Wish description",
+          "wish_link": "Wish link"
         },
         'ru_RU': {
           "app_bar_title": "23X8 Wishlist",
@@ -51,7 +52,8 @@ class Messages extends Translations{
           "wrong_code": "код некорректный",
           "contact": "Контакты",
           "wish_title": "Название",
-          "wish_description": "Описание(цвет, размер артикул...)"
+          "wish_description": "Описание(цвет, размер артикул...)",
+          "wish_link": "ссылка"
         },
       };
 }

@@ -34,7 +34,7 @@ class FirebaseRepository  {
     //TODO возвращать из этого метода allRegisterMap для дальнейшего использования
     //после создания пользователя
 
-    try {
+    //try {
       //DocumentReference documentReference = _getReference('users').doc('all_register_users');
       DocumentReference documentReference = _getReference('users').doc('register_users');
       FirebaseFirestore.instance.runTransaction((transaction) async {
@@ -45,9 +45,10 @@ class FirebaseRepository  {
         transaction.update(documentReference, {'all_register': allregisterMap});
         print('user added to all');
       });
-    }catch(e){
-      throw AllUsersListFailure();
-    }
+    // }catch(e){
+    //   return Future.error(e);
+    //   //throw AllUsersListFailure();
+    // }
   }
 
 

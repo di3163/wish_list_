@@ -80,7 +80,7 @@ class ContactsController extends GetxController{
       userContactList = _getUserContacts(contactList, allRegistredUsers);
       update();
 
-    }on Exception{
+    }catch(e){
       errorStatus = 'ошибка';
       //return Future.error('error');
       update();

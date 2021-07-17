@@ -39,6 +39,7 @@ class HomeView extends StatelessWidget {
             selectedIndex: controller.tabIndex,
             onItemSelected: (index) {
               controller.tabIndex = index;
+              controller.changeTabIndex(index);
               controller.pageController.jumpToPage(index);
             },
             items: AppTab.values.map((tab) {
@@ -49,6 +50,15 @@ class HomeView extends StatelessWidget {
             }).toList(),
           ),
         ),
+      ),
+      floatingActionButton: Visibility(
+        child: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: (){
+
+          },
+        ),
+        visible: Get.find<HomeController>().visibleFAB.value,
       ),
     );
   }

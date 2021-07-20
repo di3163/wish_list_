@@ -1,6 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get.dart';
 import 'package:wish_list_gx/models/wish.dart';
 
 
@@ -124,12 +126,39 @@ class FirebaseRepository  {
       await ref.add({
         'title': wish.title,
         'description': wish.description,
-        'link': wish.link
+        'link': wish.link,
+        'listImg': wish.listPicURL
       }
       );
     }catch(e){
       throw WishOperationFailure();
     }
+  }
+
+  // Future<void> addUserWish( Wish wish)async{
+  //   try {
+  //     CollectionReference ref = _getReference(getCurrentUser()!.uid);
+  //     await ref.add({
+  //       'title': wish.title,
+  //       'description': wish.description,
+  //       'link': wish.link,
+  //       'listImg': wish.listPicURL
+  //     }
+  //     );
+  //   }catch(e){
+  //     throw WishOperationFailure();
+  //   }
+  // }
+
+  Future<String> saveImage(File image) async{
+    String imgURL = '';
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference ref = storage.ref().child('users/${getCurrentUser()!.uid}/${image.path.split('/').last}');
+    UploadTask uploadTask = ref.putFile(image);
+    await uploadTask.whenComplete(() async{
+      String imgURL = await uploadTask.snapshot.ref.getDownloadURL();
+    });
+    return imgURL;
   }
 }
 

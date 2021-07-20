@@ -15,6 +15,9 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      appBar: AppBar(
+
+      ),
       body: PageView(
         controller: Get.find<HomeController>().pageController,
         physics: NeverScrollableScrollPhysics(),
@@ -51,14 +54,14 @@ class HomeView extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: Visibility(
-        child: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: (){
-
-          },
+      floatingActionButton: Obx(() =>
+         Visibility(
+          child: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () => Get.toNamed('/wish', arguments: Wish.empty()),
+          ),
+          visible: Get.find<HomeController>().visibleFAB.value,
         ),
-        visible: Get.find<HomeController>().visibleFAB.value,
       ),
     );
   }

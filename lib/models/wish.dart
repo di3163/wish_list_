@@ -8,7 +8,7 @@ class Wish extends GetxController{
 
   //final List<String> listPicURL.obs;
   //List<UserContact> userContactList = <UserContact>[].obs;
-  List<String> listPicURL = <String>[].obs;
+  List<String> listPicURL;
 
   Wish({required this.title, this.description, this.link,
     required this.listPicURL});

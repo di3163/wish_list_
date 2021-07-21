@@ -156,7 +156,7 @@ class FirebaseRepository  {
     Reference ref = storage.ref().child('users/${getCurrentUser()!.uid}/${image.path.split('/').last}');
     UploadTask uploadTask = ref.putFile(image);
     await uploadTask.whenComplete(() async{
-      String imgURL = await uploadTask.snapshot.ref.getDownloadURL();
+      imgURL = await uploadTask.snapshot.ref.getDownloadURL();
     });
     return imgURL;
   }

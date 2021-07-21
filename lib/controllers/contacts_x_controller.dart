@@ -11,24 +11,26 @@ class ContactsXController extends GetxController{
   var errorStatus = ''.obs;
   List<UserContact> get contacts => userContactList.value;
 
-  requestContactsPermit()async{
-    status = await Permission.contacts.request();
-    // if(status.isGranted){
-    //   await getContacts();
-    //   //get contacts
-    // }else {
-    //   update();
-    // }
-  }
+  // requestContactsPermit()async{
+  //   status = await Permission.contacts.request();
+  //   // if(status.isGranted){
+  //   //   await getContacts();
+  //   //   //get contacts
+  //   // }else {
+  //   //   update();
+  //   // }
+  // }
 
-  Future<PermissionStatus> checkContactPermit()async{
-    return await Permission.contacts.status;
-  }
+  // Future<PermissionStatus> checkContactPermit()async{
+  //   return await Permission.contacts.status;
+  // }
 
   checkPermit()async{
-    status  = await checkContactPermit();
+    //status  = await checkContactPermit();
+    status = await Permission.contacts.status;
     if(!status.isGranted){
-      status = requestContactsPermit();
+      status = await Permission.contacts.request();
+      //status = requestContactsPermit();
     }
   }
 

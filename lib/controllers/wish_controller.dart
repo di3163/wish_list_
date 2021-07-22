@@ -47,6 +47,8 @@ class WishController extends GetxController{
   @override
   void onInit() {
     currentWish = Get.arguments;
+    listImg = currentWish.listPicURL;
+    controllerTitle.value.text = currentWish.title;
     super.onInit();
   }
 

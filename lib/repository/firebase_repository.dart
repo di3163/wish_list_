@@ -69,6 +69,29 @@ class FirebaseRepository  {
     return allregisterMap;
   }
 
+  Future<List<Wish>> getUserWish() async{
+    List<Wish> listWish = [];
+      CollectionReference ref = _getReference(getCurrentUser()!.uid);
+      await ref.get().then((QuerySnapshot querySnapshot) =>
+          querySnapshot.docs.forEach((doc) {
+            listWish.add(Wish(title: doc['title'], description: doc['description'], link: doc['link'], listPicURL: doc['listImg'].cast<String>()));
+          }));
+    return listWish;
+  }
+
+  Stream<List<Wish>> getUserWishStream(){
+    return _getReference(getCurrentUser()!.uid).
+      snapshots().map((QuerySnapshot querySnapshot) {
+        List<Wish> listWish = [];
+        querySnapshot.docs.forEach((element) =>
+          listWish.add(Wish.fromDocumentSnapshot(element))
+        );
+        return listWish;
+      }
+    );
+  }
+
+
   Future<void> addAllUserMockList(Map<String, dynamic> allUsersList)async {
     CollectionReference ref = _getReference('users');
     ref.doc('all_register_users').set({

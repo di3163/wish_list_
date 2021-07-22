@@ -14,12 +14,16 @@ class WishList extends StatelessWidget {
               return ListView.builder(
                 itemCount: wishController.listWish.value.length,
                   itemBuilder: (_, index) => ListTile(
+                    onTap: () => Get.toNamed(
+                        '/wish',
+                        arguments: wishController.listWish.value[index],
+                      ),
                     leading: Container(
                       height: 30,
                       width: 30,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(
+                          image: NetworkImage(
                             wishController.listWish.value[index].listPicURL[0],
                           ),
                           fit: BoxFit.fill,

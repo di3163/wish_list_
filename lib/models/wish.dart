@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 class Wish extends GetxController{
@@ -17,4 +18,10 @@ class Wish extends GetxController{
         this.description = '',
         this.link = '',
         this.listPicURL = [];
+
+  Wish.fromDocumentSnapshot(DocumentSnapshot documentSnapshot) :
+    this.title = documentSnapshot["title"],
+    this.description = documentSnapshot["description"],
+    this.link = documentSnapshot["link"],
+    this.listPicURL = documentSnapshot["listImg"].cast<String>();
 }

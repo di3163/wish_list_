@@ -158,21 +158,6 @@ class FirebaseRepository  {
     }
   }
 
-  // Future<void> addUserWish( Wish wish)async{
-  //   try {
-  //     CollectionReference ref = _getReference(getCurrentUser()!.uid);
-  //     await ref.add({
-  //       'title': wish.title,
-  //       'description': wish.description,
-  //       'link': wish.link,
-  //       'listImg': wish.listPicURL
-  //     }
-  //     );
-  //   }catch(e){
-  //     throw WishOperationFailure();
-  //   }
-  // }
-
   Future<String> saveImage(File image) async{
     String imgURL = '';
     FirebaseStorage storage = FirebaseStorage.instance;

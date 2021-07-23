@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:wish_list_gx/core.dart';
 
 class WishView extends StatelessWidget {
@@ -16,6 +18,7 @@ class WishView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 GetBuilder<WishController>(
+                  id: 'images',
                   builder: (controller) => _buildWishImages(controller),
                 ),
                 SizedBox(
@@ -143,10 +146,16 @@ class WishView extends StatelessWidget {
     } else {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Image.network(
-          patch,
+        child: CachedNetworkImage(
+          imageUrl: patch,
           fit: BoxFit.scaleDown,
+          placeholder: (context, url) => LineIcon.retroCamera(size: 100,),
+          errorWidget: (context, url, error) => LineIcon.exclamationCircle(size: 100,),
         ),
+        // Image.network(
+        //   patch,
+        //   fit: BoxFit.scaleDown,
+        // ),
       );
     }
   }

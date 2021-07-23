@@ -14,11 +14,15 @@ class WishListController extends GetxController{
     //listWish.value = MockWish().getWishList();
   }
 
+  // @override
+  // void dispose() {
+  //   listWish.close();
+  //   super.dispose();
+  // }
+
   @override
-  void dispose() {
+  void onClose() {
     listWish.close();
-    super.dispose();
+    super.onClose();
   }
-
-
 }

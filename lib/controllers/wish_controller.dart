@@ -21,7 +21,7 @@ class WishController extends GetxController{
     if (pickedFile != null)
     //currentWish.listPicURL.add(pickedFile.path);
       listImg.add(pickedFile.path);
-    update();
+    update(['images']);
   }
 
   _uploadImages()async{

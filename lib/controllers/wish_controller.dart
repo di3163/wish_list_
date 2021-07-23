@@ -18,24 +18,35 @@ class WishController extends GetxController{
 
   void addImage()async{
     final XFile?  pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null)
-    //currentWish.listPicURL.add(pickedFile.path);
-      listImg.add(pickedFile.path);
+    if (pickedFile != null){
+      if (currentWish.title.isEmpty){
+        listImg.add(pickedFile.path);
+      }else{
+        listImg.add(await _uploadImage(pickedFile.path));
+      }
+    }
     update(['images']);
   }
 
-  _uploadImages()async{
+  //TODO при выходе если были изменения спрашивать сохранить или нет
+
+  Future<String> _uploadImage(String path)async{
+    return  await _firebaseRepository.saveImage(File(path));
+  }
+
+  _addWishListPicURL()async{
       for(String element in listImg){
-        String uRL = await _firebaseRepository.saveImage(File(element));
+        String uRL = await _uploadImage(element);
         currentWish.listPicURL.add(uRL);
       }
   }
 
   void saveWish()async{
     if(controllerTitle.value.text.isEmpty){
+      //TODO ссобщать что поле пустое, сохранение невозможно
       return;
     }
-    await _uploadImages();
+    await _addWishListPicURL();
     currentWish.title = controllerTitle.value.text;
     currentWish.description = controllerDescription.value.text;
     currentWish.link = controllerLink.value.text;

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
-class Wish extends GetxController{
+class Wish {
   String title;
   String? description;
   String? link;

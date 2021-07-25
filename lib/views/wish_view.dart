@@ -12,6 +12,7 @@ class WishView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
+
         body: SafeArea(
           child: Container(
             child: Column(

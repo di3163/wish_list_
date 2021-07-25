@@ -12,6 +12,7 @@ class WishList extends StatelessWidget {
           //init: Get.put<WishController>(WishController()),
 
           builder: (WishListController wishController){
+
             if(wishController.listWish.value.isNotEmpty){
               return ListView.builder(
                 itemCount: wishController.listWish.value.length,

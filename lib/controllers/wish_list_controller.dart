@@ -11,6 +11,7 @@ class WishListController extends GetxController{
     super.onInit();
     //listWish.value = await _firebaseRepository.getUserWish();
     listWish.bindStream(_firebaseRepository.getUserWishStream());
+
     //listWish.value = MockWish().getWishList();
   }
 

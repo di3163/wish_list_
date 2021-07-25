@@ -19,10 +19,11 @@ class WishController extends GetxController{
   void addImage()async{
     final XFile?  pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null){
-      if (currentWish.title.isEmpty){
+      if (!currentWish.isSaved){
         listImg.add(pickedFile.path);
       }else{
         listImg.add(await _uploadImage(pickedFile.path));
+        await _firebaseRepository.updateUserWish(currentWish);
       }
     }
     update(['images']);
@@ -53,6 +54,10 @@ class WishController extends GetxController{
     _firebaseRepository.addUserWish(currentWish);
   }
 
+  Future<void> updateWish()async {
+    await _firebaseRepository.updateUserWish(currentWish);
+  }
+
 
 
   @override
@@ -63,11 +68,21 @@ class WishController extends GetxController{
     super.onInit();
   }
 
-  @override
-  void dispose() {
-    controllerTitle.close();
-    controllerDescription.close();
-    controllerLink.close();
-    super.dispose();
-  }
+  // @override
+  // void onClose() {
+  //   Get.defaultDialog(
+  //       onConfirm: () async { await updateWish();},
+  //       middleText: 'сохранить изменения?'
+  //   );
+  //   super.onClose();
+  // }
+
+
+  // @override
+  // void dispose() {
+  //   controllerTitle.close();
+  //   controllerDescription.close();
+  //   controllerLink.close();
+  //   super.dispose();
+  // }
 }

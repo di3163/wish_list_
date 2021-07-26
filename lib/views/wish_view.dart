@@ -95,7 +95,7 @@ class WishView extends StatelessWidget {
     return ValueBuilder<int?>(
         initialValue: 0,
         builder: (currentImage, updateFn) => Column(
-              children: [
+          children: [
                 Container(
                   height: 150,
                   child: PageView(
@@ -138,29 +138,59 @@ class WishView extends StatelessWidget {
     );
   }
 
-  Container _imgContainer(String patch, WishController controller) {
-    if (controller.currentWish.title.isEmpty) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Image.file(
-          File(patch),
-          fit: BoxFit.scaleDown,
-        ),
+   Widget _imgContainer(String patch, WishController controller) {
+    //if (!controller.currentWish.isSaved) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: controller.currentWish.isSaved?
+                CachedNetworkImage(
+                    imageUrl: patch,
+                    fit: BoxFit.scaleDown,
+                    placeholder: (context, url) =>
+                        LineIcon.retroCamera(size: 100,),
+                    errorWidget: (context, url, error) =>
+                        LineIcon.exclamationCircle(size: 100,),
+                  ) :
+                Image.file(
+                  File(patch),
+                  fit: BoxFit.scaleDown,
+              ),
+            ),
+          ),
+          Column(children: [
+            GestureDetector(
+              onTap: () => controller.deleteImage(patch),
+              child: Container(
+                height: 40,
+                width: 40,
+                color: Colors.blue[600],
+                child: Icon(
+                  Icons.delete_forever_outlined,
+                ),
+              ),
+            ),
+          ]),
+        ],
       );
-    } else {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: CachedNetworkImage(
-          imageUrl: patch,
-          fit: BoxFit.scaleDown,
-          placeholder: (context, url) => LineIcon.retroCamera(size: 100,),
-          errorWidget: (context, url, error) => LineIcon.exclamationCircle(size: 100,),
-        ),
-        // Image.network(
-        //   patch,
-        //   fit: BoxFit.scaleDown,
-        // ),
-      );
-    }
+    // } else {
+    //   return Container(
+    //     padding: EdgeInsets.symmetric(horizontal: 16),
+    //     child: CachedNetworkImage(
+    //       imageUrl: patch,
+    //       fit: BoxFit.scaleDown,
+    //       placeholder: (context, url) => LineIcon.retroCamera(size: 100,),
+    //       errorWidget: (context, url, error) => LineIcon.exclamationCircle(size: 100,),
+    //     ),
+    //     // Image.network(
+    //     //   patch,
+    //     //   fit: BoxFit.scaleDown,
+    //     // ),
+    //   );
+    // }
   }
 }

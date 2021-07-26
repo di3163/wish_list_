@@ -191,9 +191,13 @@ class FirebaseRepository  {
   }
 
   Future<void> deleteImage(String imgUrl) async{
-    FirebaseStorage storage = FirebaseStorage.instance;
-    Reference ref = storage.ref().child(imgUrl);
-    await ref.delete();
+    try {
+      FirebaseStorage storage = FirebaseStorage.instance;
+      Reference ref = storage.refFromURL(imgUrl);
+      await ref.delete();
+    }catch(e){
+      throw Exception(e);
+    }
   }
 
   void deleteWish(Wish wish)async {

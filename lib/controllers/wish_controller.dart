@@ -61,6 +61,20 @@ class WishController extends GetxController{
     await _firebaseRepository.updateUserWish(currentWish);
   }
 
+  void deleteImage(String imgUrl)async{
+      if(currentWish.isSaved) {
+        try{
+          await _firebaseRepository.deleteImage(imgUrl);
+          currentWish.listPicURL.remove(imgUrl);
+          await _firebaseRepository.updateUserWish(currentWish);
+        }catch(e){
+
+        }
+      }else{
+        listImg.remove(imgUrl);
+      }
+      update(['images']);
+  }
 
 
   @override

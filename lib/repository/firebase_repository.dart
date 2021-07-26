@@ -189,5 +189,16 @@ class FirebaseRepository  {
     });
     return imgURL;
   }
+
+  Future<void> deleteImage(String imgUrl) async{
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference ref = storage.ref().child(imgUrl);
+    await ref.delete();
+  }
+
+  void deleteWish(Wish wish)async {
+    CollectionReference ref = _getReference(getCurrentUser()!.uid);
+    await ref.doc(wish.id).delete();
+  }
 }
 

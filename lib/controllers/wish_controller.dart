@@ -13,8 +13,8 @@ class WishController extends GetxController{
 
   final _picker = ImagePicker();
   List<String> listImg = [];
-
   late Wish currentWish;
+  bool isChanged = false;
 
   void addImage()async{
     final XFile?  pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -55,6 +55,9 @@ class WishController extends GetxController{
   }
 
   Future<void> updateWish()async {
+    currentWish.title = controllerTitle.value.text;
+    currentWish.description = controllerDescription.value.text;
+    currentWish.link = controllerLink.value.text;
     await _firebaseRepository.updateUserWish(currentWish);
   }
 
@@ -65,17 +68,25 @@ class WishController extends GetxController{
     currentWish = Get.arguments;
     listImg = currentWish.listPicURL;
     controllerTitle.value.text = currentWish.title;
+    controllerDescription.value.text = currentWish.description!;
+    controllerLink.value.text = currentWish.link!;
     super.onInit();
   }
 
   // @override
-  // void onClose() {
-  //   Get.defaultDialog(
-  //       onConfirm: () async { await updateWish();},
-  //       middleText: 'сохранить изменения?'
-  //   );
-  //   super.onClose();
-  // }
+  void onClose() async {
+    if (isChanged)
+    Get.defaultDialog(
+        title: 'сохранить изменения?',
+        onConfirm: () async {
+          await updateWish();
+          Get.back();
+        },
+        onCancel: () {},
+        middleText: '',
+    );
+    super.onClose();
+  }
 
 
   // @override

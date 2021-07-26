@@ -37,6 +37,7 @@ class WishView extends StatelessWidget {
                   children: [
                     Expanded(
                       child: TextField(
+                        onChanged: (_) => Get.find<WishController>().isChanged = true,
                         controller:
                             Get.find<WishController>().controllerTitle.value,
                         decoration: InputDecoration(labelText: 'wish_title'.tr),
@@ -50,6 +51,7 @@ class WishView extends StatelessWidget {
                 Row(children: [
                   Expanded(
                     child: TextField(
+                      onChanged: (_) => Get.find<WishController>().isChanged = true,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                       controller: Get.find<WishController>()
@@ -67,6 +69,7 @@ class WishView extends StatelessWidget {
                   children: [
                     Expanded(
                       child: TextField(
+                        onChanged: (_) => Get.find<WishController>().isChanged = true,
                         controller:
                             Get.find<WishController>().controllerLink.value,
                         decoration: InputDecoration(labelText: 'wish_link'.tr),

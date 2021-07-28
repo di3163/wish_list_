@@ -11,21 +11,23 @@ import 'package:wish_list_gx/core.dart';
 // }
 
 class LoginForm extends StatelessWidget {
-  LoginForm({Key? key}) : super(key: key);
-  final UserProfileController _userProfileController = Get.find<UserProfileController>();
+  LoginForm({Key? key, required this.userProfileController}) : super(key: key);
+  //final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  //final UserProfileController _userProfileController = Get.find<UserProfileController>();
+  final UserProfileController userProfileController;
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   //final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void _onLogin() async {
-    if (!_userProfileController.formKey.value.currentState!.validate()) {
+    if (!userProfileController.formKey.value.currentState!.validate()) {
       //setState(() {
-      _userProfileController.formKey.value.currentState!.save();
+      userProfileController.formKey.value.currentState!.save();
       //});
     } else {
-      _userProfileController.formKey.value.currentState!.save();
-      _userProfileController.signIn(email: _controllerEmail.text.trim(), pass: _controllerPassword.text);
-      _userProfileController.formKey.value.currentState!.reset();
+      userProfileController.formKey.value.currentState!.save();
+      userProfileController.signIn(email: _controllerEmail.text.trim(), pass: _controllerPassword.text);
+      userProfileController.formKey.value.currentState!.reset();
     }
   }
 
@@ -37,7 +39,7 @@ class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _userProfileController.formKey.value,
+      key: userProfileController.formKey.value,
       child: Column(
         children: <Widget>[
           TextFormField(

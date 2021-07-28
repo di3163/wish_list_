@@ -6,6 +6,21 @@ class WishListController extends GetxController{
   final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
   Rx<List<Wish>> listWish = Rx<List<Wish>>([]);
 
+  void deleteWish(Wish wish){
+    Get.defaultDialog(
+      title: 'Удалить?',
+      onConfirm: () {
+        for(String imgUrl in wish.listPicURL){
+          _firebaseRepository.deleteImage(imgUrl);
+        }
+        _firebaseRepository.deleteWish(wish);
+        Get.back();
+      },
+      onCancel: () {},
+      middleText: '',
+    );
+  }
+
   @override
   void onInit() async{
     super.onInit();

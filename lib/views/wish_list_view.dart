@@ -21,6 +21,7 @@ class WishList extends StatelessWidget {
                         '/wish',
                         arguments: wishController.listWish.value[index],
                       ),
+                    onLongPress: () => wishController.deleteWish(wishController.listWish.value[index]),
                     leading:
                         CachedNetworkImage(
                           imageUrl: wishController.listWish.value[index].listPicURL[0],

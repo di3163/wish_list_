@@ -6,14 +6,18 @@ import 'package:image_picker/image_picker.dart';
 import 'package:wish_list_gx/core.dart';
 
 class WishController extends GetxController{
-  final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
+  WishController(this._firebaseRepository, this._picker);
+
+  //final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
+  final FirebaseRepository _firebaseRepository;
   final controllerTitle = TextEditingController().obs;
   final controllerDescription = TextEditingController().obs;
   final controllerLink = TextEditingController().obs;
 
-  final _picker = ImagePicker();
+  //final _picker = ImagePicker();
+  final _picker;
   List<String> listImg = [];
-  late Wish currentWish;
+  Wish currentWish = Wish.empty();
   bool isChanged = false;
 
   void addImage()async{
@@ -103,7 +107,8 @@ class WishController extends GetxController{
   }
 
 
-  // @override
+
+// @override
   // void dispose() {
   //   controllerTitle.close();
   //   controllerDescription.close();

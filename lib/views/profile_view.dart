@@ -46,7 +46,7 @@ class ProfileView extends StatelessWidget {
               textAlign: TextAlign.start,
             ),
           ),
-          controller.formType.value == FormType.login ? LoginForm() : RegisterForm(),
+          controller.formType.value == FormType.login ? LoginForm(userProfileController: Get.find<UserProfileController>()) : RegisterForm(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

@@ -4,9 +4,11 @@ import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
 class UserProfileController extends GetxController{
-  final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
-  final userStatus = UserStatus.unauthenticated.obs;
-  final formKey = GlobalKey<FormState>().obs;
+  UserProfileController(this._firebaseRepository);
+  final FirebaseRepository _firebaseRepository;
+  //final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
+      final userStatus = UserStatus.unauthenticated.obs;
+  //final formKey = GlobalKey<FormState>().obs;
   final formType = FormType.login.obs;
 
   void switchForm(){
@@ -54,4 +56,5 @@ class UserProfileController extends GetxController{
     _confirmUser();
     super.onInit();
   }
+
 }

@@ -9,7 +9,7 @@ class MainBinding extends Bindings{
   void dependencies() {
     Get.put<FirebaseRepository>(FirebaseRepository());
     Get.put<HomeController>(HomeController());
-    Get.put<UserProfileController>(UserProfileController());
+    Get.put<UserProfileController>(UserProfileController(Get.find<FirebaseRepository>()));
     Get.put<WishListController>(WishListController());
   }
 }

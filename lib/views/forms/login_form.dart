@@ -12,7 +12,7 @@ import 'package:wish_list_gx/core.dart';
 
 class LoginForm extends StatelessWidget {
   LoginForm({Key? key, required this.userProfileController}) : super(key: key);
-  //final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   //final UserProfileController _userProfileController = Get.find<UserProfileController>();
   final UserProfileController userProfileController;
   final TextEditingController _controllerEmail = TextEditingController();
@@ -20,14 +20,14 @@ class LoginForm extends StatelessWidget {
   //final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void _onLogin() async {
-    if (!userProfileController.formKey.value.currentState!.validate()) {
+    if (!_formKey.currentState!.validate()) {
       //setState(() {
-      userProfileController.formKey.value.currentState!.save();
+      _formKey.currentState!.save();
       //});
     } else {
-      userProfileController.formKey.value.currentState!.save();
+      _formKey.currentState!.save();
       userProfileController.signIn(email: _controllerEmail.text.trim(), pass: _controllerPassword.text);
-      userProfileController.formKey.value.currentState!.reset();
+      _formKey.currentState!.reset();
     }
   }
 
@@ -39,7 +39,7 @@ class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: userProfileController.formKey.value,
+      key: _formKey,
       child: Column(
         children: <Widget>[
           TextFormField(

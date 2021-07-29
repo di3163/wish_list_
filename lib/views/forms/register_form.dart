@@ -7,18 +7,19 @@ import 'package:wish_list_gx/core.dart';
 class RegisterForm extends StatelessWidget {
   RegisterForm({Key? key}) : super(key: key);
   final UserProfileController _userProfileController = Get.find<UserProfileController>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerPhone= TextEditingController();
 
 
   void _onRegister() async{
-    if(!_userProfileController.formKey.value.currentState!.validate()){
-      _userProfileController.formKey.value.currentState!.save();
+    if(!_formKey.currentState!.validate()){
+      _formKey.currentState!.save();
     }else {
-      _userProfileController.formKey.value.currentState!.save();
+      _formKey.currentState!.save();
       _userProfileController.signUp(email: _controllerEmail.text.trim(), pass: _controllerPassword.text, phone: _controllerPhone.text);
-      _userProfileController.formKey.value.currentState!.reset();
+      _formKey.currentState!.reset();
     }
   }
 
@@ -26,7 +27,7 @@ class RegisterForm extends StatelessWidget {
   Widget build(BuildContext context) {
     //_authRepository = context.read<AuthRepository>();
     return Form(
-      key: _userProfileController.formKey.value,
+      key: _formKey,
       child: Column(
         children: <Widget>[
           TextFormField(

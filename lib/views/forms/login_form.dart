@@ -3,38 +3,22 @@ import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
 
-// class LoginForm extends StatefulWidget {
-//   LoginForm({Key? key}) : super(key: key);
-//
-//   @override
-//   _LoginFormState createState() => _LoginFormState();
-// }
-
 class LoginForm extends StatelessWidget {
   LoginForm({Key? key, required this.userProfileController}) : super(key: key);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  //final UserProfileController _userProfileController = Get.find<UserProfileController>();
   final UserProfileController userProfileController;
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
-  //final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void _onLogin() async {
     if (!_formKey.currentState!.validate()) {
-      //setState(() {
       _formKey.currentState!.save();
-      //});
     } else {
       _formKey.currentState!.save();
       userProfileController.signIn(email: _controllerEmail.text.trim(), pass: _controllerPassword.text);
       _formKey.currentState!.reset();
     }
   }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //}
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +34,7 @@ class LoginForm extends StatelessWidget {
               return null;
             },
             controller: _controllerEmail,
-            decoration: _buildInputDecoration('email' .tr, Icon(Icons.alternate_email)),
+            decoration: _buildInputDecoration('email' .tr, Icon(iconEmail)),
           ),
           TextFormField(
             key: Key('fieldPass'),
@@ -59,7 +43,7 @@ class LoginForm extends StatelessWidget {
               return null;
             },
             controller: _controllerPassword,
-            decoration: _buildInputDecoration('password' .tr, Icon(Icons.vpn_key)),
+            decoration: _buildInputDecoration('password' .tr, Icon(iconKey)),
           ),
           ElevatedButton(
             key: Key('buttonLoginSend'),

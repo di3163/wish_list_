@@ -5,11 +5,7 @@ import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
 
-
-
-
 class HomeView extends StatelessWidget {
-  //final UserProfileController _userProfileController = Get.find<UserProfileController>();
 
   @override
   Widget build(BuildContext context) {
@@ -65,22 +61,4 @@ class HomeView extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _selectView() {
-  //   if (_userProfileController.userStatus.value == UserStatus.unauthenticated){
-  //     return ProfileView();
-  //   }
-  //
-  //   return ProfileView();
-  // //   if (uiAppState.addWish){
-  // //     return WishView();
-  // //   }
-  // //   if (uiAppState.activeTab == AppTab.ContactView) {
-  // //     return ContactView();
-  // //   } else if(uiAppState.activeTab == AppTab.MyListView) {
-  // //     return MyListView();
-  // //   }else{
-  // //     return ProfileView();
-  // //   }
-  // }
 }

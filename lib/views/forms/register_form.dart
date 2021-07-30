@@ -25,7 +25,6 @@ class RegisterForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //_authRepository = context.read<AuthRepository>();
     return Form(
       key: _formKey,
       child: Column(
@@ -38,7 +37,7 @@ class RegisterForm extends StatelessWidget {
               return null;
             },
             controller: _controllerEmail,
-            decoration: _buildInputDecoration('email' .tr , Icon(Icons.alternate_email)),
+            decoration: _buildInputDecoration('email' .tr , Icon(iconEmail)),
           ),
           TextFormField(
             key: Key('fieldPass'),
@@ -47,7 +46,7 @@ class RegisterForm extends StatelessWidget {
               return null;
             },
             controller: _controllerPassword,
-            decoration: _buildInputDecoration('password' .tr, Icon(Icons.vpn_key)),
+            decoration: _buildInputDecoration('password' .tr, Icon(iconKey)),
           ),
           TextFormField(
             keyboardType: TextInputType.number,
@@ -58,7 +57,7 @@ class RegisterForm extends StatelessWidget {
               return null;
             },
             controller: _controllerPhone,
-            decoration: _buildInputDecoration('phone' .tr , Icon(Icons.phone)),
+            decoration: _buildInputDecoration('phone' .tr , Icon(iconPhone)),
           ),
           ElevatedButton(
             key: Key('buttonRegisterSend'),

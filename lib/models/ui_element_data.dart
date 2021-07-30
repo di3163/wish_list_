@@ -5,6 +5,13 @@ enum AppTab { ProfileView, ContactView, MyListView }
 
 enum FormType { login, register }
 
+const iconPerson = Icons.person;
+const iconCotacts = Icons.contacts;
+const iconFavorite = Icons.favorite_border;
+const iconEmail = Icons.alternate_email;
+const iconKey = Icons.vpn_key;
+const iconPhone = Icons.phone;
+
 extension AppTabNamesLocal on AppTab{
   String localization(){
     switch(this){
@@ -24,13 +31,13 @@ extension AppTabIcon on AppTab{
   Icon appTabIcon(){
     switch(this){
       case AppTab.ProfileView:
-        return Icon(Icons.person);
+        return Icon(iconPerson);
       case AppTab.ContactView:
-        return Icon(Icons.contacts);
+        return Icon(iconCotacts);
       case AppTab.MyListView:
-        return Icon(Icons.favorite_border);
+        return Icon(iconFavorite);
       default:
-        return Icon(Icons.person);
+        return Icon(iconPerson);
     }
   }
 }

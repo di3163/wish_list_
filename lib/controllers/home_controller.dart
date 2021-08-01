@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wish_list_gx/core.dart';
 
 class HomeController extends GetxController{
   final pageController = PageController();
@@ -11,6 +12,7 @@ class HomeController extends GetxController{
     //tabIndex = index;
     if(index == 2){
       visibleFAB.value = true;
+      Get.find<WishListController>().bindListWish('');
     }else{
       visibleFAB.value = false;
     }

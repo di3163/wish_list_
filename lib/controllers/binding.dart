@@ -19,5 +19,4 @@ class WishBindings extends Bindings{
   void dependencies() {
     Get.put<WishController>(WishController(Get.find<FirebaseRepository>(), ImagePicker()));
   }
-
 }

@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
@@ -33,6 +32,7 @@ class UserProfileController extends GetxController{
       await _firebaseRepository.signIn(email: email, password: pass);
       //Get.find<FirebaseRepository>().signIn(email: email, password: pass);
       userStatus.value = UserStatus.authenticated;
+      //Get.find<WishListController>().bindListWish('');
     } on Exception{
       userStatus.value = UserStatus.unauthenticated;
     }

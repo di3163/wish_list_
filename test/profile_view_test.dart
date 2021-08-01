@@ -41,7 +41,7 @@ void main(){
   //await Firebase.initializeApp();
   //Get.put<FirebaseRepository>(MockMockFirebaseRepository());
 
-  testWidgets('login view tests', (WidgetTester tester) async{
+  testWidgets('login form tests', (WidgetTester tester) async{
       await tester.pumpWidget(
         testableWidget(
           child: LoginForm(userProfileController: UserProfileController(MockMockFirebaseRepository())),
@@ -50,5 +50,29 @@ void main(){
       expect(find.byKey(Key('fieldEmail')), findsOneWidget);
       expect(find.byKey(Key('fieldPass')), findsOneWidget);
       expect(find.byKey(Key('buttonLoginSend')), findsOneWidget);
+
+      await tester.enterText(find.byKey(Key('fieldEmail')), 'test@test.com');
+      expect(find.text('test@test.com'), findsOneWidget);
+      await tester.enterText(find.byKey(Key('fieldPass')), '123456');
+      expect(find.text('123456'), findsOneWidget);
     });
+
+  testWidgets('register form  tests', (WidgetTester tester) async{
+    await tester.pumpWidget(
+      testableWidget(
+        child: RegisterForm(userProfileController: UserProfileController(MockMockFirebaseRepository())),
+      ),
+    );
+    expect(find.byKey(Key('fieldEmail')), findsOneWidget);
+    expect(find.byKey(Key('fieldPass')), findsOneWidget);
+    expect(find.byKey(Key('phoneNum')), findsOneWidget);
+    expect(find.byKey(Key('buttonRegisterSend')), findsOneWidget);
+
+    await tester.enterText(find.byKey(Key('fieldEmail')), 'test@test.com');
+    expect(find.text('test@test.com'), findsOneWidget);
+    await tester.enterText(find.byKey(Key('fieldPass')), '123456');
+    expect(find.text('123456'), findsOneWidget);
+    await tester.enterText(find.byKey(Key('phoneNum')), '+7925803613a');
+    expect(find.text('+7925803613a'), findsOneWidget);
+  });
 }

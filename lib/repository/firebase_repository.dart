@@ -163,9 +163,12 @@ class FirebaseRepository  {
     return listWish;
   }
 
-  Stream<List<Wish>> getUserWishStream(){
+  Stream<List<Wish>> getUserWishStream(String userId){
+    String _id = getCurrentUser()!.uid;
+    if (userId != '')
+      _id = userId;
     try {
-      return _getReference(getCurrentUser()!.uid).
+      return _getReference(_id).
       snapshots().map((QuerySnapshot querySnapshot) {
         List<Wish> listWish = [];
         querySnapshot.docs.forEach((element) =>

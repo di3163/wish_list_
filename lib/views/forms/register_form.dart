@@ -5,8 +5,8 @@ import 'package:wish_list_gx/core.dart';
 
 
 class RegisterForm extends StatelessWidget {
-  RegisterForm({Key? key}) : super(key: key);
-  final UserProfileController _userProfileController = Get.find<UserProfileController>();
+  RegisterForm({Key? key, required this.userProfileController}) : super(key: key);
+  final UserProfileController userProfileController;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
@@ -18,7 +18,7 @@ class RegisterForm extends StatelessWidget {
       _formKey.currentState!.save();
     }else {
       _formKey.currentState!.save();
-      _userProfileController.signUp(email: _controllerEmail.text.trim(), pass: _controllerPassword.text, phone: _controllerPhone.text);
+      userProfileController.signUp(email: _controllerEmail.text.trim(), pass: _controllerPassword.text, phone: _controllerPhone.text);
       _formKey.currentState!.reset();
     }
   }

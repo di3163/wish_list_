@@ -48,7 +48,7 @@ class ProfileView extends StatelessWidget {
           ),
           controller.formType.value == FormType.login ?
           LoginForm(userProfileController: Get.find<UserProfileController>()) :
-          RegisterForm(),
+          RegisterForm(userProfileController: Get.find<UserProfileController>()),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

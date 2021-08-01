@@ -13,6 +13,10 @@ class ContactXView extends StatelessWidget {
               return ListView.builder(
                 itemCount: contactsController.contacts.length,
                 itemBuilder: (_, index) => ListTile(
+                  onTap: () {
+                    Get.find<WishListController>().bindListWish(contactsController.contacts[index].id);
+                    //return WishList()
+                  },
                   title: Text(contactsController.contacts[index].name),
                   subtitle: Text(contactsController.contacts[index].phone),
                 ),

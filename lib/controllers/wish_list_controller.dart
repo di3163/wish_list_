@@ -21,12 +21,16 @@ class WishListController extends GetxController{
     );
   }
 
+  void bindListWish(String userId){
+    listWish.bindStream(_firebaseRepository.getUserWishStream(userId));
+  }
+
   @override
   void onInit() async{
-    super.onInit();
     //listWish.value = await _firebaseRepository.getUserWish();
-    listWish.bindStream(_firebaseRepository.getUserWishStream());
-
+    // if (Get.find<UserProfileController>().userStatus == UserStatus.authenticated)
+    //   bindListWish();
+    super.onInit();
     //listWish.value = MockWish().getWishList();
   }
 

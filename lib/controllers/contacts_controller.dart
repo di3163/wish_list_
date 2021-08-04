@@ -7,7 +7,10 @@ import 'package:wish_list_gx/core.dart';
 class ContactServiceException implements Exception {}
 
 class ContactsController extends GetxController{
-  final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
+
+  ContactsController(this._firebaseRepository);
+
+  final AuthRepositoryInterface _firebaseRepository;
   PermissionStatus status = PermissionStatus.denied;
   List<UserContact> userContactList = <UserContact>[].obs;
   String errorStatus = '';

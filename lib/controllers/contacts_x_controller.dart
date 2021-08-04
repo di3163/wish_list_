@@ -4,7 +4,10 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:wish_list_gx/core.dart';
 
 class ContactsXController extends GetxController{
-  final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
+
+  ContactsXController(this._firebaseRepository);
+
+  final AuthRepositoryInterface _firebaseRepository;
   //List<UserContact> userContactList = <UserContact>[].obs;
   Rx<List<UserContact>> userContactList = Rx<List<UserContact>>([]);
   PermissionStatus status = PermissionStatus.denied;
@@ -104,4 +107,5 @@ class ContactsXController extends GetxController{
     }
     super.onInit();
   }
+
 }

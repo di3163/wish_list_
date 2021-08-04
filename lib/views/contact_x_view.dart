@@ -7,7 +7,7 @@ class ContactXView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: GetX<ContactsXController>(
-          init: Get.put<ContactsXController>(ContactsXController()),
+          init: Get.put<ContactsXController>(ContactsXController(FirebaseAuthRepository())),
           builder: (ContactsXController contactsController) {
             if (contactsController.contacts.isNotEmpty) {
               return ListView.builder(

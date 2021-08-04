@@ -3,7 +3,10 @@ import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
 class WishListController extends GetxController{
-  final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
+
+  WishListController(this._firebaseRepository);
+
+  final WishRepositoryInterface _firebaseRepository;
   Rx<List<Wish>> listWish = Rx<List<Wish>>([]);
 
   void deleteWish(Wish wish){
@@ -45,4 +48,5 @@ class WishListController extends GetxController{
     listWish.close();
     super.onClose();
   }
+
 }

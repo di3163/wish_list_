@@ -9,7 +9,7 @@ class WishController extends GetxController{
   WishController(this._firebaseRepository, this._picker);
 
   //final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
-  final FirebaseRepository _firebaseRepository;
+  final WishRepositoryInterface _firebaseRepository;
   final controllerTitle = TextEditingController().obs;
   final controllerDescription = TextEditingController().obs;
   final controllerLink = TextEditingController().obs;

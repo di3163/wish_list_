@@ -4,7 +4,7 @@ import 'package:wish_list_gx/core.dart';
 
 class UserProfileController extends GetxController{
   UserProfileController(this._firebaseRepository);
-  final FirebaseRepository _firebaseRepository;
+  final AuthRepositoryInterface _firebaseRepository;
   //final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
       final userStatus = UserStatus.unauthenticated.obs;
   //final formKey = GlobalKey<FormState>().obs;

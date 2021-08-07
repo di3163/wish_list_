@@ -15,80 +15,133 @@ class WishView extends StatelessWidget {
 
         body: SafeArea(
           child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                GetBuilder<WishController>(
-                  id: 'images',
-                  builder: (controller) => _buildWishImages(controller),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => Get.find<WishController>().addImage(),
-                      child: Icon(Icons.photo_camera),
-                    ),
-                  ),
-                ]),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        onChanged: (_) => Get.find<WishController>().isChanged = true,
-                        controller:
-                            Get.find<WishController>().controllerTitle.value,
-                        decoration: InputDecoration(labelText: 'wish_title'.tr),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(children: [
-                  Expanded(
-                    child: TextField(
-                      onChanged: (_) => Get.find<WishController>().isChanged = true,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      controller: Get.find<WishController>()
-                          .controllerDescription
-                          .value,
-                      decoration:
-                          InputDecoration(labelText: 'wish_description'.tr),
-                    ),
-                  ),
-                ]),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        onChanged: (_) => Get.find<WishController>().isChanged = true,
-                        controller:
-                            Get.find<WishController>().controllerLink.value,
-                        decoration: InputDecoration(labelText: 'wish_link'.tr),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => Get.find<WishController>().saveWish(),
-                      child: Icon(Icons.add),
-                    ),
-                  ),
-                ]),
-              ],
-            ),
+            child: Get.find<WishListController>().user.userStatus == UserStatus.other ?
+                _buildOtherWish() :
+                _buildUserWish(),
           ),
         ));
+  }
+
+  Column _buildOtherWish(){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          GetBuilder<WishController>(
+            id: 'images',
+            builder: (controller) => _buildWishImages(controller),
+          ),
+          SizedBox(height: 10,),
+          Row(
+            children: [
+              Expanded(
+                  child: Text(
+                    Get.find<WishController>()
+                      .currentWish.title,
+                  )
+              ),
+            ],
+          ),
+          SizedBox(height: 10,),
+          Row(
+            children: [
+              Expanded(
+                  child: Text(
+                    Get.find<WishController>()
+                        .currentWish.description!,
+                  )
+              ),
+            ],
+          ),
+          SizedBox(height: 10,),
+          Row(
+            children: [
+              Expanded(
+                  child: Text(
+                    Get.find<WishController>()
+                        .currentWish.link!,
+                  )
+              ),
+            ],
+          ),
+          ]
+    );
+  }
+
+  Column _buildUserWish(){
+    return
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          GetBuilder<WishController>(
+            id: 'images',
+            builder: (controller) => _buildWishImages(controller),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () => Get.find<WishController>().addImage(),
+                child: Icon(Icons.photo_camera),
+              ),
+            ),
+          ]),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  onChanged: (_) => Get.find<WishController>().isChanged = true,
+                  controller:
+                  Get.find<WishController>().controllerTitle.value,
+                  decoration: InputDecoration(labelText: 'wish_title'.tr),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(children: [
+            Expanded(
+              child: TextField(
+                onChanged: (_) => Get.find<WishController>().isChanged = true,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                controller: Get.find<WishController>()
+                    .controllerDescription
+                    .value,
+                decoration:
+                InputDecoration(labelText: 'wish_description'.tr),
+              ),
+            ),
+          ]),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  onChanged: (_) => Get.find<WishController>().isChanged = true,
+                  controller:
+                  Get.find<WishController>().controllerLink.value,
+                  decoration: InputDecoration(labelText: 'wish_link'.tr),
+                ),
+              ),
+            ],
+          ),
+          Row(children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () => Get.find<WishController>().saveWish(),
+                child: Icon(Icons.add),
+              ),
+            ),
+          ]),
+        ],
+      );
+
   }
 
   ValueBuilder<int?> _buildWishImages(WishController controller) {
@@ -177,20 +230,5 @@ class WishView extends StatelessWidget {
           ]),
         ],
       );
-    // } else {
-    //   return Container(
-    //     padding: EdgeInsets.symmetric(horizontal: 16),
-    //     child: CachedNetworkImage(
-    //       imageUrl: patch,
-    //       fit: BoxFit.scaleDown,
-    //       placeholder: (context, url) => LineIcon.retroCamera(size: 100,),
-    //       errorWidget: (context, url, error) => LineIcon.exclamationCircle(size: 100,),
-    //     ),
-    //     // Image.network(
-    //     //   patch,
-    //     //   fit: BoxFit.scaleDown,
-    //     // ),
-    //   );
-    // }
   }
 }

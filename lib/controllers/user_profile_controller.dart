@@ -1,13 +1,19 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
 class UserProfileController extends GetxController{
+
   UserProfileController(this._firebaseRepository);
-  final FirebaseRepository _firebaseRepository;
-  //final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
-      final userStatus = UserStatus.unauthenticated.obs;
-  //final formKey = GlobalKey<FormState>().obs;
+
+  final AuthRepositoryInterface _firebaseRepository;
+  //UserApp user;
+  //Rx<UserApp> user = Rx<UserApp>(UserFirebase(id: '', userStatus: UserStatus.unauthenticated));
+  final user = UserFirebase(id: '', userStatus: UserStatus.unauthenticated).obs;
+
+  //final userStatus = UserStatus.unauthenticated.obs;
+  //Rx<UserStatus> userStatus = user.userStatus.obs;
+
   final formType = FormType.login.obs;
 
   void switchForm(){
@@ -20,9 +26,12 @@ class UserProfileController extends GetxController{
     try{
       //TODO для Андроид добавить нативное получение своего номера
       await _firebaseRepository.signUp(email: email, password: pass, phone: phone);
-      userStatus.value = UserStatus.authenticated;
+      _confirmUser();
+      //userStatus.value = UserStatus.authenticated;
+      //user.value.userStatus = UserStatus.authenticated;
     } on Exception {
-      userStatus.value = UserStatus.unauthenticated;
+      user.value = UserFirebase(id: '', userStatus:  UserStatus.unauthenticated);
+      //userStatus.value = UserStatus.unauthenticated;
     }
     update();
   }
@@ -30,25 +39,29 @@ class UserProfileController extends GetxController{
   Future<void> signIn({required String email, required String pass}) async{
     try {
       await _firebaseRepository.signIn(email: email, password: pass);
+      _confirmUser();
       //Get.find<FirebaseRepository>().signIn(email: email, password: pass);
-      userStatus.value = UserStatus.authenticated;
+      //userStatus.value = UserStatus.authenticated;
       //Get.find<WishListController>().bindListWish('');
     } on Exception{
-      userStatus.value = UserStatus.unauthenticated;
+      user.value = UserFirebase(id: '', userStatus:  UserStatus.unauthenticated);
+      //userStatus.value = UserStatus.unauthenticated;
     }
     update();
   }
 
   Future<void> signOut() async{
     await _firebaseRepository.signOut();
-    userStatus.value = UserStatus.unauthenticated;
+    user.value = UserFirebase(id: '', userStatus:  UserStatus.unauthenticated);
+    //userStatus.value = UserStatus.unauthenticated;
     update();
   }
 
   void _confirmUser(){
-    User? user = _firebaseRepository.getCurrentUser();
+    user.value = UserFirebase.fromFirebaseUser(_firebaseRepository.getCurrentUser());
+    //User? user = _firebaseRepository.getCurrentUser();
     //User? user = Get.find<FirebaseRepository>().getCurrentUser();
-    if(user != null) userStatus.value = UserStatus.authenticated;
+    //if(user != null) userStatus.value = UserStatus.authenticated;
   }
 
   @override

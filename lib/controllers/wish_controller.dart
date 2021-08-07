@@ -9,7 +9,7 @@ class WishController extends GetxController{
   WishController(this._firebaseRepository, this._picker);
 
   //final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
-  final FirebaseRepository _firebaseRepository;
+  final WishRepositoryInterface _firebaseRepository;
   final controllerTitle = TextEditingController().obs;
   final controllerDescription = TextEditingController().obs;
   final controllerLink = TextEditingController().obs;
@@ -21,7 +21,10 @@ class WishController extends GetxController{
   bool isChanged = false;
 
   void addImage()async{
-    final XFile?  pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile?  pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 1,
+    );
     if (pickedFile != null){
       if (!currentWish.isSaved){
         listImg.add(pickedFile.path);

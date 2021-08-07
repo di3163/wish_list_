@@ -38,13 +38,14 @@ class HomeView extends StatelessWidget {
             selectedIndex: controller.tabIndex,
             onItemSelected: (index) {
               controller.tabIndex = index;
-              controller.changeTabIndex(index);
+              controller.changeTabIndex(index, Get.find<UserProfileController>().user.value);
               controller.pageController.jumpToPage(index);
             },
             items: AppTab.values.map((tab) {
               return BottomNavyBarItem(
                 icon: tab.appTabIcon(),
                 title: Text(tab.localization()),
+                //activeColor: controller.naviBarItemColor,
               );
             }).toList(),
           ),

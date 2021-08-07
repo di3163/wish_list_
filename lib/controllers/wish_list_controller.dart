@@ -3,7 +3,10 @@ import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
 class WishListController extends GetxController{
-  final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
+  WishListController(this._firebaseRepository);
+  UserApp user = UserEmpty();
+
+  final WishRepositoryInterface _firebaseRepository;
   Rx<List<Wish>> listWish = Rx<List<Wish>>([]);
 
   void deleteWish(Wish wish){
@@ -21,8 +24,10 @@ class WishListController extends GetxController{
     );
   }
 
-  void bindListWish(String userId){
-    listWish.bindStream(_firebaseRepository.getUserWishStream(userId));
+  void bindListWish(UserApp user){
+    this.user = user;
+    if (user.userStatus != UserStatus.unauthenticated)
+    listWish.bindStream(_firebaseRepository.getUserWishStream(user.id));
   }
 
   @override

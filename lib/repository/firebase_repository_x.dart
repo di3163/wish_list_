@@ -29,7 +29,7 @@ abstract class AuthRepositoryInterface {
 abstract class WishRepositoryInterface {
   Future updateUserWish(Wish wish);
   Future addUserWish(Wish wish);
-  Stream<List<Wish>> getUserWishStream();
+  Stream<List<Wish>> getUserWishStream(String id);
   deleteWish(Wish wish);
   Future<String> saveImage(File image);
   Future deleteImage(String imgUrl);
@@ -180,9 +180,10 @@ class FirebaseWishRepository extends WishRepositoryInterface{
   }
 
   @override
-  Stream<List<Wish>> getUserWishStream() {
+  Stream<List<Wish>> getUserWishStream(String id) {
     try {
-      return _getReference(_firebaseAuth.currentUser!.uid).
+      //return _getReference(_firebaseAuth.currentUser!.uid).
+      return _getReference(id).
       snapshots().map((QuerySnapshot querySnapshot) {
         List<Wish> listWish = [];
         querySnapshot.docs.forEach((element) =>

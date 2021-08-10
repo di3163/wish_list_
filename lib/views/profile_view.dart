@@ -11,7 +11,7 @@ class ProfileView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 43.0),
       child: GetBuilder<UserProfileController>(
         builder: (controller) {
-          return controller.userStatus.value == UserStatus.authenticated ?
+          return controller.user.value.userStatus == UserStatus.authenticated ?
           _profile() :  _login(controller);
         }
       )

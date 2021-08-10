@@ -7,12 +7,24 @@ class HomeController extends GetxController{
   final animationDuration = Duration(milliseconds: 300);
   var visibleFAB = false.obs;
   var tabIndex = 0;
+  //Color naviBarItemColor = Colors.blueAccent;
 
-  void changeTabIndex(int index) {
+  void otherUserWishList(UserApp userApp){
+    Get.find<WishListController>().bindListWish(userApp);
+    visibleFAB.value = false;
+    pageController.jumpToPage(2);
+  }
+
+  void changeTabIndex(int index, UserApp userApp) {
     //tabIndex = index;
     if(index == 2){
-      visibleFAB.value = true;
-      Get.find<WishListController>().bindListWish('');
+      // if(userApp.userStatus == UserStatus.authenticated) {
+      //   //naviBarItemColor = Colors.blueAccent;
+         visibleFAB.value = true;
+      // }else{
+      //   //naviBarItemColor = Colors.black12;
+      // }
+      Get.find<WishListController>().bindListWish(userApp);
     }else{
       visibleFAB.value = false;
     }

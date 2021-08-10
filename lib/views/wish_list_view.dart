@@ -29,7 +29,8 @@ class WishList extends StatelessWidget {
           arguments: wishListController.listWish.value[index],
         ),
         onLongPress: () => wishListController.deleteWish(wishListController.listWish.value[index]),
-        leading:
+        leading: wishListController.listWish.value[index].listPicURL.isEmpty ?
+        LineIcon.retroCamera(size: 30,) :
         CachedNetworkImage(
           imageUrl: wishListController.listWish.value[index].listPicURL[0],
           imageBuilder: (context, imageProvider) => Container(

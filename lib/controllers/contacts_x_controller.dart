@@ -3,16 +3,17 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:wish_list_gx/core.dart';
 
-class ContactsXController extends GetxController{
+class ContactServiceException implements Exception {}
 
+class ContactsXController extends GetxController{
   ContactsXController(this._firebaseRepository);
 
   final AuthRepositoryInterface _firebaseRepository;
   //List<UserContact> userContactList = <UserContact>[].obs;
-  Rx<List<UserContact>> userContactList = Rx<List<UserContact>>([]);
+  Rx<List<UserOther>> userContactList = Rx<List<UserOther>>([]);
   PermissionStatus status = PermissionStatus.denied;
   var errorStatus = ''.obs;
-  List<UserContact> get contacts => userContactList.value;
+  List<UserOther> get contacts => userContactList.value;
 
   // requestContactsPermit()async{
   //   status = await Permission.contacts.request();
@@ -50,8 +51,8 @@ class ContactsXController extends GetxController{
     return contactList;
   }
 
-  List<UserContact> _getUserContacts(List<Contact> contactList, Map<dynamic, dynamic> allRegistredUsers){
-    Map<String, UserContact> contactMaps = Map();
+  List<UserOther> _getUserContacts(List<Contact> contactList, Map<dynamic, dynamic> allRegistredUsers){
+    Map<String, UserOther> contactMaps = Map();
     for (Contact element in contactList){
       String email = '';
       String phone = '';
@@ -70,12 +71,22 @@ class ContactsXController extends GetxController{
           }
           if(!contactMaps.containsKey(phone)){
             if(allRegistredUsers.containsKey(phoneN))
-              contactMaps[phone] = UserContact(
-                name: element.displayName?? '',
-                email: email,
-                phone: phone,
-                id: allRegistredUsers[phone],
-              );
+              contactMaps[phone] =
+                  UserOther.fromJson(
+                      {
+                        "id": allRegistredUsers[phone],
+                        "userStatus": UserStatus.other,
+                        "name": element.displayName?? '',
+                        "email": email,
+                        "phone": phone
+                      }
+                  );
+              //     UserContact(
+              //   name: element.displayName?? '',
+              //   email: email,
+              //   phone: phone,
+              //   id: allRegistredUsers[phone],
+              // );
           }
         }
       }
@@ -107,5 +118,4 @@ class ContactsXController extends GetxController{
     }
     super.onInit();
   }
-
 }

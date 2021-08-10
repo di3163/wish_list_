@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wish_list_gx/core.dart';
+import 'package:wish_list_gx/repository/firebase_repository_x.dart';
 
 import '../core.dart';
 
@@ -9,7 +10,10 @@ class MainBinding extends Bindings{
   void dependencies() {
     //Get.put<FirebaseRepository>(FirebaseRepository());
     Get.put<HomeController>(HomeController());
-    Get.put<UserProfileController>(UserProfileController(FirebaseAuthRepository()));
+    Get.put<UserProfileController>(UserProfileController(
+        FirebaseAuthRepository()
+      )
+    );
     Get.put<WishListController>(WishListController(FirebaseWishRepository()));
   }
 }

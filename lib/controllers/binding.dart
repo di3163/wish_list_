@@ -15,6 +15,7 @@ class MainBinding extends Bindings{
       )
     );
     Get.put<WishListController>(WishListController(FirebaseWishRepository()));
+    Get.put<ContactsXController>(ContactsXController(FirebaseAuthRepository()));
   }
 }
 
@@ -23,4 +24,5 @@ class WishBindings extends Bindings{
   void dependencies() {
     Get.put<WishController>(WishController(FirebaseWishRepository(), ImagePicker()));
   }
+
 }

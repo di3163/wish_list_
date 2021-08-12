@@ -38,17 +38,18 @@ class ProfileView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              controller.formType.value == FormType.login ?
-                  'log_in' .tr : 'sign_up' .tr,
-              textAlign: TextAlign.start,
-            ),
-          ),
+          SizedBox(height: 20,),
+          // Align(
+          //   alignment: Alignment.centerLeft,
+          //   child: Text(
+          //     controller.formType.value == FormType.login ?
+          //         'log_in' .tr : 'sign_up' .tr,
+          //     textAlign: TextAlign.start,
+          //   ),
+          // ),
           controller.formType.value == FormType.login ?
           LoginForm(userProfileController: Get.find<UserProfileController>()) :
-          RegisterForm(userProfileController: Get.find<UserProfileController>()),
+          RegisterForm(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -56,6 +57,7 @@ class ProfileView extends StatelessWidget {
                 controller.formType.value == FormType.login
                     ? 'no_account'.tr
                     : 'already_registered'.tr,
+                //style: GoogleFonts.rajdhani()
               ),
               TextButton(
                 key: Key('buttonRegister'),
@@ -64,7 +66,9 @@ class ProfileView extends StatelessWidget {
                     TextSpan(
                       text: controller.formType.value == FormType.login ? 'sign_up'.tr : 'log_in'.tr,
                     )
-                  ],style: TextStyle(color: Colors.grey)),
+                  ],
+                       style: TextStyle(color: Get.theme.disabledColor)
+                    ),
                 ),
                 onPressed: () => controller.switchForm(),
               ),

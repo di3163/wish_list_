@@ -21,6 +21,9 @@ class MyApp extends StatelessWidget {
       initialBinding: MainBinding(),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
+      theme: themeLightShampoo,
+      themeMode: ThemeMode.light,
+
     );
   }
   

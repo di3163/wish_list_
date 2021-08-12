@@ -34,7 +34,7 @@ class LoginForm extends StatelessWidget {
               return null;
             },
             controller: _controllerEmail,
-            decoration: _buildInputDecoration('email' .tr, Icon(iconEmail)),
+            decoration: _buildInputDecoration('email' .tr, Icon(iconEmail, size: 30)),
           ),
           TextFormField(
             key: Key('fieldPass'),
@@ -43,8 +43,9 @@ class LoginForm extends StatelessWidget {
               return null;
             },
             controller: _controllerPassword,
-            decoration: _buildInputDecoration('password' .tr, Icon(iconKey)),
+            decoration: _buildInputDecoration('password' .tr, Icon(iconKey, size: 30)),
           ),
+          SizedBox(height: 20),
           ElevatedButton(
             key: Key('buttonLoginSend'),
             onPressed: _onLogin,

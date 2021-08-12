@@ -12,7 +12,10 @@ class HomeView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-
+        shape: ContinuousRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20))),
       ),
       body: PageView(
         controller: Get.find<HomeController>().pageController,
@@ -31,11 +34,22 @@ class HomeView extends StatelessWidget {
         builder: (controller) => Container(
           padding: EdgeInsets.only(top: 10),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(10))
+            color: Get.theme.bottomAppBarColor,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+            boxShadow: [
+              BoxShadow(
+                //color: Colors.grey[600]!.withOpacity(0.5),
+                color: Colors.grey[600]!,
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: Offset(0, 3),
+              ),
+            ],
           ),
           child: BottomNavyBar(
             selectedIndex: controller.tabIndex,
+            showElevation: false,
+            backgroundColor: Get.theme.bottomAppBarColor,
             onItemSelected: (index) {
               controller.tabIndex = index;
               controller.changeTabIndex(index, Get.find<UserProfileController>().user.value);
@@ -44,7 +58,9 @@ class HomeView extends StatelessWidget {
             items: AppTab.values.map((tab) {
               return BottomNavyBarItem(
                 icon: tab.appTabIcon(),
-                title: Text(tab.localization()),
+                title: Text(tab.localization(), style: TextStyle(fontSize: 12)),
+                activeColor: Get.theme.focusColor,
+                inactiveColor: Get.theme.accentColor,
                 //activeColor: controller.naviBarItemColor,
               );
             }).toList(),

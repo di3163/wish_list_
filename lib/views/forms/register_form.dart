@@ -5,8 +5,8 @@ import 'package:wish_list_gx/core.dart';
 
 
 class RegisterForm extends StatelessWidget {
-  RegisterForm({Key? key, required this.userProfileController}) : super(key: key);
-  final UserProfileController userProfileController;
+  RegisterForm({Key? key}) : super(key: key);
+  final UserProfileController _userProfileController = Get.find<UserProfileController>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
@@ -18,7 +18,7 @@ class RegisterForm extends StatelessWidget {
       _formKey.currentState!.save();
     }else {
       _formKey.currentState!.save();
-      userProfileController.signUp(email: _controllerEmail.text.trim(), pass: _controllerPassword.text, phone: _controllerPhone.text);
+      _userProfileController.signUp(email: _controllerEmail.text.trim(), pass: _controllerPassword.text, phone: _controllerPhone.text);
       _formKey.currentState!.reset();
     }
   }
@@ -37,7 +37,7 @@ class RegisterForm extends StatelessWidget {
               return null;
             },
             controller: _controllerEmail,
-            decoration: _buildInputDecoration('email' .tr , Icon(iconEmail)),
+            decoration: _buildInputDecoration('email' .tr , Icon(iconEmail, size: 30)),
           ),
           TextFormField(
             key: Key('fieldPass'),
@@ -46,7 +46,7 @@ class RegisterForm extends StatelessWidget {
               return null;
             },
             controller: _controllerPassword,
-            decoration: _buildInputDecoration('password' .tr, Icon(iconKey)),
+            decoration: _buildInputDecoration('password' .tr, Icon(iconKey, size: 30)),
           ),
           TextFormField(
             keyboardType: TextInputType.number,
@@ -57,8 +57,9 @@ class RegisterForm extends StatelessWidget {
               return null;
             },
             controller: _controllerPhone,
-            decoration: _buildInputDecoration('phone' .tr , Icon(iconPhone)),
+            decoration: _buildInputDecoration('phone' .tr , Icon(iconPhone, size: 30)),
           ),
+          SizedBox(height: 20),
           ElevatedButton(
             key: Key('buttonRegisterSend'),
             onPressed: _onRegister,

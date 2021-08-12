@@ -11,13 +11,20 @@ class WishView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          shape: ContinuousRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20))),
+        ),
 
         body: SafeArea(
-          child: Container(
-            child: Get.find<WishListController>().user.userStatus == UserStatus.other ?
-                _buildOtherWish() :
-                _buildUserWish(),
+          child: SingleChildScrollView(
+            child: Container(
+              child: Get.find<WishListController>().user.userStatus == UserStatus.other ?
+                  _buildOtherWish() :
+                  _buildUserWish(),
+            ),
           ),
         ));
   }
@@ -26,6 +33,7 @@ class WishView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          SizedBox(height: 10),
           GetBuilder<WishController>(
             id: 'images',
             builder: (controller) => _buildWishImages(controller),
@@ -72,6 +80,7 @@ class WishView extends StatelessWidget {
       Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          SizedBox(height: 10),
           GetBuilder<WishController>(
             id: 'images',
             builder: (controller) => _buildWishImages(controller),
@@ -185,7 +194,7 @@ class WishView extends StatelessWidget {
       height: 8,
       width: isActive ? 20 : 8,
       decoration: BoxDecoration(
-        color: isActive ? Colors.black : Colors.grey[400],
+        color: isActive ? Get.theme.focusColor : Get.theme.disabledColor,
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
     );
@@ -216,17 +225,18 @@ class WishView extends StatelessWidget {
             ),
           ),
           Column(children: [
+            Get.find<WishListController>().user.userStatus != UserStatus.other ?
             GestureDetector(
               onTap: () => controller.deleteImage(patch),
               child: Container(
                 height: 40,
                 width: 40,
-                color: Colors.blue[600],
-                child: Icon(
-                  Icons.delete_forever_outlined,
-                ),
+                //color: Colors.blue[600],
+                child: Icon(iconDelete, size: 30, color: Get.theme.focusColor,),
+                  //Icons.delete_forever_outlined,
               ),
-            ),
+            ) :
+            Container(),
           ]),
         ],
       );

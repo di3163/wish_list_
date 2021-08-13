@@ -4,10 +4,8 @@ import 'package:wish_list_gx/core.dart';
 
 class HomeController extends GetxController{
   final pageController = PageController();
-  final animationDuration = Duration(milliseconds: 300);
   var visibleFAB = false.obs;
-  var tabIndex = 0;
-  //Color naviBarItemColor = Colors.blueAccent;
+  int tabIndex = 0;
 
   void otherUserWishList(UserApp userApp){
     Get.find<WishListController>().bindListWish(userApp);
@@ -16,14 +14,8 @@ class HomeController extends GetxController{
   }
 
   void changeTabIndex(int index, UserApp userApp) {
-    //tabIndex = index;
     if(index == 2){
-      // if(userApp.userStatus == UserStatus.authenticated) {
-      //   //naviBarItemColor = Colors.blueAccent;
-         visibleFAB.value = true;
-      // }else{
-      //   //naviBarItemColor = Colors.black12;
-      // }
+      visibleFAB.value = true;
       Get.find<WishListController>().bindListWish(userApp);
     }else{
       visibleFAB.value = false;

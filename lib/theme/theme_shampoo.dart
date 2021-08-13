@@ -17,6 +17,7 @@ ThemeData themeLightShampoo = _themeLight.copyWith(
   bottomAppBarColor: Colors.teal[300],
   buttonColor: Colors.teal[300],
   disabledColor: Colors.grey[600],
+  shadowColor:  Colors.grey[600],
  // primaryTextTheme:  _textLight(_themeLight.textTheme),
  // textTheme: _textLight(_themeLight.textTheme),
   textTheme: _textTheme,

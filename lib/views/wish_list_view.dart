@@ -13,7 +13,7 @@ class WishList extends StatelessWidget {
             if(wishListController.listWish.value.isNotEmpty){
               return _listViewWish(wishListController);
             }else {
-              return Center(child: Text('список пуст'));
+              return Center(child: Text('empty_list'.tr));
             }
           }
         )

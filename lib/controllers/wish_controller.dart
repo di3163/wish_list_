@@ -8,13 +8,11 @@ import 'package:wish_list_gx/core.dart';
 class WishController extends GetxController{
   WishController(this._firebaseRepository, this._picker);
 
-  //final FirebaseRepository _firebaseRepository = Get.find<FirebaseRepository>();
   final WishRepositoryInterface _firebaseRepository;
   final controllerTitle = TextEditingController().obs;
   final controllerDescription = TextEditingController().obs;
   final controllerLink = TextEditingController().obs;
 
-  //final _picker = ImagePicker();
   final _picker;
   List<String> listImg = [];
   Wish currentWish = Wish.empty();
@@ -99,11 +97,12 @@ class WishController extends GetxController{
     if (isChanged)
     Get.defaultDialog(
         title: 'сохранить изменения?',
+        backgroundColor: Get.theme.backgroundColor,
         onConfirm: () async {
           await updateWish();
           Get.back();
         },
-        onCancel: () {},
+        onCancel: () => Get.back(),
         middleText: '',
     );
     super.onClose();

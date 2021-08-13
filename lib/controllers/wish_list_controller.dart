@@ -32,18 +32,9 @@ class WishListController extends GetxController{
 
   @override
   void onInit() async{
-    //listWish.value = await _firebaseRepository.getUserWish();
-    // if (Get.find<UserProfileController>().userStatus == UserStatus.authenticated)
-    //   bindListWish();
     super.onInit();
-    //listWish.value = MockWish().getWishList();
   }
 
-  // @override
-  // void dispose() {
-  //   listWish.close();
-  //   super.dispose();
-  // }
 
   @override
   void onClose() {

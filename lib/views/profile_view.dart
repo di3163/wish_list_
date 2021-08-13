@@ -57,7 +57,6 @@ class ProfileView extends StatelessWidget {
                 controller.formType.value == FormType.login
                     ? 'no_account'.tr
                     : 'already_registered'.tr,
-                //style: GoogleFonts.rajdhani()
               ),
               TextButton(
                 key: Key('buttonRegister'),
@@ -74,8 +73,6 @@ class ProfileView extends StatelessWidget {
               ),
             ],
           ),
-          //_formType == FormType.login ? LoginForm() : RegisterForm(),
-
         ],
       ),
     );

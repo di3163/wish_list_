@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:wish_list_gx/core.dart';
 
 class ContactXView extends StatelessWidget {
@@ -24,10 +25,14 @@ class ContactXView extends StatelessWidget {
               return Center(
                 child: Text(contactsController.errorStatus.value),
               );
-            } else {
+            } else if (contactsController.status == PermissionStatus.denied) {
+              return Center(
+                child: Text('необходимо разрешение'),
+              );
+            }else
               return Center(child: CircularProgressIndicator());
             }
-          }),
+          ),
     );
   }
 }

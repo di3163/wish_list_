@@ -25,6 +25,14 @@ class Wish {
     this.title = documentSnapshot["title"],
     this.description = documentSnapshot["description"],
     this.link = documentSnapshot["link"],
-    this.listPicURL = documentSnapshot["listImg"].cast<String>(),
+    //this.listPicURL = documentSnapshot["listImg"].cast<String>(),
+    this.listPicURL = List<String>.from(documentSnapshot["listImg"]),
     isSaved = true;
+
+  Map<String, dynamic> toJson() => {
+    'title': title,
+    'description': description,
+    'link': link,
+    'listImg': listPicURL
+  };
 }

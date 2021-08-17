@@ -22,20 +22,17 @@ class ContactsXController extends GetxController{
   }
 
   Future<List<Contact>> _getAllContactsFromDevice()async {
-    List<Contact> contactList = [];
     try {
-      var contacts = (await ContactsService.getContacts(
-          withThumbnails: false))
-          .toList();
-      contactList = contacts;
+      return (await ContactsService.getContacts(
+             withThumbnails: false))
+             .toList();
     } catch (e){
       throw ContactServiceException();
     }
-    return contactList;
   }
 
   List<UserOther> _getUserContacts(List<Contact> contactList, Map<dynamic, dynamic> allRegistredUsers){
-    Map<String, UserOther> contactMaps = Map();
+    Map<String, UserOther> contactMaps = {};
     for (Contact element in contactList){
       String email = '';
       String phone = '';
@@ -64,12 +61,6 @@ class ContactsXController extends GetxController{
                         "phone": phone
                       }
                   );
-              //     UserContact(
-              //   name: element.displayName?? '',
-              //   email: email,
-              //   phone: phone,
-              //   id: allRegistredUsers[phone],
-              // );
           }
         }
       }

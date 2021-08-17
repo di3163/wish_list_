@@ -75,12 +75,15 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
 
   @override
   Future<Map<dynamic, dynamic>> getAllRegistredUsers() async{
-    Map<dynamic, dynamic> allregisterMap = Map();
+    //Map<dynamic, dynamic> allregisterMap = Map();
+    var allregisterMap = {};
     try {
       DocumentReference documentReference = _getReference('users').doc('register_users');
       await documentReference.get().then((DocumentSnapshot snapshot) {
-        var data = snapshot.data() as Map;
-        allregisterMap = data['all_register'] as Map;
+        // var data = snapshot.data() as Map;
+        // allregisterMap = data['all_register'] as Map;
+        allregisterMap = (snapshot.data() as Map)['all_register'] as Map;
+        //return allregisterMap;
       });
     } catch (e) {
       throw AllUsersListFailure();
@@ -150,12 +153,14 @@ class FirebaseWishRepository extends WishRepositoryInterface{
   Future<void> addUserWish(Wish wish) async{
     try {
       CollectionReference ref = _getReference(_firebaseAuth.currentUser!.uid);
-      await ref.add({
-        'title': wish.title,
-        'description': wish.description,
-        'link': wish.link,
-        'listImg': wish.listPicURL
-      }
+      await ref.add(
+        wish.toJson()
+      //     {
+      //   'title': wish.title,
+      //   'description': wish.description,
+      //   'link': wish.link,
+      //   'listImg': wish.listPicURL
+      // }
       );
     }catch(e){
       throw WishOperationFailure();
@@ -182,14 +187,13 @@ class FirebaseWishRepository extends WishRepositoryInterface{
   @override
   Stream<List<Wish>> getUserWishStream(String id) {
     try {
-      //return _getReference(_firebaseAuth.currentUser!.uid).
-      return _getReference(id).
-      snapshots().map((QuerySnapshot querySnapshot) {
-        List<Wish> listWish = [];
-        querySnapshot.docs.forEach((element) =>
-            listWish.add(Wish.fromDocumentSnapshot(element))
-        );
-        return listWish;
+      return _getReference(id).snapshots().map((QuerySnapshot querySnapshot) {
+        return [for(var element in querySnapshot.docs) Wish.fromDocumentSnapshot(element)];
+        // List<Wish> listWish = [];
+        // for(var element in querySnapshot.docs){
+        //   listWish.add(Wish.fromDocumentSnapshot(element));
+        // }
+        // return listWish;
       }
       );
     }catch(e) {
@@ -214,12 +218,13 @@ class FirebaseWishRepository extends WishRepositoryInterface{
     try {
       CollectionReference ref = _getReference(_firebaseAuth.currentUser!.uid);
       await ref.doc(wish.id).update(
-          {
-            'title': wish.title,
-            'description': wish.description,
-            'link': wish.link,
-            'listImg': wish.listPicURL
-          }
+        wish.toJson()
+          // {
+          //   'title': wish.title,
+          //   'description': wish.description,
+          //   'link': wish.link,
+          //   'listImg': wish.listPicURL
+          // }
       );
     }catch(e){
       throw WishOperationFailure();

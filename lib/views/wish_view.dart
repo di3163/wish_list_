@@ -167,7 +167,7 @@ class WishView extends StatelessWidget {
                     }).toList(),
                   ),
                 ),
-                controller.listImg.length > 1
+                controller.listImg.isNotEmpty
                     ? Container(
                         height: 30,
                         margin: EdgeInsets.only(top: 12, bottom: 0),

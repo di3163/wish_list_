@@ -10,28 +10,30 @@ class ContactXView extends StatelessWidget {
       child: GetX<ContactsXController>(
           //init: Get.put<ContactsXController>(ContactsXController(FirebaseAuthRepository())),
           builder: (ContactsXController contactsController) {
-            if (contactsController.contacts.isNotEmpty) {
-              return ListView.builder(
-                itemCount: contactsController.contacts.length,
-                itemBuilder: (_, val) => ListTile(
-                  onTap: () {
-                    Get.find<HomeController>().otherUserWishList(contactsController.contacts[val]);
-                  },
-                  title: Text(contactsController.contacts[val].name),
-                  subtitle: Text(contactsController.contacts[val].phone),
-                ),
-              );
-            } else if (contactsController.errorStatus.isNotEmpty) {
-              return Center(
-                child: Text(contactsController.errorStatus.value),
-              );
-            } else if (contactsController.status == PermissionStatus.denied) {
-              return Center(
-                child: Text('необходимо разрешение'),
-              );
-            }else
-              return Center(child: CircularProgressIndicator());
-            }
+            return contactsController.contactState.value.render();
+          }
+            // if (contactsController.contacts.isNotEmpty) {
+            //   return ListView.builder(
+            //     itemCount: contactsController.contacts.length,
+            //     itemBuilder: (_, val) => ListTile(
+            //       onTap: () {
+            //         Get.find<HomeController>().otherUserWishList(contactsController.contacts[val]);
+            //       },
+            //       title: Text(contactsController.contacts[val].name),
+            //       subtitle: Text(contactsController.contacts[val].phone),
+            //     ),
+            //   );
+            // } else if (contactsController.errorStatus.isNotEmpty) {
+            //   return Center(
+            //     child: Text(contactsController.errorStatus.value),
+            //   );
+            // } else if (contactsController.status == PermissionStatus.denied) {
+            //   return Center(
+            //     child: Text('необходимо разрешение'),
+            //   );
+            // }else
+            //   return Center(child: CircularProgressIndicator());
+            // }
           ),
     );
   }

@@ -11,7 +11,9 @@ class ContactsXController extends GetxController{
   final AuthRepositoryInterface _firebaseRepository;
   Rx<List<UserOther>> _userContactList = Rx<List<UserOther>>([]);
   PermissionStatus status = PermissionStatus.denied;
-  var errorStatus = ''.obs;
+  //var errorStatus = ''.obs;
+  Rx<ContactState> contactState = Rx<ContactState>(EmptyContactState());
+
   List<UserOther> get contacts => _userContactList.value;
 
   checkPermit()async{
@@ -69,11 +71,23 @@ class ContactsXController extends GetxController{
   }
 
   getContacts()async {
-    errorStatus.value = '';
+    await checkPermit();
+    if (status.isGranted){
+      await _getContacts();
+    }else{
+      contactState(ErrorContactState('необходимо разрешение'));
+    }
+  }
+
+
+  _getContacts()async {
+    //errorStatus.value = '';
+    contactState(LoadingContactState());
     if (Get.find<UserProfileController>().
     user.value.userStatus == UserStatus.unauthenticated){
       _userContactList = Rx<List<UserOther>>([]);
-     errorStatus.value = 'требуется авторизация';
+     //errorStatus.value = 'требуется авторизация';
+      contactState(ErrorContactState('требуется авторизация'));
     }else {
       try {
         final contactList = await _getAllContactsFromDevice();
@@ -81,8 +95,10 @@ class ContactsXController extends GetxController{
             .getAllRegistredUsers();
         _userContactList.value =
             _getUserContacts(contactList, allRegistredUsers);
+        contactState(LoadedContactState(_userContactList.value));
       } on Exception {
-        errorStatus.value = 'ошибка';
+        //errorStatus.value = 'ошибка';
+        contactState(ErrorContactState('ошибка'));
         //return Future.error('error');
       }
     }
@@ -90,10 +106,12 @@ class ContactsXController extends GetxController{
 
   @override
   void onInit() async{
-    await checkPermit();
-    if(status.isGranted) {
+    //await checkPermit();
+    //if(status.isGranted) {
       await getContacts();
-    }
+    // }else{
+    //   contactState(ErrorContactState('необходимо разрешение'));
+    // }
     super.onInit();
   }
 }

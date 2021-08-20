@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 
 enum AppTab { ProfileView, ContactView, MyListView }
@@ -8,6 +7,8 @@ enum AppTab { ProfileView, ContactView, MyListView }
 enum FormType { login, register }
 
 //const iconPerson = Icons.person;
+final iconError = LineIcons.byName('exclamation');
+//final iconError = Icons.error_outline;
 final iconPerson = LineIcons.byName('user');
 //const iconCotacts = Icons.contacts;
 final iconCotacts = LineIcons.byName('users');

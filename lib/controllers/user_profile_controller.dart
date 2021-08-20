@@ -55,6 +55,8 @@ class UserProfileController extends GetxController{
 
   Future<void> signOut() async{
     await _firebaseRepository.signOut();
+    Get.delete<WishListController>();
+    Get.lazyPut<WishListController>(() => WishListController(FirebaseWishRepository()));
     user.value = UserEmpty();
     _getUserContact();
     update();
@@ -62,6 +64,7 @@ class UserProfileController extends GetxController{
 
   void _confirmUser(){
     user.value = UserFirebase.fromFirebaseUser(_firebaseRepository.getCurrentUser());
+    //Get.put<WishListController>(WishListController(FirebaseWishRepository()));
   }
 
   void _getUserContact(){

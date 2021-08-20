@@ -26,9 +26,21 @@ class WishListController extends GetxController{
 
   void bindListWish(UserApp user){
     this.user = user;
-    if (user.userStatus != UserStatus.unauthenticated)
-    listWish.bindStream(_firebaseRepository.getUserWishStream(user.id));
+    if (user.userStatus != UserStatus.unauthenticated) {
+      listWish.bindStream(_firebaseRepository.getUserWishStream(user.id));
+    }else{
+      listWish.value.clear();
+    }
   }
+
+  // void unbindListWish(){
+  //   try {
+  //     listWish.refresh();
+  //   }catch(e){
+  //     print(e.toString());
+  //   }
+  //   listWish.value = [];
+  //}
 
   @override
   void onInit() async{

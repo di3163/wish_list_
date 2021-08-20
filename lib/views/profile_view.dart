@@ -21,9 +21,13 @@ class ProfileView extends StatelessWidget {
   Column _profile() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(height: 30),
-        Text('user'),
+        IconButton(
+            onPressed: () {},
+            icon: Icon(iconPerson, size: 60),
+        ),
         SizedBox(height: 30),
         ElevatedButton(
           onPressed: () => Get.find<UserProfileController>().signOut(), //_signOut,

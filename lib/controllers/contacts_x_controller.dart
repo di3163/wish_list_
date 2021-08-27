@@ -33,11 +33,12 @@ class ContactsXController extends GetxController{
     }
   }
 
-  List<UserOther> _getUserContacts(List<Contact> contactList, Map<dynamic, dynamic> allRegistredUsers){
+  Future<List<UserOther>> _getUserContacts(List<Contact> contactList, Map<dynamic, dynamic> allRegistredUsers)async{
     Map<String, UserOther> contactMaps = {};
     for (Contact element in contactList){
       String email = '';
       String phone = '';
+      String photoURL = '';
       if(element.emails!.isNotEmpty){
         List<Item> emailes = element.emails!.toList();
         email = emailes[0].value!;
@@ -53,6 +54,7 @@ class ContactsXController extends GetxController{
           }
           if(!contactMaps.containsKey(phone)){
             if(allRegistredUsers.containsKey(phoneN))
+              photoURL = await _getPhotoURL(allRegistredUsers[phone]);
               contactMaps[phone] =
                   UserOther.fromJson(
                       {
@@ -60,7 +62,8 @@ class ContactsXController extends GetxController{
                         "userStatus": UserStatus.other,
                         "name": element.displayName?? '',
                         "email": email,
-                        "phone": phone
+                        "phone": phone,
+                        "photoURL": photoURL
                       }
                   );
           }
@@ -68,6 +71,10 @@ class ContactsXController extends GetxController{
       }
     }
     return contactMaps.entries.map((entry) => entry.value).toList();
+  }
+
+  Future<String> _getPhotoURL(String id)async{
+    return await _firebaseRepository.getUserAvatarURL(id);
   }
 
   getContacts()async {
@@ -94,7 +101,7 @@ class ContactsXController extends GetxController{
         final allRegistredUsers = await _firebaseRepository
             .getAllRegistredUsers();
         _userContactList.value =
-            _getUserContacts(contactList, allRegistredUsers);
+            await _getUserContacts(contactList, allRegistredUsers);
         contactState(LoadedContactState(_userContactList.value));
       } on Exception {
         //errorStatus.value = 'ошибка';

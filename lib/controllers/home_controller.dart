@@ -6,26 +6,38 @@ class HomeController extends GetxController{
   final pageController = PageController();
   var visibleFAB = false.obs;
   int tabIndex = 0;
+  UserApp user = UserEmpty();
 
-  void otherUserWishList(UserApp userApp){
-    Get.find<WishListController>().bindListWish(userApp);
-    visibleFAB.value = false;
+  //Rx<String> avatarURL = Rx<String>('');
+
+  void otherUserWishList(UserApp user){
+    this.user = user;
+    Get.find<WishListController>().bindListWish(user);
+    //visibleFAB.value = false;
     pageController.jumpToPage(2);
+    //update();
   }
 
-  void changeTabIndex(int index, UserApp userApp) {
+  void onChangeTabIndex(int index) {
+    //avatarURL.value = userApp.photoURL;
     if(index == 2){
       visibleFAB.value = true;
-      Get.find<WishListController>().bindListWish(userApp);
+      Get.find<WishListController>().bindListWish(user);
     }else{
       visibleFAB.value = false;
     }
-    update();
+    //update();
   }
 
   @override
   void onClose() {
     pageController.dispose();
     super.onClose();
+  }
+
+  @override
+  void onInit(){
+    user = Get.find<UserProfileController>().user.value;
+    super.onInit();
   }
 }

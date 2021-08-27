@@ -5,19 +5,18 @@ enum UserStatus{authenticated, unauthenticated, other}
 abstract class UserApp{
   final String id;
   final UserStatus userStatus;
+  final String photoURL;
 
-  UserApp({required this.id, required this.userStatus});
+  UserApp({required this.id, required this.userStatus, required this.photoURL});
 }
 
 class UserEmpty extends UserApp{
-  UserEmpty() : super(id: '', userStatus:  UserStatus.unauthenticated);
+  UserEmpty() : super(id: '', userStatus:  UserStatus.unauthenticated, photoURL: '');
 }
 
 class UserFirebase extends UserApp {
-  UserFirebase({required String id, required UserStatus userStatus, required this.photoURL})
-      : super(id: id, userStatus: userStatus);
-
-  final String photoURL;
+  UserFirebase({required String id, required UserStatus userStatus, required String photoURL})
+      : super(id: id, userStatus: userStatus, photoURL: photoURL);
 
   factory UserFirebase.fromJson(Map<String, dynamic> json){
     return UserFirebase(
@@ -40,9 +39,10 @@ class UserOther extends UserApp{
   UserOther({
     required String id,
     required UserStatus userStatus,
+    required photoURL,
     required this.name,
     required this.email,
-    required this.phone}) : super(id: id, userStatus: userStatus);
+    required this.phone}) : super(id: id, userStatus: userStatus, photoURL: photoURL);
 
   String name;
   String email;
@@ -54,7 +54,8 @@ class UserOther extends UserApp{
         userStatus: json['userStatus'],
         name: json['name'],
         email: json['email'],
-        phone:  json['phone']
+        phone:  json['phone'],
+        photoURL: json['photoURL']
     );
   }
 }

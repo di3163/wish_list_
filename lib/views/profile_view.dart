@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,30 +13,51 @@ class ProfileView extends StatelessWidget {
       child: GetBuilder<UserProfileController>(
         builder: (controller) {
           return controller.user.value.userStatus == UserStatus.authenticated ?
-          _profile() :  _login(controller);
+          _profile(controller) :  _login(controller);
         }
       )
     );
   }
 
-  Column _profile() {
+  Column _profile(UserProfileController controller) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(height: 30),
-        IconButton(
-            onPressed: () {},
-            icon: Icon(iconPerson, size: 60),
-        ),
+
+        ObxValue<Rx<String>>(
+            (data) => GestureDetector(
+              onTap: () => controller.addAvatar(),
+              child: Material(
+                child: data.value.isEmpty ?
+                Icon(iconPerson, size: 90) :
+                CachedNetworkImage(
+                  placeholder: (context, url) => CircularProgressIndicator(color: Get.theme.accentColor),
+                  imageUrl: data.value,
+                  errorWidget: (context, url, error) => Icon(iconPerson, size: 90, color: Get.theme.accentColor),
+                  width: 90.0,
+                  height: 90.0,
+                  fit: BoxFit.cover,
+                ),
+                color: Get.theme.buttonColor,
+                borderRadius:
+                BorderRadius.all(Radius.circular(45.0)),
+                clipBehavior: Clip.hardEdge,
+              ),
+            ),
+            controller.avatarURL),
+          
         SizedBox(height: 30),
         ElevatedButton(
-          onPressed: () => Get.find<UserProfileController>().signOut(), //_signOut,
+          onPressed: () => controller.signOut(), //_signOut,
           child: Text('sign_out'.tr),
         ),
       ],
+
     );
   }
+
 
   Widget _login(UserProfileController controller) {
     return SingleChildScrollView(

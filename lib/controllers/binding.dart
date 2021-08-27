@@ -9,11 +9,12 @@ class MainBinding extends Bindings{
   @override
   void dependencies() {
     //Get.put<FirebaseRepository>(FirebaseRepository());
-    Get.put<HomeController>(HomeController());
+
     Get.put<UserProfileController>(UserProfileController(
         FirebaseAuthRepository()
       )
     );
+    Get.put<HomeController>(HomeController());
     Get.put<WishListController>(WishListController(FirebaseWishRepository()));
     Get.put<ContactsXController>(ContactsXController(FirebaseAuthRepository()));
   }

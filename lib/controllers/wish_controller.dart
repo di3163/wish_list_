@@ -21,7 +21,7 @@ class WishController extends GetxController{
   void addImage()async{
     final XFile?  pickedFile = await _picker.pickImage(
         source: ImageSource.gallery,
-        imageQuality: 1,
+        imageQuality: 25,
     );
     if (pickedFile != null){
       if (!currentWish.isSaved){

@@ -1,5 +1,8 @@
 
+import 'dart:io';
+
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:wish_list_gx/core.dart';
 
 class UserProfileController extends GetxController{
@@ -7,12 +10,9 @@ class UserProfileController extends GetxController{
   UserProfileController(this._firebaseRepository);
 
   final AuthRepositoryInterface _firebaseRepository;
-  //UserApp user;
-  Rx<UserApp> user = Rx<UserApp>(UserEmpty());
-  //final user = UserFirebase(id: '', userStatus: UserStatus.unauthenticated).obs;
 
-  //final userStatus = UserStatus.unauthenticated.obs;
-  //Rx<UserStatus> userStatus = user.userStatus.obs;
+  Rx<UserApp> user = Rx<UserApp>(UserEmpty());
+  Rx<String> avatarURL = Rx<String>('');
 
   final formType = FormType.login.obs;
 
@@ -28,12 +28,8 @@ class UserProfileController extends GetxController{
       await _firebaseRepository.signUp(email: email, password: pass, phone: phone);
       _confirmUser();
       _getUserContact();
-      //userStatus.value = UserStatus.authenticated;
-      //user.value.userStatus = UserStatus.authenticated;
     } on Exception {
       user.value = UserEmpty();
-      //user.value = UserFirebase(id: '', userStatus:  UserStatus.unauthenticated);
-      //userStatus.value = UserStatus.unauthenticated;
     }
     update();
   }
@@ -43,11 +39,7 @@ class UserProfileController extends GetxController{
       await _firebaseRepository.signIn(email: email, password: pass);
       _confirmUser();
       _getUserContact();
-      //Get.find<FirebaseRepository>().signIn(email: email, password: pass);
-      //userStatus.value = UserStatus.authenticated;
-      //Get.find<WishListController>().bindListWish('');
     } on Exception{
-      //user.value = UserFirebase(id: '', userStatus:  UserStatus.unauthenticated);
       user.value = UserEmpty();
     }
     update();
@@ -64,12 +56,38 @@ class UserProfileController extends GetxController{
 
   void _confirmUser(){
     user.value = UserFirebase.fromFirebaseUser(_firebaseRepository.getCurrentUser());
-    //Get.put<WishListController>(WishListController(FirebaseWishRepository()));
+    avatarURL.value = user.value.photoURL;
   }
 
   void _getUserContact(){
     Get.find<ContactsXController>().getContacts();
   }
+
+  void addAvatar()async{
+    final XFile?  pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 25,
+    );
+    if (pickedFile != null){
+      if(user.value.photoURL.isNotEmpty) {
+        await _firebaseRepository.deleteImage(user.value.photoURL);
+      }
+      String photoURL = await _firebaseRepository.saveImage(File(pickedFile.path));
+      await _firebaseRepository.updateUserProfile(photoURL);
+      avatarURL.value = photoURL;
+    }
+  }
+
+
+
+  // void _deleteImageFromCache(String imgURL){
+  //   try {
+  //     CachedNetworkImage.evictFromCache(imgURL);
+  //   }catch(e){
+  //     print(e.toString());
+  //   }
+  // }
+  
 
   @override
   void onInit() {

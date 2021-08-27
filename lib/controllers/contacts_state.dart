@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
@@ -53,7 +54,27 @@ class LoadedContactState extends ContactState{
         },
         title: Text(contacts[val].name),
         subtitle: Text(contacts[val].phone),
-      ),
+        trailing: contacts[val].photoURL.isEmpty ?
+        Icon(iconPerson, color: Get.theme.accentColor) :
+
+          CachedNetworkImage(
+            imageUrl: contacts[val].photoURL,
+            imageBuilder: (context, imageProvider) => Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+            placeholder: (context, url) => Icon(iconPerson, color: Get.theme.accentColor),
+            errorWidget: (context, url, error) => Icon(iconPerson, color: Get.theme.accentColor),
+          ),
+        ),
+
     );
   }
 }

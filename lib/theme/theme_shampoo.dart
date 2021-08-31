@@ -100,7 +100,7 @@ final TextTheme _textTheme = TextTheme(
       fontSize: 34, fontWeight: FontWeight.w400, letterSpacing: 0.25),
   headline5: GoogleFonts.roboto(fontSize: 24, fontWeight: FontWeight.w400),
   headline6: GoogleFonts.roboto(
-      fontSize: 20, fontWeight: FontWeight.w500, letterSpacing: 0.15),
+      fontSize: 20, fontWeight: FontWeight.w400, letterSpacing: 0.15),
   subtitle1: GoogleFonts.roboto(
       fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0.15),   //16
   subtitle2: GoogleFonts.roboto(

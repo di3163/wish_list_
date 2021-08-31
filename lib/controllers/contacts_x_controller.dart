@@ -9,12 +9,12 @@ class ContactsXController extends GetxController{
   ContactsXController(this._firebaseRepository);
 
   final AuthRepositoryInterface _firebaseRepository;
-  Rx<List<UserOther>> _userContactList = Rx<List<UserOther>>([]);
+  //Rx<List<UserOther>> _userContactList = Rx<List<UserOther>>([]);
+  List<UserOther> _userContactList = [];
   PermissionStatus status = PermissionStatus.denied;
-  //var errorStatus = ''.obs;
-  Rx<ContactState> contactState = Rx<ContactState>(EmptyContactState());
+  Rx<ContactWidget> contactWidget = Rx<ContactWidget>(EmptyContactWidget());
 
-  List<UserOther> get contacts => _userContactList.value;
+  //List<UserOther> get contacts => _userContactList;
 
   checkPermit()async{
     status = await Permission.contacts.status;
@@ -82,43 +82,34 @@ class ContactsXController extends GetxController{
     if (status.isGranted){
       await _getContacts();
     }else{
-      contactState(ErrorContactState('необходимо разрешение'));
+      contactWidget(ErrorContactWidget('необходимо разрешение'));
     }
   }
 
 
   _getContacts()async {
-    //errorStatus.value = '';
-    contactState(LoadingContactState());
+    contactWidget(LoadingContactWidget());
     if (Get.find<UserProfileController>().
     user.value.userStatus == UserStatus.unauthenticated){
-      _userContactList = Rx<List<UserOther>>([]);
-     //errorStatus.value = 'требуется авторизация';
-      contactState(ErrorContactState('требуется авторизация'));
+      _userContactList = [];
+      contactWidget(ErrorContactWidget('требуется авторизация'));
     }else {
       try {
         final contactList = await _getAllContactsFromDevice();
         final allRegistredUsers = await _firebaseRepository
             .getAllRegistredUsers();
-        _userContactList.value =
+        _userContactList =
             await _getUserContacts(contactList, allRegistredUsers);
-        contactState(LoadedContactState(_userContactList.value));
+        contactWidget(LoadedContactWidget(_userContactList));
       } on Exception {
-        //errorStatus.value = 'ошибка';
-        contactState(ErrorContactState('ошибка'));
-        //return Future.error('error');
+        contactWidget(ErrorContactWidget('ошибка'));
       }
     }
   }
 
   @override
   void onInit() async{
-    //await checkPermit();
-    //if(status.isGranted) {
       await getContacts();
-    // }else{
-    //   contactState(ErrorContactState('необходимо разрешение'));
-    // }
     super.onInit();
   }
 }

@@ -4,7 +4,7 @@ class Messages extends Translations{
   @override
   Map<String, Map<String, String>> get keys => {
         'en_US': {
-          "app_bar_title": "WISHLIST 23X8",
+          "app_bar_title": "Wishlist",
           "profile": "Profile",
           "my_list": "My list",
           "sign_out": "Sign out",
@@ -31,7 +31,7 @@ class Messages extends Translations{
           "empty_list": "The list is empty"
         },
         'ru_RU': {
-          "app_bar_title": "23X8 Wishlist",
+          "app_bar_title": "Wishlist 23x8",
           "profile": "Профиль",
           "my_list": "Мой список",
           "sign_out": "Выйти",

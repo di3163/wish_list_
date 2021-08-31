@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
-abstract class ContactState {
+abstract class ContactWidget {
   Widget render();
 }
 
-class ErrorContactState extends ContactState{
+class ErrorContactWidget extends ContactWidget{
   String state;
 
-  ErrorContactState(this.state);
+  ErrorContactWidget(this.state);
 
   @override
   Widget render() {
@@ -28,7 +28,7 @@ class ErrorContactState extends ContactState{
   }
 }
 
-class EmptyContactState extends ContactState{
+class EmptyContactWidget extends ContactWidget{
 
   @override
   Widget render() {
@@ -39,10 +39,10 @@ class EmptyContactState extends ContactState{
   }
 }
 
-class LoadedContactState extends ContactState{
+class LoadedContactWidget extends ContactWidget{
   List<UserOther> contacts;
 
-  LoadedContactState(this.contacts);
+  LoadedContactWidget(this.contacts);
 
   @override
   Widget render() {
@@ -79,7 +79,7 @@ class LoadedContactState extends ContactState{
   }
 }
 
-class LoadingContactState extends ContactState{
+class LoadingContactWidget extends ContactWidget{
 
   @override
   Widget render() {

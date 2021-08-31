@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+
 enum UserStatus{authenticated, unauthenticated, other}
 
 abstract class UserApp{
   final String id;
   final UserStatus userStatus;
   final String photoURL;
+
 
   UserApp({required this.id, required this.userStatus, required this.photoURL});
 }

@@ -5,35 +5,35 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 
 import 'package:wish_list_gx/core.dart';
 
+
 class HomeView extends StatelessWidget {
   final _homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: ObxValue<Rx<AppUserWidget>>(
+              (data) => data.value.appBarLeading(),
+          _homeController.userWidget,
+        ),
+        title:  
+         ObxValue<Rx<AppUserWidget>>(
+              (data) => data.value.appBarTitle(),
+          _homeController.userWidget,
+        ),
+        actions: [
+          Obx(() =>
+              Visibility(
 
-        //actions: [
-         // ObxValue<Rx<String>>(
-         //       (data) =>
-                //     Container(
-                //   width: 55,
-                //   //height: 20,
-                //   decoration: BoxDecoration(
-                //     borderRadius: BorderRadius.circular(15),
-                //   ),
-                //   child: ClipOval(
-                //     child: CachedNetworkImage(
-                //           placeholder: (context, url) => Icon(iconPerson, size: 20, color: Get.theme.accentColor,),
-                //           imageUrl: data.value,
-                //           errorWidget: (context, url, error) => Icon(iconPerson, size: 20, color: Get.theme.accentColor,),
-                //         fit: BoxFit.fill,
-                //     ),
-                //   ),
-                // ),
+                  child: IconButton(
+                    icon: Icon(iconCog),
+                    onPressed: () => Get.bottomSheet(BottomSheetSetting()),
+                  ),
+                visible: _homeController.isVisibleSettingCog.value,
+              ),
+          ),
+        ],
 
-        //    Get.find<HomeController>().avatarURL
-        //),
-        //],
         shape: ContinuousRectangleBorder(
             borderRadius: BorderRadius.only(
                 bottomLeft: const Radius.circular(20),
@@ -106,7 +106,7 @@ class HomeView extends StatelessWidget {
             child: const Icon(Icons.add),
             onPressed: () => Get.toNamed('/wish', arguments: Wish.empty()),
           ),
-          visible: _homeController.visibleFAB.value,
+          visible: _homeController.isVisibleFAB.value,
         ),
       ),
     );

@@ -5,3 +5,6 @@ export 'forms/register_form.dart';
 export 'wish_list_view.dart';
 export 'contact_x_view.dart';
 export 'wish_view.dart';
+export 'widgets/contacts_widget.dart';
+export 'widgets/bottom_sheet_widget.dart';
+export 'widgets/user_widgets.dart';

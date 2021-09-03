@@ -1,8 +1,11 @@
 
 import 'dart:io';
+import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wish_list_gx/core.dart';
 
 class UserProfileController extends GetxController{
@@ -10,6 +13,7 @@ class UserProfileController extends GetxController{
   UserProfileController(this._firebaseRepository);
 
   final AuthRepositoryInterface _firebaseRepository;
+  late SharedPreferences preferences;
 
   Rx<UserApp> user = Rx<UserApp>(UserEmpty());
   Rx<String> avatarURL = Rx<String>('');
@@ -78,6 +82,34 @@ class UserProfileController extends GetxController{
     }
   }
 
+  // void _setPrefTheme(){
+  //   if (Get.theme. == 'blackcrows'){
+  //     Get.changeTheme(themeBlackCrows);
+  //     Get.find<HomeController>().isThemeLightShampoo.value = false;
+  //     Get.find<HomeController>().isThemeBlackCrows.value = true;
+  //   }else{
+  //     Get.changeTheme(themeLightShampoo);
+  //     Get.find<HomeController>().isThemeLightShampoo.value = true;
+  //     Get.find<HomeController>().isThemeBlackCrows.value = false;
+  //   }
+  // }
+  _getPreferencesInstance() async {
+    preferences = await SharedPreferences.getInstance();
+  }
+
+  void _setPrefLocale(String languageCode){
+    if(languageCode == 'en'){
+      Get.updateLocale(Locale('en', 'UK'));
+    }else{
+      Get.updateLocale(Locale('ru', 'RU'));
+    }
+  }
+
+  void _initPreferences(){
+    _setPrefLocale(preferences.getString('locale') ?? Get.deviceLocale!.languageCode);
+    //_setPrefTheme(preferences.getString('theme') ?? 'lightshampoo');
+
+  }
 
 
   // void _deleteImageFromCache(String imgURL){
@@ -90,8 +122,10 @@ class UserProfileController extends GetxController{
   
 
   @override
-  void onInit() {
+  void onInit() async{
     _confirmUser();
+    await _getPreferencesInstance();
+    _initPreferences();
     super.onInit();
   }
 

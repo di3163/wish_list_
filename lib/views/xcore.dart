@@ -8,3 +8,4 @@ export 'wish_view.dart';
 export 'widgets/contacts_widget.dart';
 export 'widgets/bottom_sheet_widget.dart';
 export 'widgets/user_widgets.dart';
+export 'uielements/ui_element_data.dart';

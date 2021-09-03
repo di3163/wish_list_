@@ -58,11 +58,10 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
         userData = (snapshot.data() as Map)['photoURL'] ?? '';
       });
     }catch(e) {
-      print(e.toString());
+      //print(e.toString());
       throw UserOperationFailure();
     }
     return userData;
-
   }
 
   Future<void> _addUserAvatar(String id, String photoURL)async{

@@ -40,7 +40,9 @@ class HomeView extends StatelessWidget {
                 bottomRight: const Radius.circular(20))),
       ),
       body: PageView(
+        
         controller: _homeController.pageController,
+        physics: BouncingScrollPhysics(),
         onPageChanged: (index){
           _homeController.tabIndex = index;
           if (_homeController.user.userStatus == UserStatus.other){

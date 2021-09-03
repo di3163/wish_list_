@@ -52,20 +52,21 @@ class ContactsXController extends GetxController{
             if(phone.startsWith('8'))
               phoneN = phone.replaceFirst('8', '7');
           }
-          if(!contactMaps.containsKey(phone)){
-            if(allRegistredUsers.containsKey(phoneN))
-              photoURL = await _getPhotoURL(allRegistredUsers[phone]);
-              contactMaps[phone] =
+          if(!contactMaps.containsKey(phoneN)){
+            if(allRegistredUsers.containsKey(phoneN)) {
+              photoURL = await _getPhotoURL(allRegistredUsers[phoneN]);
+              contactMaps[phoneN] =
                   UserOther.fromJson(
                       {
-                        "id": allRegistredUsers[phone],
+                        "id": allRegistredUsers[phoneN],
                         "userStatus": UserStatus.other,
-                        "name": element.displayName?? '',
+                        "name": element.displayName ?? '',
                         "email": email,
-                        "phone": phone,
+                        "phone": phoneN,
                         "photoURL": photoURL
                       }
                   );
+            }
           }
         }
       }

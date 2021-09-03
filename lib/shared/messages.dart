@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 class Messages extends Translations{
   @override
   Map<String, Map<String, String>> get keys => {
-        'en_US': {
+        'en_UK': {
           "app_bar_title": "Wishlist",
           "profile": "Profile",
           "my_list": "My list",
@@ -28,7 +28,11 @@ class Messages extends Translations{
           "wish_title": "Wish title",
           "wish_description": "Wish description",
           "wish_link": "Wish link",
-          "empty_list": "The list is empty"
+          "empty_list": "The list is empty",
+          "light_shampoo": "Shampoo theme",
+          "black_crows": "Graphite theme",
+          "change_locale": "Change locale",
+          "change_avatar": "Change avatar"
         },
         'ru_RU': {
           "app_bar_title": "Wishlist 23x8",
@@ -55,7 +59,11 @@ class Messages extends Translations{
           "wish_title": "Название",
           "wish_description": "Описание(цвет, размер артикул...)",
           "wish_link": "ссылка",
-          "empty_list": "список пуст"
+          "empty_list": "список пуст",
+          "light_shampoo": "Тема шампунь",
+          "black_crows": "Тема графит",
+          "change_locale": "Переключить язык",
+          "change_avatar": "Сменить фотку"
         },
       };
 }

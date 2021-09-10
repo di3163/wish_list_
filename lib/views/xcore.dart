@@ -9,3 +9,6 @@ export 'widgets/contacts_widget.dart';
 export 'widgets/bottom_sheet_widget.dart';
 export 'widgets/user_widgets.dart';
 export 'uielements/ui_element_data.dart';
+export 'widgets/login_button.dart';
+export 'widgets/form_widget.dart';
+export 'widgets/profile_widget.dart';

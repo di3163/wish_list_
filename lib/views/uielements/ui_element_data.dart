@@ -24,6 +24,7 @@ const iconEmail = Icons.alternate_email;
 final iconKey = LineIcons.byName('key');
 //const iconKey = Icons.vpn_key;
 //const iconPhone = Icons.phone;
+const iconCode =  Icons.app_registration;
 final iconPhone = LineIcons.byName('phone');
 final iconDelete = LineIcons.byName('trash');
 

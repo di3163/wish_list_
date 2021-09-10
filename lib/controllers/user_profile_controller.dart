@@ -14,39 +14,86 @@ class UserProfileController extends GetxController{
 
   final AuthRepositoryInterface _firebaseRepository;
   late SharedPreferences preferences;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController formControllerEmail = TextEditingController();
+  final TextEditingController formControllerPhone = TextEditingController();
+  final TextEditingController formControllerCode = TextEditingController();
 
   Rx<UserApp> user = Rx<UserApp>(UserEmpty());
   Rx<String> avatarURL = Rx<String>('');
+  Rx<AppForm> appFormWidget = Rx<AppForm>(RegisterPhoneForm());
+  Rx<ProfileViewWidget> profileWidget = Rx<ProfileViewWidget>(LoginWidget());
+
+
 
   final formType = FormType.login.obs;
 
-  void switchForm(){
-    formType.value =
-    formType.value == FormType.login ? FormType.register : FormType.login;
-    update();
-  }
+  // void switchForm(){
+  //   formType.value =
+  //   formType.value == FormType.login ? FormType.register : FormType.login;
+  //   //update();
+  // }
 
-  Future<void> signUp({required String email, required String pass, required String phone}) async{
-    try{
-      //TODO для Андроид добавить нативное получение своего номера
-      await _firebaseRepository.signUp(email: email, password: pass, phone: phone);
-      _confirmUser();
-      _getUserContact();
-    } on Exception {
-      user.value = UserEmpty();
-    }
-    update();
-  }
+  // Future<void> signUp({required String email, required String pass, required String phone}) async{
+  //   try{
+  //     //TODO для Андроид добавить нативное получение своего номера
+  //     String phoneN = _correctPhoneNum(phone);
+  //     await _firebaseRepository.signUp(email: email, password: pass, phone: phoneN);
+  //     _confirmUser();
+  //     _getUserContact();
+  //   } on Exception {
+  //     user.value = UserEmpty();
+  //   }
+  //   //update();
+  // }
+  //
+  // Future<void> signIn({required String email, required String pass}) async{
+  //   try {
+  //     await _firebaseRepository.signIn(email: email, password: pass);
+  //     _confirmUser();
+  //     _getUserContact();
+  //   } on Exception{
+  //     user.value = UserEmpty();
+  //     appFormWidget(LoginPhoneForm());
+  //   }
+  //   //update();
+  // }
 
-  Future<void> signIn({required String email, required String pass}) async{
+  Future<void> signUpWithSMSCode()async{
     try {
-      await _firebaseRepository.signIn(email: email, password: pass);
+      await _firebaseRepository.signUpWithSMSCode(smsCode: formControllerCode.text.trim());
       _confirmUser();
       _getUserContact();
+      //update();
+    }on Exception{
+      user.value = UserEmpty();
+      appFormWidget(LoginPhoneForm());
+    }
+
+  }
+
+  Future<void> verifyPhone()async{
+    try {
+      // if(!formKey.currentState!.validate()) {
+      //   formKey.currentState!.save();
+      // }else {
+      //   String phoneN = _correctPhoneNum(formControllerPhone.text.trim());
+        //await _firebaseRepository.verifyPhoneNumber(phoneNumber: phoneN, email: formControllerEmail.text.trim());
+        await _firebaseRepository.verifyPhoneNumber(phoneNumber: '79258036135',email: 'merida-di@yandex.ru');
+        //_confirmUser();
+        appFormWidget(LoginPhoneForm());
+      //}
+
     } on Exception{
       user.value = UserEmpty();
+      appFormWidget(RegisterPhoneForm());
     }
-    update();
+    //update();
+  }
+
+  void autoVerification(){
+    _confirmUser();
+    //update();
   }
 
   Future<void> signOut() async{
@@ -54,13 +101,16 @@ class UserProfileController extends GetxController{
     Get.delete<WishListController>();
     Get.lazyPut<WishListController>(() => WishListController(FirebaseWishRepository()));
     user.value = UserEmpty();
+    profileWidget(LoginWidget());
     _getUserContact();
-    update();
+    //update();
   }
 
   void _confirmUser(){
     user.value = UserFirebase.fromFirebaseUser(_firebaseRepository.getCurrentUser());
     avatarURL.value = user.value.photoURL;
+    if(user.value.userStatus == UserStatus.authenticated)
+      profileWidget(ProfileWidget());
   }
 
   void _getUserContact(){
@@ -93,6 +143,19 @@ class UserProfileController extends GetxController{
   //     Get.find<HomeController>().isThemeBlackCrows.value = false;
   //   }
   // }
+
+  String _correctPhoneNum(String phoneNum){
+    String phoneN = phoneNum;
+    if(phoneNum.length == 11) {
+      if(phoneNum.startsWith('8'))
+        phoneN = phoneNum.replaceFirst('8', '7');
+    }else if(phoneNum.length == 10){
+      phoneN = '7$phoneNum';
+    }
+    return phoneN;
+  }
+
+
   _getPreferencesInstance() async {
     preferences = await SharedPreferences.getInstance();
   }

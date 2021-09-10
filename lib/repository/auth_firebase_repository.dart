@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get.dart';
+import 'package:wish_list_gx/controllers/user_profile_controller.dart';
 
 class AllUsersListFailure implements Exception {}
 class LogInWithEmailAndPasswordFailure implements Exception {}
@@ -13,12 +16,21 @@ abstract class AuthRepositoryInterface {
 
   Future<Map<dynamic, dynamic>> getAllRegistredUsers();
 
-  Future signUp({required String email,
+  Future signUp({
+    required String email,
     required String password,
     required String phone});
 
-  Future signIn({required String email,
+  Future<void> signUpWithSMSCode({
+    required String smsCode});
+
+  Future signIn({
+    required String email,
     required String password});
+
+  Future<void> verifyPhoneNumber({
+    required String phoneNumber,
+    required String email});
 
   Future signOut();
 
@@ -35,6 +47,9 @@ abstract class AuthRepositoryInterface {
 class FirebaseAuthRepository extends AuthRepositoryInterface{
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  String _verificationId = '';
+  String _phoneNumber = '';
+  String _email = '';
 
   CollectionReference _getReference(String collection){
     return FirebaseFirestore.instance.collection(collection);
@@ -44,7 +59,7 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
     CollectionReference ref = _getReference('users');
     ref.doc(user.uid).set({
       'name': email,
-      'email': user.email,
+      'email': email,
       'phone' :  phone,
       'photoURL': ''
     });
@@ -58,7 +73,6 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
         userData = (snapshot.data() as Map)['photoURL'] ?? '';
       });
     }catch(e) {
-      //print(e.toString());
       throw UserOperationFailure();
     }
     return userData;
@@ -136,27 +150,91 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
   }
 
   @override
-  Future signUp({required String email,
+  Future signUp({
+    required String email,
     required String password,
     required String phone}) async{
+
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: email,
           password: password
       );
       User? user = _firebaseAuth.currentUser;
-      String phoneN = phone;
-      if(phone.length == 11) {
-        if(phone.startsWith('8'))
-          phoneN = phone.replaceFirst('8', '7');
-      }else if(phone.length == 10){
-        phoneN = '7' + phone;
-      }
-      _addUsersData(user!, email, phoneN);
-      _addUserToAllRegistred(user, phoneN);
+      _addUsersData(user!, email, phone);
+      _addUserToAllRegistred(user, phone);
     }on Exception{
       throw SignUpFailure();
     }
+  }
+
+  @override
+  Future<void> signUpWithSMSCode({required String smsCode}) async{
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: _verificationId, smsCode: smsCode);
+      UserCredential authResult = await _firebaseAuth.signInWithCredential(credential);
+      User? user = _firebaseAuth.currentUser;
+      if(authResult.additionalUserInfo!.isNewUser){
+        _addUsersData(user!, _email, _phoneNumber);
+        _addUserToAllRegistred(user, _phoneNumber);
+      }
+     // _addMail(email, user!.uid);
+    }on Exception{
+      throw SignUpFailure();
+    }
+  }
+
+  @override
+  Future<void> verifyPhoneNumber({required String phoneNumber, required String email}) async{
+    try{
+    await _firebaseAuth.verifyPhoneNumber(
+        phoneNumber: '+$phoneNumber',
+        timeout: Duration(seconds: 3),
+        verificationCompleted: (authCredential) => _verificationComplete(authCredential, phoneNumber, email),
+        // if there is an exception, get the exception message and set it to the return value
+        verificationFailed: (authException) => _verificationFailed(authException),
+        codeAutoRetrievalTimeout: (verificationId) => _codeAutoRetrievalTimeout(verificationId),
+        // called when the SMS code is sent
+        codeSent: (verificationId, int? resendToken) => _smsCodeSent(verificationId, phoneNumber, email));
+    } on FirebaseAuthException catch (e){
+      print('Failed with error code: ${e.code}');
+      print(e.message);
+    }
+  }
+
+  _verificationComplete(AuthCredential authCredential, String phoneNumber, String email) async{
+     //FirebaseAuth.instance.signInWithCredential(authCredential).then((authResult) {});
+     UserCredential authResult = await _firebaseAuth.signInWithCredential(authCredential);
+     this._phoneNumber = phoneNumber;
+     this._email = email;
+     User? user = _firebaseAuth.currentUser;
+     if(authResult.additionalUserInfo!.isNewUser){
+       _addUsersData(user!, _email, _phoneNumber);
+       _addUserToAllRegistred(user, _phoneNumber);
+     }
+     if(user != null) {
+       print('user - ${user.uid}');
+       Get.find<UserProfileController>().autoVerification();
+     }
+
+  }
+
+  void _smsCodeSent(String verificationId, String phoneNumber, String email) {
+    // set the verification code so that we can use it to log the user in
+    this._verificationId = verificationId;
+    this._phoneNumber = phoneNumber;
+    this._email = email;
+  }
+
+  String _verificationFailed(FirebaseAuthException authException) {
+    return authException.message.toString();
+  }
+
+  void _codeAutoRetrievalTimeout(String verificationCode) {
+    // set the verification code so that we can use it to log the user in
+    this._verificationId = verificationCode;
+    //debugPrint("verify=" + this._verificationCode);
   }
 
   @override
@@ -190,4 +268,6 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
       throw Exception(e);
     }
   }
+
+
 }

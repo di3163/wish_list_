@@ -8,8 +8,7 @@ abstract class UserApp{
   final UserStatus userStatus;
   final String photoURL;
 
-
-  UserApp({required this.id, required this.userStatus, required this.photoURL});
+  const UserApp({required this.id, required this.userStatus, required this.photoURL});
 }
 
 class UserEmpty extends UserApp{

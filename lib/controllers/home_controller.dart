@@ -11,7 +11,7 @@ class HomeController extends GetxController{
   var isVisibleSettingCog = true.obs;
   var isThemeLightShampoo = true.obs;
   var isThemeBlackCrows = false.obs;
-  var themeApp = ThemeApp.Shampoo.obs;
+  //var themeApp = ThemeApp.Shampoo.obs;
 
   int tabIndex = 0;
   UserApp user = UserEmpty();
@@ -67,6 +67,10 @@ class HomeController extends GetxController{
     }
 
   }
+
+  // void _setSwitch(){
+  //   Get.theme.
+  // }
 
   // void _setPrefLocale(String languageCode){
   //   if(languageCode == 'en'){

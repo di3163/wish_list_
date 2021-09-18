@@ -42,10 +42,6 @@ class WishListController extends GetxController{
   //   listWish.value = [];
   //}
 
-  @override
-  void onInit() async{
-    super.onInit();
-  }
 
 
   @override

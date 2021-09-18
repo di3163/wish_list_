@@ -57,11 +57,11 @@ class HomeController extends GetxController{
 
   void onSwitchLocale(){
     if(Get.locale!.languageCode == 'en'){
-      Get.updateLocale(Locale('ru', 'RU'));
+      Get.updateLocale(const Locale('ru', 'RU'));
       Get.find<UserProfileController>().preferences.setString('locale', 'ru');
       //Get.updateLocale(Locale('ru', 'RU'));
     }else{
-      Get.updateLocale(Locale('en', 'UK'));
+      Get.updateLocale(const Locale('en', 'UK'));
       Get.find<UserProfileController>().preferences.setString('locale', 'en');
       //Get.updateLocale(Locale('en', 'UK'));
     }

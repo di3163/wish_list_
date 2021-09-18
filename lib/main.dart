@@ -16,7 +16,7 @@ void main() async{
 }
 
 class MyApp extends StatelessWidget {
-  MyApp(this.themeApp);
+  const MyApp(this.themeApp, {Key? key}) : super(key: key);
   final String themeApp;
 
   @override
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       translations: Messages(),
         locale: Get.deviceLocale,
-        fallbackLocale: Locale('en', 'UK'),
+        fallbackLocale: const Locale('en', 'UK'),
       initialBinding: MainBinding(),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,

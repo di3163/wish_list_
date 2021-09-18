@@ -13,20 +13,20 @@ class Wish {
     required this.listPicURL});
 
   Wish.empty() :
-        this.id ='',
-        this.title = '',
-        this.description = '',
-        this.link = '',
-        this.listPicURL = [],
-        this.isSaved = false;
+        id ='',
+        title = '',
+        description = '',
+        link = '',
+        listPicURL = [],
+        isSaved = false;
 
   Wish.fromDocumentSnapshot(DocumentSnapshot documentSnapshot) :
-    this.id = documentSnapshot.id,
-    this.title = documentSnapshot["title"],
-    this.description = documentSnapshot["description"],
-    this.link = documentSnapshot["link"],
+    id = documentSnapshot.id,
+    title = documentSnapshot["title"],
+    description = documentSnapshot["description"],
+    link = documentSnapshot["link"],
     //this.listPicURL = documentSnapshot["listImg"].cast<String>(),
-    this.listPicURL = List<String>.from(documentSnapshot["listImg"]),
+    listPicURL = List<String>.from(documentSnapshot["listImg"]),
     isSaved = true;
 
   Map<String, dynamic> toJson() => {

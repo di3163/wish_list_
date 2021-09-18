@@ -6,14 +6,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:wish_list_gx/core.dart';
 
 class WishController extends GetxController{
-  WishController(this._firebaseRepository, this._picker);
+  WishController(this._firebaseRepository);
 
   final WishRepositoryInterface _firebaseRepository;
   final controllerTitle = TextEditingController().obs;
   final controllerDescription = TextEditingController().obs;
   final controllerLink = TextEditingController().obs;
 
-  final _picker;
+  final ImagePicker _picker = ImagePicker();
   List<String> listImg = [];
   Wish currentWish = Wish.empty();
   bool isChanged = false;
@@ -92,10 +92,10 @@ class WishController extends GetxController{
     super.onInit();
   }
 
-  // @override
+  @override
   void onClose() async {
-    if (isChanged)
-    Get.defaultDialog(
+    if (isChanged) {
+      Get.defaultDialog(
         title: 'сохранить изменения?',
         backgroundColor: Get.theme.backgroundColor,
         onConfirm: () async {
@@ -104,7 +104,8 @@ class WishController extends GetxController{
         },
         onCancel: () => Get.back(),
         middleText: '',
-    );
+      );
+    }
     super.onClose();
   }
 

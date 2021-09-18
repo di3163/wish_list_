@@ -49,8 +49,9 @@ class ContactsXController extends GetxController{
           phone = phoneElement.value.toString().replaceAll(RegExp(r'[^\d]'), '');
           String phoneN = phone;
           if (phone.length == 11) {
-            if(phone.startsWith('8'))
+            if(phone.startsWith('8')) {
               phoneN = phone.replaceFirst('8', '7');
+            }
           }
           if(!contactMaps.containsKey(phoneN)){
             if(allRegistredUsers.containsKey(phoneN)) {

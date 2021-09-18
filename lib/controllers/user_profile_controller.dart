@@ -74,15 +74,15 @@ class UserProfileController extends GetxController{
 
   Future<void> verifyPhone()async{
     try {
-      // if(!formKey.currentState!.validate()) {
-      //   formKey.currentState!.save();
-      // }else {
-      //   String phoneN = _correctPhoneNum(formControllerPhone.text.trim());
-        //await _firebaseRepository.verifyPhoneNumber(phoneNumber: phoneN, email: formControllerEmail.text.trim());
-        await _firebaseRepository.verifyPhoneNumber(phoneNumber: '79258036135',email: 'merida-di@yandex.ru');
+        if(!formKey.currentState!.validate()) {
+          formKey.currentState!.save();
+        }else {
+         String phoneN = _correctPhoneNum(formControllerPhone.text.trim());
+         await _firebaseRepository.verifyPhoneNumber(phoneNumber: phoneN, email: formControllerEmail.text.trim());
+        //await _firebaseRepository.verifyPhoneNumber(phoneNumber: '79258036135',email: 'merida-di@yandex.ru');
         //_confirmUser();
         appFormWidget(LoginPhoneForm());
-      //}
+      }
 
     } on Exception{
       user.value = UserEmpty();
@@ -109,8 +109,9 @@ class UserProfileController extends GetxController{
   void _confirmUser(){
     user.value = UserFirebase.fromFirebaseUser(_firebaseRepository.getCurrentUser());
     avatarURL.value = user.value.photoURL;
-    if(user.value.userStatus == UserStatus.authenticated)
+    if(user.value.userStatus == UserStatus.authenticated) {
       profileWidget(ProfileWidget());
+    }
   }
 
   void _getUserContact(){
@@ -147,8 +148,9 @@ class UserProfileController extends GetxController{
   String _correctPhoneNum(String phoneNum){
     String phoneN = phoneNum;
     if(phoneNum.length == 11) {
-      if(phoneNum.startsWith('8'))
+      if(phoneNum.startsWith('8')) {
         phoneN = phoneNum.replaceFirst('8', '7');
+      }
     }else if(phoneNum.length == 10){
       phoneN = '7$phoneNum';
     }
@@ -162,9 +164,9 @@ class UserProfileController extends GetxController{
 
   void _setPrefLocale(String languageCode){
     if(languageCode == 'en'){
-      Get.updateLocale(Locale('en', 'UK'));
+      Get.updateLocale(const Locale('en', 'UK'));
     }else{
-      Get.updateLocale(Locale('ru', 'RU'));
+      Get.updateLocale(const Locale('ru', 'RU'));
     }
   }
 

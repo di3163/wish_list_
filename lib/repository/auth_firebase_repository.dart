@@ -5,31 +5,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get.dart';
-import 'package:wish_list_gx/controllers/user_profile_controller.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
+import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
+
+
+
+import 'package:wish_list_gx/core.dart';
 
 class AllUsersListFailure implements Exception {}
-class LogInWithEmailAndPasswordFailure implements Exception {}
-class LogInWithPhoneFailure implements Exception {}
-class SignUpFailure implements Exception {}
-class UserOperationFailure implements Exception {}
 
 abstract class AuthRepositoryInterface {
 
   Future<Map<dynamic, dynamic>> getAllRegistredUsers();
 
-  Future signUp({
-    required String email,
-    required String password,
-    required String phone});
-
   Future<void> signUpWithSMSCode({
     required String smsCode});
 
-  Future signIn({
-    required String email,
-    required String password});
-
-  Future<void> verifyPhoneNumber({
+  Future verifyPhoneNumber({
     required String phoneNumber,
     required String email});
 
@@ -42,7 +34,6 @@ abstract class AuthRepositoryInterface {
   Future<String> getUserAvatarURL(String id);
   Future<String> saveImage(File image);
   Future deleteImage(String imgUrl);
-
 }
 
 class FirebaseAuthRepository extends AuthRepositoryInterface{
@@ -75,7 +66,7 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
         userData = (snapshot.data() as Map)['photoURL'] ?? '';
       });
     }catch(e) {
-      throw UserOperationFailure();
+      return Future.error('err_img_load'.tr);
     }
     return userData;
   }
@@ -90,10 +81,6 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
   }
 
   Future<void> _addUserToAllRegistred(User user, String phone) async {
-    //TODO возвращать из этого метода allRegisterMap для дальнейшего использования
-    //после создания пользователя
-
-    //try {
     DocumentReference documentReference = _getReference('users').doc('register_users');
     FirebaseFirestore.instance.runTransaction((transaction) async {
       DocumentSnapshot snapshot = await transaction.get(documentReference);
@@ -101,29 +88,18 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
       Map<String, dynamic> allregisterMap = data['all_register'] as Map<String, dynamic>;
       allregisterMap[phone] = user.uid;
       transaction.update(documentReference, {'all_register': allregisterMap});
-      //print('user added to all');
     });
-    // }catch(e){
-    //   return Future.error(e);
-    //   //throw AllUsersListFailure();
-    // }
   }
 
   @override
   Future<Map<dynamic, dynamic>> getAllRegistredUsers() async{
-    //Map<dynamic, dynamic> allregisterMap = Map();
     var allregisterMap = {};
-    try {
-      DocumentReference documentReference = _getReference('users').doc('register_users');
-      await documentReference.get().then((DocumentSnapshot snapshot) {
-        // var data = snapshot.data() as Map;
-        // allregisterMap = data['all_register'] as Map;
+    DocumentReference documentReference = _getReference('users').doc('register_users');
+    await documentReference.get().then((DocumentSnapshot snapshot) {
         allregisterMap = (snapshot.data() as Map)['all_register'] as Map;
-        //return allregisterMap;
-      });
-    } catch (e) {
-      throw AllUsersListFailure();
-    }
+    }).catchError((e) {
+        throw AllUsersListFailure();
+    });
     return allregisterMap;
   }
 
@@ -134,40 +110,8 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
   }
 
   @override
-  Future<void> signIn({required String email,
-    required String password}) async{
-    try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-          email: email,
-          password: password
-      );
-    }on Exception{
-      throw LogInWithEmailAndPasswordFailure();
-    }
-  }
-
-  @override
   Future signOut() {
     return _firebaseAuth.signOut();
-  }
-
-  @override
-  Future signUp({
-    required String email,
-    required String password,
-    required String phone}) async{
-
-    try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email,
-          password: password
-      );
-      User? user = _firebaseAuth.currentUser;
-      _addUsersData(user!, email, phone);
-      _addUserToAllRegistred(user, phone);
-    }on Exception{
-      throw SignUpFailure();
-    }
   }
 
   @override
@@ -181,30 +125,27 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
         _addUsersData(user!, _email, _phoneNumber);
         _addUserToAllRegistred(user, _phoneNumber);
       }
-     // _addMail(email, user!.uid);
-    }on Exception{
-      throw SignUpFailure();
+    }catch(e) {
+      return Future.error('err_auth'.tr);
     }
   }
 
   @override
-  Future<void> verifyPhoneNumber({required String phoneNumber, required String email}) async{
+  Future verifyPhoneNumber({required String phoneNumber, required String email}) async{
     try{
     await _firebaseAuth.verifyPhoneNumber(
         phoneNumber: '+$phoneNumber',
         timeout: const Duration(seconds: 3),
-        verificationCompleted: (authCredential) => _verificationComplete(authCredential, phoneNumber, email),
+        verificationCompleted: (authCredential) =>
+            _verificationComplete(authCredential, phoneNumber, email),
         // if there is an exception, get the exception message and set it to the return value
         verificationFailed: (authException) => _verificationFailed(authException),
         codeAutoRetrievalTimeout: (verificationId) => _codeAutoRetrievalTimeout(verificationId),
         // called when the SMS code is sent
-        codeSent: (verificationId, int? resendToken) => _smsCodeSent(verificationId, phoneNumber, email));
-    }
-    //on FirebaseAuthException catch (e)
-    on Exception {
-      // print('Failed with error code: ${e.code}');
-      // print(e.message);
-      LogInWithPhoneFailure();
+        codeSent: (verificationId, int? resendToken) => _smsCodeSent(verificationId, phoneNumber, email)
+    );
+    } catch (e){
+      return Future.error('err_auth'.tr);
     }
   }
 
@@ -219,38 +160,41 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
        _addUserToAllRegistred(user, _phoneNumber);
      }
      if(user != null) {
-       //print('user - ${user.uid}');
        Get.find<UserProfileController>().autoVerification();
      }
-
   }
 
   void _smsCodeSent(String verificationId, String phoneNumber, String email) {
-    // set the verification code so that we can use it to log the user in
     _verificationId = verificationId;
     _phoneNumber = phoneNumber;
     _email = email;
   }
 
-  String _verificationFailed(FirebaseAuthException authException) {
-    return authException.message.toString();
+  void _verificationFailed(FirebaseAuthException authException) {
+    Get.find<UserProfileController>().showSnackBar(authException.code);
   }
 
   void _codeAutoRetrievalTimeout(String verificationCode) {
     // set the verification code so that we can use it to log the user in
     _verificationId = verificationCode;
-    //debugPrint("verify=" + this._verificationCode);
   }
 
   @override
   Future<String> saveImage(File image) async{
     String imgURL = '';
-    FirebaseStorage storage = FirebaseStorage.instance;
-    Reference ref = storage.ref().child('users/${_firebaseAuth.currentUser!.uid}/${image.path.split('/').last}');
-    UploadTask uploadTask = ref.putFile(image);
-    await uploadTask.whenComplete(() async{
-      imgURL = await uploadTask.snapshot.ref.getDownloadURL();
-    });
+    //FirebaseStorage storage = FirebaseStorage.instance;
+    try {
+      Reference ref = FirebaseStorage.instance.ref().
+      child('users/${_firebaseAuth.currentUser!.uid}/${image.path
+          .split('/')
+          .last}');
+      UploadTask uploadTask = ref.putFile(image);
+      await uploadTask.whenComplete(() async {
+        imgURL = await uploadTask.snapshot.ref.getDownloadURL();
+      });
+    }catch(e){
+      return Future.error('err_img_load'.tr);
+    }
     return imgURL;
   }
 
@@ -258,8 +202,12 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
   Future<void> updateUserProfile(String photoURL)  async {
     User? user = getCurrentUser();
     if(user != null) {
-      user.updatePhotoURL(photoURL);
-      _addUserAvatar(user.uid, photoURL);
+      try {
+        user.updatePhotoURL(photoURL);
+        _addUserAvatar(user.uid, photoURL);
+      }catch(e){
+        return Future.error('err'.tr);
+      }
     }
   }
 
@@ -270,9 +218,91 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
       Reference ref = storage.refFromURL(imgUrl);
       await ref.delete();
     }catch(e){
-      throw Exception(e);
+      return Future.error('err'.tr);
     }
   }
 
 
+}
+
+class MockAuthRepository extends AuthRepositoryInterface{
+
+  String _phoneNumber = '';
+  String _email = '';
+  late final FirebaseAuth _firebaseAuth;
+
+  @override
+  Future deleteImage(String imgUrl) {
+    // TODO: implement deleteImage
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Map> getAllRegistredUsers() async{
+    return <dynamic, dynamic>{};
+  }
+
+  @override
+  User? getCurrentUser() {
+    User? user =   _firebaseAuth.currentUser;
+    return user;
+  }
+
+  @override
+  Future<String> getUserAvatarURL(String id) async{
+    return '';
+  }
+
+  @override
+  Future<String> saveImage(File image) async{
+    return '';
+  }
+
+  @override
+  Future signIn({required String email, required String password}) {
+    // TODO: implement signIn
+    throw UnimplementedError();
+  }
+
+  @override
+  Future signOut() {
+    return _firebaseAuth.signOut();
+  }
+
+  @override
+  Future signUp({required String email, required String password, required String phone}) {
+    // TODO: implement signUp
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> signUpWithSMSCode({required String smsCode})async {
+    final googleSignIn = MockGoogleSignIn();
+    final signinAccount = await googleSignIn.signIn();
+    final googleAuth = await signinAccount!.authentication;
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    final user = MockUser(
+      isAnonymous: false,
+      uid: 'qu8HX5C4c1XSJHam259u2BKCgyu1',
+      email: 'merida-di@yandex.ru',
+      displayName: 'merida-di@yandex.ru',
+      photoURL: ''
+    );
+    _firebaseAuth = MockFirebaseAuth(mockUser: user);
+    await _firebaseAuth.signInWithCredential(credential);
+  }
+
+  @override
+  Future<void> updateUserProfile(String photoURL) async{
+    User? user = getCurrentUser();
+  }
+
+  @override
+  Future<void> verifyPhoneNumber({required String phoneNumber, required String email}) async {
+    _phoneNumber = phoneNumber;
+    _email = email;
+  }
 }

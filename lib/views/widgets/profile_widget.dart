@@ -4,9 +4,14 @@ import 'package:get/get.dart';
 
 import 'package:wish_list_gx/core.dart';
 
-abstract class ProfileViewWidget extends StatelessWidget {}
+abstract class ProfileViewWidget extends StatelessWidget {
+  const ProfileViewWidget({Key? key}) : super(key: key);
+}
+
 
 class ProfileWidget extends ProfileViewWidget {
+  const ProfileWidget({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     UserProfileController _userProfileController =
@@ -15,13 +20,13 @@ class ProfileWidget extends ProfileViewWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(height: 30),
+        const SizedBox(height: 30),
         ObxValue<Rx<String>>(
             (data) => GestureDetector(
                   onTap: () => _userProfileController.addAvatar(),
-                  child: Material(
+                  child: ClipOval(
                     child: data.value.isEmpty
-                        ? Icon(iconPerson, size: 90)
+                        ? Icon(iconPerson, size: 90, color: Get.theme.accentColor,)
                         : CachedNetworkImage(
                             placeholder: (context, url) =>
                                 CircularProgressIndicator(
@@ -33,15 +38,13 @@ class ProfileWidget extends ProfileViewWidget {
                                 color: Get.theme.accentColor),
                             width: 90.0,
                             height: 90.0,
+                            //color: Get.theme.bottomAppBarColor,
                             fit: BoxFit.cover,
                           ),
-                    color: Get.theme.buttonColor,
-                    borderRadius: BorderRadius.all(Radius.circular(45.0)),
-                    clipBehavior: Clip.hardEdge,
                   ),
                 ),
             _userProfileController.avatarURL),
-        SizedBox(height: 30),
+        const SizedBox(height: 30),
         ElevatedButton(
           onPressed: () => _userProfileController.signOut(), //_signOut,
           child: Text('sign_out'.tr),
@@ -52,15 +55,19 @@ class ProfileWidget extends ProfileViewWidget {
 }
 
 class LoginWidget extends ProfileViewWidget {
+  const LoginWidget({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        SizedBox(
-          height: 20,
-        ),
-        RegisterForm(),
+      children: [
+        const SizedBox(height: 20),
+        GetX<UserProfileController>(
+          builder: (UserProfileController userProfileController){
+            return userProfileController.appFormWidget.value.render();
+          }
+        )
+        //RegisterForm(),
       ],
     );
   }

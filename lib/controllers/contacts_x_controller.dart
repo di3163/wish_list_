@@ -76,7 +76,13 @@ class ContactsXController extends GetxController{
   }
 
   Future<String> _getPhotoURL(String id)async{
-    return await _firebaseRepository.getUserAvatarURL(id);
+    String photoURL = '';
+    try {
+      photoURL = await _firebaseRepository.getUserAvatarURL(id);
+    }on Exception catch(e){
+      _showSnackBar(e.toString());
+    }
+    return photoURL;
   }
 
   getContacts()async {
@@ -94,7 +100,7 @@ class ContactsXController extends GetxController{
     if (Get.find<UserProfileController>().
     user.value.userStatus == UserStatus.unauthenticated){
       _userContactList = [];
-      contactWidget(ErrorContactWidget('требуется авторизация'));
+      contactWidget(ErrorContactWidget('auth_req'.tr));
     }else {
       try {
         final contactList = await _getAllContactsFromDevice();
@@ -104,9 +110,18 @@ class ContactsXController extends GetxController{
             await _getUserContacts(contactList, allRegistredUsers);
         contactWidget(LoadedContactWidget(_userContactList));
       } on Exception {
-        contactWidget(ErrorContactWidget('ошибка'));
+        contactWidget(ErrorContactWidget('err'.tr));
       }
     }
+  }
+
+  void _showSnackBar(String message){
+    Get.snackbar(
+      'err'.tr,
+      message,
+      isDismissible: true,
+      duration: const Duration(seconds: 5),
+    );
   }
 
   @override

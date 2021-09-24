@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
 
-enum AppTab { ProfileView, ContactView, MyListView }
+enum AppTab { profileView, contactView, myListView }
 
 enum FormType { login, register }
 
-enum ThemeApp {Shampoo, Graphite}
+enum ThemeApp {shampoo, graphite}
 
 //const iconPerson = Icons.person;
 final iconError = LineIcons.byName('exclamation');
@@ -25,17 +25,18 @@ final iconKey = LineIcons.byName('key');
 //const iconKey = Icons.vpn_key;
 //const iconPhone = Icons.phone;
 const iconCode =  Icons.app_registration;
+const iconAdd = Icons.add;
 final iconPhone = LineIcons.byName('phone');
 final iconDelete = LineIcons.byName('trash');
 
 extension AppTabNamesLocal on AppTab{
   String localization(){
     switch(this){
-      case AppTab.ProfileView:
+      case AppTab.profileView:
         return 'profile' .tr;
-      case AppTab.ContactView:
+      case AppTab.contactView:
         return 'contact' .tr;
-      case AppTab.MyListView:
+      case AppTab.myListView:
         return 'my_list' .tr;
       default:
         return 'profile' .tr;
@@ -46,12 +47,12 @@ extension AppTabNamesLocal on AppTab{
 extension AppTabIcon on AppTab{
   Icon appTabIcon(){
     switch(this){
-      case AppTab.ProfileView:
+      case AppTab.profileView:
         return Icon(iconPerson, size: 30);
-      case AppTab.ContactView:
+      case AppTab.contactView:
         return Icon(iconCotacts, size: 30);
-      case AppTab.MyListView:
-        return Icon(iconFavorite, size: 30);
+      case AppTab.myListView:
+        return const Icon(iconFavorite, size: 30);
       default:
         return Icon(iconPerson, size: 30);
     }

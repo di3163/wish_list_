@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
@@ -26,7 +25,7 @@ class RegisterPhoneButton extends FormButton{
   const RegisterPhoneButton();
 
   @override
-  String get text => 'sign_up'.tr;
+  String get text => 'log_in'.tr;
 
   @override
   void onButtonClicked() {

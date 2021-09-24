@@ -3,20 +3,20 @@ import 'package:wish_list_gx/core.dart';
 
 
 abstract class Routes{
-  static const HOME = '/';
-  static const WISH = '/wish';
+  static const home = '/';
+  static const wish = '/wish';
 }
 
 class AppPages{
-  static const INITIAL = Routes.HOME;
+  static const initial = Routes.home;
   static final routes = [
     GetPage(
-      name: Routes.HOME,
+      name: Routes.home,
       page: () => HomeView(),
       //binding: HomeBinding(),
     ),
     GetPage(
-        name: Routes.WISH,
+        name: Routes.wish,
         page: () => WishView(),
         binding: WishBindings(),
     ),

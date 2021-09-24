@@ -32,7 +32,14 @@ class Messages extends Translations{
           "light_shampoo": "Shampoo theme",
           "black_crows": "Graphite theme",
           "change_locale": "Change locale",
-          "change_avatar": "Change avatar"
+          "change_avatar": "Change avatar",
+          "err": "Error!",
+          "auth_req": "authorization required",
+          "err_img_load": "image loading error",
+          "err_auth": "authorization error",
+          "warn_title": "the name is not filled in",
+          "err_network": "network error"
+
         },
         'ru_RU': {
           "app_bar_title": "Wishlist 23x8",
@@ -63,7 +70,13 @@ class Messages extends Translations{
           "light_shampoo": "Тема шампунь",
           "black_crows": "Тема графит",
           "change_locale": "Переключить язык",
-          "change_avatar": "Сменить фотку"
+          "change_avatar": "Сменить фотку",
+          "err": "Ошибка!",
+          "auth_req": "требуется авторизация",
+          "err_img_load": "ошибка загрузки изображения",
+          "err_auth": "ошибка авторизации",
+          "warn_title": "название не заполнено, сохранение невозможно",
+          "err_network": "ошибка сети"
         },
       };
 }

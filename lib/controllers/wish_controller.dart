@@ -6,42 +6,47 @@ import 'package:image_picker/image_picker.dart';
 import 'package:wish_list_gx/core.dart';
 
 class WishController extends GetxController{
-  WishController(this._firebaseRepository);
+  WishController(this._firebaseRepository, this._picker);
 
   final WishRepositoryInterface _firebaseRepository;
   final controllerTitle = TextEditingController().obs;
   final controllerDescription = TextEditingController().obs;
   final controllerLink = TextEditingController().obs;
 
-  final ImagePicker _picker = ImagePicker();
-  List<String> listImg = [];
+  final ImagePicker _picker;
+  late List<String> listImgT;
+  //List<String> listImg = [];
   Wish currentWish = Wish.empty();
   bool isChanged = false;
 
   void addImage()async{
-    final XFile?  pickedFile = await _picker.pickImage(
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 25,
-    );
-    if (pickedFile != null){
-      if (!currentWish.isSaved){
-        listImg.add(pickedFile.path);
-      }else{
-        listImg.add(await _uploadImage(pickedFile.path));
-        await _firebaseRepository.updateUserWish(currentWish);
+      );
+      if (pickedFile != null) {
+        if (!currentWish.isSaved) {
+          listImgT.add(pickedFile.path);
+        } else {
+          //listImgT.add(await _uploadImage(pickedFile.path));
+          listImgT.add(pickedFile.path);
+          currentWish.listPicURL.add(await _uploadImage(pickedFile.path));
+          await _firebaseRepository.updateUserWish(currentWish);
+        }
       }
+    }catch(e){
+      _showSnackBar('err_img_load'.tr);
     }
     update(['images']);
   }
-
-  //TODO при выходе если были изменения спрашивать сохранить или нет
 
   Future<String> _uploadImage(String path)async{
     return  await _firebaseRepository.saveImage(File(path));
   }
 
   _addWishListPicURL()async{
-      for(String element in listImg){
+      for(String element in listImgT){
         String uRL = await _uploadImage(element);
         currentWish.listPicURL.add(uRL);
       }
@@ -49,43 +54,60 @@ class WishController extends GetxController{
 
   void saveWish()async{
     if(controllerTitle.value.text.isEmpty){
-      //TODO ссобщать что поле пустое, сохранение невозможно
+      _showSnackBar('warn_title'.tr);
       return;
     }
-    await _addWishListPicURL();
-    currentWish.title = controllerTitle.value.text;
-    currentWish.description = controllerDescription.value.text;
-    currentWish.link = controllerLink.value.text;
-    _firebaseRepository.addUserWish(currentWish);
+    try {
+      await _addWishListPicURL();
+      currentWish.title = controllerTitle.value.text;
+      currentWish.description = controllerDescription.value.text;
+      currentWish.link = controllerLink.value.text;
+      _firebaseRepository.addUserWish(currentWish);
+    }catch(e){
+      _showSnackBar(e.toString());
+    }
   }
 
   Future<void> updateWish()async {
     currentWish.title = controllerTitle.value.text;
     currentWish.description = controllerDescription.value.text;
     currentWish.link = controllerLink.value.text;
-    await _firebaseRepository.updateUserWish(currentWish);
+    try {
+      await _firebaseRepository.updateUserWish(currentWish);
+    }catch(e){
+      _showSnackBar(e.toString());
+    }
   }
 
   void deleteImage(String imgUrl)async{
       if(currentWish.isSaved) {
-        try{
+        try {
           await _firebaseRepository.deleteImage(imgUrl);
           currentWish.listPicURL.remove(imgUrl);
           await _firebaseRepository.updateUserWish(currentWish);
-        }catch(e){
-
+        } catch(e){
+          _showSnackBar(e.toString());
         }
       }else{
-        listImg.remove(imgUrl);
+        listImgT.remove(imgUrl);
       }
       update(['images']);
+  }
+
+  void _showSnackBar(String message){
+    Get.snackbar(
+      'err'.tr,
+      message,
+      isDismissible: true,
+      duration: const Duration(seconds: 10),
+    );
   }
 
 
   @override
   void onInit() {
     currentWish = Get.arguments;
-    listImg = currentWish.listPicURL;
+    listImgT = currentWish.listPicURL.map((v) => v).toList();
     controllerTitle.value.text = currentWish.title;
     controllerDescription.value.text = currentWish.description!;
     controllerLink.value.text = currentWish.link!;
@@ -109,13 +131,4 @@ class WishController extends GetxController{
     super.onClose();
   }
 
-
-
-// @override
-  // void dispose() {
-  //   controllerTitle.close();
-  //   controllerDescription.close();
-  //   controllerLink.close();
-  //   super.dispose();
-  // }
 }

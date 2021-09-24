@@ -22,100 +22,60 @@ class UserProfileController extends GetxController{
   Rx<UserApp> user = Rx<UserApp>(UserEmpty());
   Rx<String> avatarURL = Rx<String>('');
   Rx<AppForm> appFormWidget = Rx<AppForm>(RegisterPhoneForm());
-  Rx<ProfileViewWidget> profileWidget = Rx<ProfileViewWidget>(LoginWidget());
-
-
-
-  final formType = FormType.login.obs;
-
-  // void switchForm(){
-  //   formType.value =
-  //   formType.value == FormType.login ? FormType.register : FormType.login;
-  //   //update();
-  // }
-
-  // Future<void> signUp({required String email, required String pass, required String phone}) async{
-  //   try{
-  //     //TODO для Андроид добавить нативное получение своего номера
-  //     String phoneN = _correctPhoneNum(phone);
-  //     await _firebaseRepository.signUp(email: email, password: pass, phone: phoneN);
-  //     _confirmUser();
-  //     _getUserContact();
-  //   } on Exception {
-  //     user.value = UserEmpty();
-  //   }
-  //   //update();
-  // }
-  //
-  // Future<void> signIn({required String email, required String pass}) async{
-  //   try {
-  //     await _firebaseRepository.signIn(email: email, password: pass);
-  //     _confirmUser();
-  //     _getUserContact();
-  //   } on Exception{
-  //     user.value = UserEmpty();
-  //     appFormWidget(LoginPhoneForm());
-  //   }
-  //   //update();
-  // }
+  Rx<ProfileViewWidget> profileWidget = Rx<ProfileViewWidget>(const LoginWidget());
 
   Future<void> signUpWithSMSCode()async{
     try {
       await _firebaseRepository.signUpWithSMSCode(smsCode: formControllerCode.text.trim());
       _confirmUser();
-      _getUserContact();
-      //update();
-    }on Exception{
+      Get.find<ContactsXController>().getContacts();
+    }catch(e){
       user.value = UserEmpty();
       appFormWidget(LoginPhoneForm());
+      showSnackBar(e.toString());
     }
-
   }
 
-  Future<void> verifyPhone()async{
+  Future<void> verifyPhone() async {
     try {
-        if(!formKey.currentState!.validate()) {
-          formKey.currentState!.save();
-        }else {
-         String phoneN = _correctPhoneNum(formControllerPhone.text.trim());
-         await _firebaseRepository.verifyPhoneNumber(phoneNumber: phoneN, email: formControllerEmail.text.trim());
+      if (!formKey.currentState!.validate()) {
+        formKey.currentState!.save();
+      } else {
+        String phoneN = _correctPhoneNum(formControllerPhone.text.trim());
+        await _firebaseRepository.verifyPhoneNumber(
+            phoneNumber: phoneN,
+            email: formControllerEmail.text.trim()
+        );
         //await _firebaseRepository.verifyPhoneNumber(phoneNumber: '79258036135',email: 'merida-di@yandex.ru');
-        //_confirmUser();
         appFormWidget(LoginPhoneForm());
       }
-
-    } on Exception{
+     } catch(e){
       user.value = UserEmpty();
       appFormWidget(RegisterPhoneForm());
-    }
-    //update();
+      showSnackBar(e.toString());
+     }
   }
 
   void autoVerification(){
     _confirmUser();
-    //update();
   }
+
 
   Future<void> signOut() async{
     await _firebaseRepository.signOut();
     Get.delete<WishListController>();
     Get.lazyPut<WishListController>(() => WishListController(FirebaseWishRepository()));
     user.value = UserEmpty();
-    profileWidget(LoginWidget());
-    _getUserContact();
-    //update();
+    profileWidget(const LoginWidget());
+    Get.find<ContactsXController>().getContacts();
   }
 
   void _confirmUser(){
     user.value = UserFirebase.fromFirebaseUser(_firebaseRepository.getCurrentUser());
     avatarURL.value = user.value.photoURL;
     if(user.value.userStatus == UserStatus.authenticated) {
-      profileWidget(ProfileWidget());
+      profileWidget(const ProfileWidget());
     }
-  }
-
-  void _getUserContact(){
-    Get.find<ContactsXController>().getContacts();
   }
 
   void addAvatar()async{
@@ -124,26 +84,20 @@ class UserProfileController extends GetxController{
       imageQuality: 25,
     );
     if (pickedFile != null){
-      if(user.value.photoURL.isNotEmpty) {
-        await _firebaseRepository.deleteImage(user.value.photoURL);
+      try {
+        if (user.value.photoURL.isNotEmpty) {
+          await _firebaseRepository.deleteImage(user.value.photoURL);
+        }
+        String photoURL = await _firebaseRepository.saveImage(
+            File(pickedFile.path));
+        await _firebaseRepository.updateUserProfile(photoURL);
+        avatarURL.value = photoURL;
+      }catch(e){
+        showSnackBar(e.toString());
       }
-      String photoURL = await _firebaseRepository.saveImage(File(pickedFile.path));
-      await _firebaseRepository.updateUserProfile(photoURL);
-      avatarURL.value = photoURL;
     }
   }
 
-  // void _setPrefTheme(){
-  //   if (Get.theme. == 'blackcrows'){
-  //     Get.changeTheme(themeBlackCrows);
-  //     Get.find<HomeController>().isThemeLightShampoo.value = false;
-  //     Get.find<HomeController>().isThemeBlackCrows.value = true;
-  //   }else{
-  //     Get.changeTheme(themeLightShampoo);
-  //     Get.find<HomeController>().isThemeLightShampoo.value = true;
-  //     Get.find<HomeController>().isThemeBlackCrows.value = false;
-  //   }
-  // }
 
   String _correctPhoneNum(String phoneNum){
     String phoneN = phoneNum;
@@ -173,17 +127,17 @@ class UserProfileController extends GetxController{
   void _initPreferences(){
     _setPrefLocale(preferences.getString('locale') ?? Get.deviceLocale!.languageCode);
     //_setPrefTheme(preferences.getString('theme') ?? 'lightshampoo');
-
   }
 
 
-  // void _deleteImageFromCache(String imgURL){
-  //   try {
-  //     CachedNetworkImage.evictFromCache(imgURL);
-  //   }catch(e){
-  //     print(e.toString());
-  //   }
-  // }
+  void showSnackBar(String message){
+    Get.snackbar(
+      'err'.tr,
+      message,
+      isDismissible: true,
+      duration: const Duration(seconds: 10),
+    );
+  }
   
 
   @override

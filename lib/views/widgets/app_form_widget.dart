@@ -16,19 +16,19 @@ class RegisterPhoneForm extends AppForm{
       child: Column(
         children: <Widget>[
           TextFormField(
-            key: Key('fieldEmail'),
+            key: const Key('fieldEmail'),
             validator: (value){
               if(value == '') return 'input_email' .tr;
               if (!validateEmail(value!)) return 'wrong_email' .tr;
               return null;
             },
             controller: Get.find<UserProfileController>().formControllerEmail,
-            decoration: _buildInputDecoration('email' .tr , Icon(iconEmail, size: 30)),
+            decoration: _buildInputDecoration('email' .tr , const Icon(iconEmail, size: 30)),
           ),
           
           TextFormField(
             keyboardType: TextInputType.number,
-            key: Key('phoneNum'),
+            key: const Key('phoneNum'),
             validator: (value){
               if(value == '') return 'input_phone' .tr;
               if (!validatePhone(value!)) return 'wrong_phone' .tr;
@@ -37,8 +37,8 @@ class RegisterPhoneForm extends AppForm{
             controller: Get.find<UserProfileController>().formControllerPhone,
             decoration: _buildInputDecoration('phone' .tr , Icon(iconPhone, size: 30)),
           ),
-          SizedBox(height: 20),
-          _FormButtonWidget(formButton: RegisterPhoneButton()),
+          const SizedBox(height: 20),
+          const _FormButtonWidget(formButton: RegisterPhoneButton()),
         ],
       ),
     );
@@ -62,12 +62,13 @@ class LoginPhoneForm extends AppForm{
       child: Column(
         children: <Widget>[
           TextFormField(
-            key: Key('fieldCode'),
+            keyboardType: TextInputType.number,
+            key: const Key('fieldCode'),
             controller: Get.find<UserProfileController>().formControllerCode,
-            decoration: _buildInputDecoration('code' .tr, Icon(iconCode, size: 30,)),
+            decoration: _buildInputDecoration('code' .tr, const Icon(iconCode, size: 30,)),
           ),
-          SizedBox(height: 20),
-          _FormButtonWidget(formButton: CodeSendButton()),
+          const SizedBox(height: 20),
+          const _FormButtonWidget(formButton: CodeSendButton()),
         ],
       ),
     );

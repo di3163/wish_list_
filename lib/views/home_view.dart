@@ -7,6 +7,7 @@ import 'package:wish_list_gx/core.dart';
 
 
 class HomeView extends StatelessWidget {
+  HomeView({Key? key}) : super(key: key);
   final _homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
@@ -34,15 +35,14 @@ class HomeView extends StatelessWidget {
           ),
         ],
 
-        shape: ContinuousRectangleBorder(
+        shape: const ContinuousRectangleBorder(
             borderRadius: BorderRadius.only(
-                bottomLeft: const Radius.circular(20),
-                bottomRight: const Radius.circular(20))),
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20))),
       ),
       body: PageView(
-        
         controller: _homeController.pageController,
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         onPageChanged: (index){
           _homeController.tabIndex = index;
           if (_homeController.user.userStatus == UserStatus.other){
@@ -75,7 +75,7 @@ class HomeView extends StatelessWidget {
                 color: Get.theme.shadowColor,
                 spreadRadius: 5,
                 blurRadius: 7,
-                offset: Offset(0, 3),
+                offset: const Offset(0, 3),
               ),
             ],
           ),
@@ -94,7 +94,7 @@ class HomeView extends StatelessWidget {
             items: AppTab.values.map((tab) {
               return BottomNavyBarItem(
                 icon: tab.appTabIcon(),
-                title: Text(tab.localization(), style: TextStyle(fontSize: 12)),
+                title: Text(tab.localization(), style: const TextStyle(fontSize: 12)),
                 activeColor: Get.theme.focusColor,
                 inactiveColor: Get.theme.accentColor,
               );
@@ -105,7 +105,10 @@ class HomeView extends StatelessWidget {
       floatingActionButton: Obx(() =>
          Visibility(
           child: FloatingActionButton(
-            child: const Icon(Icons.add),
+            child: Icon(
+                iconAdd,
+                color: Get.theme.focusColor,
+              ),
             onPressed: () => Get.toNamed('/wish', arguments: Wish.empty()),
           ),
           visible: _homeController.isVisibleFAB.value,

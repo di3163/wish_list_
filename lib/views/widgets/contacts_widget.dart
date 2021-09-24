@@ -20,7 +20,7 @@ class ErrorContactWidget extends ContactWidget{
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(iconError, size: 30, color: Get.theme.accentColor,),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             Text(state),
           ],
         )
@@ -83,7 +83,7 @@ class LoadingContactWidget extends ContactWidget{
 
   @override
   Widget render() {
-    return Center(
+    return const Center(
         child: CircularProgressIndicator()
     );
   }

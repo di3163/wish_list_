@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
 
@@ -40,7 +41,9 @@ class FirebaseWishRepository extends WishRepositoryInterface{
       // }
       );
     }catch(e){
-      throw WishOperationFailure();
+      print('repository addUserW ${e.toString()}');
+      return Future.error('err_network'.tr);
+      //throw WishOperationFailure();
     }
   }
 
@@ -51,7 +54,7 @@ class FirebaseWishRepository extends WishRepositoryInterface{
       Reference ref = storage.refFromURL(imgUrl);
       await ref.delete();
     }catch(e){
-      throw Exception(e);
+      return Future.error('err_network'.tr);
     }
   }
 
@@ -81,12 +84,20 @@ class FirebaseWishRepository extends WishRepositoryInterface{
   @override
   Future<String> saveImage(File image) async{
     String imgURL = '';
-    FirebaseStorage storage = FirebaseStorage.instance;
-    Reference ref = storage.ref().child('users/${_firebaseAuth.currentUser!.uid}/${image.path.split('/').last}');
-    UploadTask uploadTask = ref.putFile(image);
-    await uploadTask.whenComplete(() async{
-      imgURL = await uploadTask.snapshot.ref.getDownloadURL();
-    });
+    //try {
+      FirebaseStorage storage = FirebaseStorage.instance;
+      Reference ref = storage.ref().child(
+          'users/${_firebaseAuth.currentUser!.uid}/${image.path
+              .split('/')
+              .last}');
+      UploadTask uploadTask = ref.putFile(image);
+      await uploadTask.whenComplete(() async {
+        imgURL = await uploadTask.snapshot.ref.getDownloadURL();
+      });
+    // }catch(e){
+    //   return Future.error('err_img_load'.tr);
+    // }
+    print('saveImage $imgURL');
     return imgURL;
   }
 
@@ -104,7 +115,7 @@ class FirebaseWishRepository extends WishRepositoryInterface{
           // }
       );
     }catch(e){
-      throw WishOperationFailure();
+      return Future.error('err_network'.tr);
     }
   }
 

@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         locale: Get.deviceLocale,
         fallbackLocale: const Locale('en', 'UK'),
       initialBinding: MainBinding(),
-      initialRoute: AppPages.INITIAL,
+      initialRoute: AppPages.initial,
       getPages: AppPages.routes,
 
       theme: themeApp == 'lightshampoo'?
@@ -38,6 +38,5 @@ class MyApp extends StatelessWidget {
       //themeMode: ThemeMode.light,
     );
   }
-
 
 }

@@ -5,10 +5,11 @@ import 'package:line_icons/line_icon.dart';
 import 'package:wish_list_gx/core.dart';
 
 class WishList extends StatelessWidget {
+  const WishList({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: GetX<WishListController>(
+    return GetX<WishListController>(
           builder: (WishListController wishListController){
             if(wishListController.listWish.value.isNotEmpty){
               return _listViewWish(wishListController);
@@ -16,7 +17,6 @@ class WishList extends StatelessWidget {
               return Center(child: Text('empty_list'.tr));
             }
           }
-        )
     );
   }
 

@@ -47,11 +47,13 @@ class HomeController extends GetxController{
       isThemeBlackCrows.value = true;
       Get.changeTheme(themeBlackCrows);
       Get.find<UserProfileController>().preferences.setString('theme', 'blackcrows');
+      //Get.find<UserProfileController>().renderAvatar();
     } else{
       isThemeLightShampoo.value = true;
       isThemeBlackCrows.value = false;
       Get.changeTheme(themeLightShampoo);
       Get.find<UserProfileController>().preferences.setString('theme', 'lightshampoo');
+      //Get.find<UserProfileController>().renderAvatar();
     }
   }
 

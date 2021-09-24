@@ -4,8 +4,8 @@ import 'package:wish_list_gx/controllers/home_controller.dart';
 import 'package:wish_list_gx/core.dart';
 
 class BottomSheetSetting extends StatelessWidget {
+  BottomSheetSetting({Key? key}) : super(key: key);
   final _homeController = Get.find<HomeController>();
-  //bool isSwitch = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -16,12 +16,12 @@ class BottomSheetSetting extends StatelessWidget {
       height: 400,
       child: Column(
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
         Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text('light_shampoo' .tr, style: Get.theme.primaryTextTheme.button),
-              SizedBox(width: 30),
+              const SizedBox(width: 30),
               Obx(() =>
                   Switch(
                   value: _homeController.isThemeLightShampoo.value,
@@ -35,14 +35,14 @@ class BottomSheetSetting extends StatelessWidget {
                     activeTrackColor: Colors.grey[600],
                 ),
               ),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text('black_crows' .tr, style: Get.theme.primaryTextTheme.button),
-              SizedBox(width: 30),
+              const SizedBox(width: 30),
               Obx(() =>
                   Switch(
                     value: _homeController.isThemeBlackCrows.value,
@@ -56,7 +56,7 @@ class BottomSheetSetting extends StatelessWidget {
                     activeTrackColor: Colors.grey[600],
                   ),
               ),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
             ],
           ),
 
@@ -68,11 +68,11 @@ class BottomSheetSetting extends StatelessWidget {
                   onPressed: () => _homeController.onSwitchLocale(),
                   child: Text('change_locale'.tr, style: Get.theme.primaryTextTheme.button),
               ),
-              SizedBox(width: 30),
+              const SizedBox(width: 30),
               IconButton(
                   onPressed: () => _homeController.onSwitchLocale(),
                   icon: Icon(iconGlob, size: 30, color: Get.theme.focusColor,)),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
             ],
           ),
           Row(
@@ -82,11 +82,11 @@ class BottomSheetSetting extends StatelessWidget {
                 onPressed: () => Get.find<UserProfileController>().addAvatar(),
                 child: Text('change_avatar'.tr, style: Get.theme.primaryTextTheme.button),
               ),
-              SizedBox(width: 30),
+              const SizedBox(width: 30),
               IconButton(
                   onPressed: () => Get.find<UserProfileController>().addAvatar(),
                   icon: Icon(iconCamera, size: 30, color: Get.theme.focusColor,)),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
             ],
           ),
         // Row(

@@ -91,14 +91,16 @@ class WishView extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
+          Get.find<WishController>().listImgT.isNotEmpty ?
           Row(children: [
             Expanded(
               child: ElevatedButton(
                 onPressed: () => Get.find<WishController>().addImage(),
-                child: const Icon(Icons.photo_camera),
+                child: const Icon(iconCameraSt),
               ),
             ),
-          ]),
+          ]) :
+          const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
@@ -143,14 +145,16 @@ class WishView extends StatelessWidget {
               ),
             ],
           ),
+          !Get.find<WishController>().currentWish.isSaved ?
           Row(children: [
             Expanded(
               child: ElevatedButton(
                 onPressed: () => Get.find<WishController>().saveWish(),
-                child: const Icon(Icons.add),
+                child: const Icon(iconAdd),
               ),
             ),
-          ]),
+          ]):
+            const SizedBox(height: 20)
         ],
       );
 
@@ -161,6 +165,13 @@ class WishView extends StatelessWidget {
         initialValue: 0,
         builder: (currentImage, updateFn) => Column(
           children: [
+            controller.listImgT.isEmpty ?
+                IconButton(
+                  icon: Icon(iconCameraSt),
+                  color:  Get.theme.focusColor,
+                  iconSize: 100,
+                  onPressed: () => controller.addImage(),
+                ) :
             Container(
               height: 150,
               child: PageView(
@@ -217,7 +228,7 @@ class WishView extends StatelessWidget {
               imageUrl: patch,
               fit: BoxFit.scaleDown,
               placeholder: (context, url) =>
-                  LineIcon.retroCamera(size: 100,),
+              Icon(iconCameraSt, size: 100, color: Get.theme.focusColor,),
               errorWidget: (context, url, error) =>
                   LineIcon.exclamationCircle(size: 100,),
             ) :

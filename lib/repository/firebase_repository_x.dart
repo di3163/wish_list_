@@ -84,20 +84,17 @@ class FirebaseWishRepository extends WishRepositoryInterface{
   @override
   Future<String> saveImage(File image) async{
     String imgURL = '';
-    //try {
+    try {
       FirebaseStorage storage = FirebaseStorage.instance;
-      Reference ref = storage.ref().child(
-          'users/${_firebaseAuth.currentUser!.uid}/${image.path
-              .split('/')
-              .last}');
+      Reference ref = storage.ref().child('users/${_firebaseAuth.currentUser!.uid}/${image.path.split('/').last}');
       UploadTask uploadTask = ref.putFile(image);
       await uploadTask.whenComplete(() async {
         imgURL = await uploadTask.snapshot.ref.getDownloadURL();
       });
-    // }catch(e){
-    //   return Future.error('err_img_load'.tr);
-    // }
-    print('saveImage $imgURL');
+     }catch(e){
+       return Future.error('err_img_load'.tr);
+     }
+
     return imgURL;
   }
 

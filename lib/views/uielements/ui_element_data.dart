@@ -18,6 +18,7 @@ final iconGifts = LineIcons.byName('gifts');
 final iconCog = LineIcons.byName('cog');
 final iconGlob = LineIcons.byName('globe');
 final iconCamera = LineIcons.retroCamera;
+const iconCameraSt = Icons.photo_camera;
 const iconBack = Icons.arrow_back;
 const iconFavorite = Icons.favorite_border;
 const iconEmail = Icons.alternate_email;

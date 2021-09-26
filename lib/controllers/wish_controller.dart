@@ -19,36 +19,72 @@ class WishController extends GetxController{
   Wish currentWish = Wish.empty();
   bool isChanged = false;
 
-  void addImage()async{
+  Future<XFile?> _pickedFile() async{
     try {
-      final XFile? pickedFile = await _picker.pickImage(
+      return await _picker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 25,
       );
-      if (pickedFile != null) {
-        if (!currentWish.isSaved) {
-          listImgT.add(pickedFile.path);
-        } else {
-          //listImgT.add(await _uploadImage(pickedFile.path));
-          listImgT.add(pickedFile.path);
-          currentWish.listPicURL.add(await _uploadImage(pickedFile.path));
-          await _firebaseRepository.updateUserWish(currentWish);
-        }
-      }
     }catch(e){
       _showSnackBar('err_img_load'.tr);
     }
-    update(['images']);
   }
 
-  Future<String> _uploadImage(String path)async{
-    return  await _firebaseRepository.saveImage(File(path));
+  void addImage() async {
+    final pickedFile = await _pickedFile();
+    if (pickedFile == null) {
+      _showSnackBar('err_img_load'.tr);
+      return;
+    }
+    if (!currentWish.isSaved) {
+      listImgT.add(pickedFile.path);
+      update(['images']);
+    } else {
+      if (!await CheckConnect().check()){
+        _showSnackBar('err_network'.tr);
+      }
+      try {
+        // String firebasePatch = await _uploadImage(pickedFile.path);
+        String firebasePatch = await _firebaseRepository.saveImage(File(pickedFile.path));
+        listImgT.add(firebasePatch);
+        update(['images']);
+        currentWish.listPicURL.add(firebasePatch);
+        await _firebaseRepository.updateUserWish(currentWish);
+      } catch (e) {
+        _showSnackBar('err_img_load'.tr);
+      }
+    }
   }
+
+  void deleteImage(String imgUrl)async{
+    if(currentWish.isSaved) {
+      if (!await CheckConnect().check()){
+        _showSnackBar('err_network'.tr);
+      }
+      try {
+        await _firebaseRepository.deleteImage(imgUrl);
+        listImgT.remove(imgUrl);
+        update(['images']);
+        currentWish.listPicURL.remove(imgUrl);
+        await _firebaseRepository.updateUserWish(currentWish);
+      } catch(e){
+        _showSnackBar(e.toString());
+      }
+    }else{
+      listImgT.remove(imgUrl);
+      update(['images']);
+    }
+  }
+
+  // Future<String> _uploadImage(String path)async{
+  //   return  await _firebaseRepository.saveImage(File(path));
+  // }
 
   _addWishListPicURL()async{
       for(String element in listImgT){
-        String uRL = await _uploadImage(element);
-        currentWish.listPicURL.add(uRL);
+        // String url = await _uploadImage(element);
+        String url = await _firebaseRepository.saveImage(File(element));
+        currentWish.listPicURL.add(url);
       }
   }
 
@@ -57,6 +93,9 @@ class WishController extends GetxController{
       _showSnackBar('warn_title'.tr);
       return;
     }
+    if (!await CheckConnect().check()){
+      _showSnackBar('err_network'.tr);
+    }
     try {
       await _addWishListPicURL();
       currentWish.title = controllerTitle.value.text;
@@ -64,34 +103,26 @@ class WishController extends GetxController{
       currentWish.link = controllerLink.value.text;
       _firebaseRepository.addUserWish(currentWish);
     }catch(e){
-      _showSnackBar(e.toString());
+      _showSnackBar('err_sav'.tr);
     }
   }
 
   Future<void> updateWish()async {
+    if(controllerTitle.value.text.isEmpty){
+      _showSnackBar('warn_title'.tr);
+      return;
+    }
+    if (!await CheckConnect().check()){
+      _showSnackBar('err_network'.tr);
+    }
     currentWish.title = controllerTitle.value.text;
     currentWish.description = controllerDescription.value.text;
     currentWish.link = controllerLink.value.text;
     try {
       await _firebaseRepository.updateUserWish(currentWish);
     }catch(e){
-      _showSnackBar(e.toString());
+      _showSnackBar('err_sav'.tr);
     }
-  }
-
-  void deleteImage(String imgUrl)async{
-      if(currentWish.isSaved) {
-        try {
-          await _firebaseRepository.deleteImage(imgUrl);
-          currentWish.listPicURL.remove(imgUrl);
-          await _firebaseRepository.updateUserWish(currentWish);
-        } catch(e){
-          _showSnackBar(e.toString());
-        }
-      }else{
-        listImgT.remove(imgUrl);
-      }
-      update(['images']);
   }
 
   void _showSnackBar(String message){
@@ -99,7 +130,7 @@ class WishController extends GetxController{
       'err'.tr,
       message,
       isDismissible: true,
-      duration: const Duration(seconds: 10),
+      duration: const Duration(seconds: 5),
     );
   }
 
@@ -118,8 +149,9 @@ class WishController extends GetxController{
   void onClose() async {
     if (isChanged) {
       Get.defaultDialog(
-        title: 'сохранить изменения?',
+        title: 'save'.tr,
         backgroundColor: Get.theme.backgroundColor,
+        buttonColor: Get.theme.buttonColor,
         onConfirm: () async {
           await updateWish();
           Get.back();

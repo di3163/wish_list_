@@ -11,7 +11,9 @@ class WishListController extends GetxController{
 
   void deleteWish(Wish wish){
     Get.defaultDialog(
-      title: 'Удалить?',
+      title: 'del'.tr,
+      backgroundColor: Get.theme.backgroundColor,
+      buttonColor: Get.theme.buttonColor,
       onConfirm: () {
         for(String imgUrl in wish.listPicURL){
           _firebaseRepository.deleteImage(imgUrl);

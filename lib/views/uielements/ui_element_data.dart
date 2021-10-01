@@ -22,6 +22,7 @@ const iconCameraSt = Icons.photo_camera;
 const iconBack = Icons.arrow_back;
 const iconFavorite = Icons.favorite_border;
 const iconEmail = Icons.alternate_email;
+const iconView = Icons.visibility;
 final iconKey = LineIcons.byName('key');
 //const iconKey = Icons.vpn_key;
 //const iconPhone = Icons.phone;

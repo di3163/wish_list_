@@ -9,12 +9,9 @@ class ContactsXController extends GetxController{
   ContactsXController(this._firebaseRepository);
 
   final AuthRepositoryInterface _firebaseRepository;
-  //Rx<List<UserOther>> _userContactList = Rx<List<UserOther>>([]);
   List<UserOther> _userContactList = [];
   PermissionStatus status = PermissionStatus.denied;
   Rx<ContactWidget> contactWidget = Rx<ContactWidget>(EmptyContactWidget());
-
-  //List<UserOther> get contacts => _userContactList;
 
   checkPermit()async{
     status = await Permission.contacts.status;
@@ -90,7 +87,7 @@ class ContactsXController extends GetxController{
     if (status.isGranted){
       await _getContacts();
     }else{
-      contactWidget(ErrorContactWidget('необходимо разрешение'));
+      contactWidget(ErrorContactWidget('permit_req'.tr));
     }
   }
 

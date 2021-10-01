@@ -25,7 +25,8 @@ class OtherUserWidget extends AppUserWidget{
   }
 
   @override
-  Widget appBarTitle() {return Row(
+  Widget appBarTitle() {
+    return Row(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       Icon(iconPerson, size: 35),

@@ -25,7 +25,6 @@ class Wish {
     title = documentSnapshot["title"],
     description = documentSnapshot["description"],
     link = documentSnapshot["link"],
-    //this.listPicURL = documentSnapshot["listImg"].cast<String>(),
     listPicURL = List<String>.from(documentSnapshot["listImg"]),
     isSaved = true;
 

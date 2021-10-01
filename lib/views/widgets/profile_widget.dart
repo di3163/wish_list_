@@ -26,18 +26,18 @@ class ProfileWidget extends ProfileViewWidget {
                   onTap: () => _userProfileController.addAvatar(),
                   child: ClipOval(
                     child: data.value.isEmpty
-                        ? Icon(iconPerson, size: 90, color: Get.theme.accentColor,)
+                        ? Icon(iconPerson, size: 110, color: Get.theme.splashColor,)
                         : CachedNetworkImage(
                             placeholder: (context, url) =>
                                 CircularProgressIndicator(
-                                    color: Get.theme.accentColor),
+                                    color: Get.theme.splashColor),
                             imageUrl: data.value,
                             errorWidget: (context, url, error) => Icon(
                                 iconPerson,
-                                size: 90,
-                                color: Get.theme.accentColor),
-                            width: 90.0,
-                            height: 90.0,
+                                size: 110,
+                                color: Get.theme.splashColor),
+                            width: 110.0,
+                            height: 110.0,
                             //color: Get.theme.bottomAppBarColor,
                             fit: BoxFit.cover,
                           ),

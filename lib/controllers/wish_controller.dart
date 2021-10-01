@@ -15,7 +15,6 @@ class WishController extends GetxController{
 
   final ImagePicker _picker;
   late List<String> listImgT;
-  //List<String> listImg = [];
   Wish currentWish = Wish.empty();
   bool isChanged = false;
 
@@ -26,14 +25,14 @@ class WishController extends GetxController{
         imageQuality: 25,
       );
     }catch(e){
-      _showSnackBar('err_img_load'.tr);
+      SnackbarGet().showSnackBar('err'.tr, 'err_img_load'.tr);
     }
   }
 
   void addImage() async {
     final pickedFile = await _pickedFile();
     if (pickedFile == null) {
-      _showSnackBar('err_img_load'.tr);
+      SnackbarGet().showSnackBar('warning'.tr,'err_img_load'.tr);
       return;
     }
     if (!currentWish.isSaved) {
@@ -41,17 +40,16 @@ class WishController extends GetxController{
       update(['images']);
     } else {
       if (!await CheckConnect().check()){
-        _showSnackBar('err_network'.tr);
+        SnackbarGet().showSnackBar('warning'.tr,'err_network'.tr);
       }
       try {
-        // String firebasePatch = await _uploadImage(pickedFile.path);
         String firebasePatch = await _firebaseRepository.saveImage(File(pickedFile.path));
         listImgT.add(firebasePatch);
         update(['images']);
         currentWish.listPicURL.add(firebasePatch);
         await _firebaseRepository.updateUserWish(currentWish);
       } catch (e) {
-        _showSnackBar('err_img_load'.tr);
+        SnackbarGet().showSnackBar('err'.tr, 'err_img_load'.tr);
       }
     }
   }
@@ -59,7 +57,7 @@ class WishController extends GetxController{
   void deleteImage(String imgUrl)async{
     if(currentWish.isSaved) {
       if (!await CheckConnect().check()){
-        _showSnackBar('err_network'.tr);
+        SnackbarGet().showSnackBar('warning'.tr,'err_network'.tr);
       }
       try {
         await _firebaseRepository.deleteImage(imgUrl);
@@ -68,7 +66,7 @@ class WishController extends GetxController{
         currentWish.listPicURL.remove(imgUrl);
         await _firebaseRepository.updateUserWish(currentWish);
       } catch(e){
-        _showSnackBar(e.toString());
+        SnackbarGet().showSnackBar('err'.tr, e.toString());
       }
     }else{
       listImgT.remove(imgUrl);
@@ -76,13 +74,8 @@ class WishController extends GetxController{
     }
   }
 
-  // Future<String> _uploadImage(String path)async{
-  //   return  await _firebaseRepository.saveImage(File(path));
-  // }
-
   _addWishListPicURL()async{
       for(String element in listImgT){
-        // String url = await _uploadImage(element);
         String url = await _firebaseRepository.saveImage(File(element));
         currentWish.listPicURL.add(url);
       }
@@ -90,11 +83,11 @@ class WishController extends GetxController{
 
   void saveWish()async{
     if(controllerTitle.value.text.isEmpty){
-      _showSnackBar('warn_title'.tr);
+      SnackbarGet().showSnackBar('warning'.tr,'warn_title'.tr);
       return;
     }
     if (!await CheckConnect().check()){
-      _showSnackBar('err_network'.tr);
+      SnackbarGet().showSnackBar('warning'.tr,'err_network'.tr);
     }
     try {
       await _addWishListPicURL();
@@ -103,17 +96,17 @@ class WishController extends GetxController{
       currentWish.link = controllerLink.value.text;
       _firebaseRepository.addUserWish(currentWish);
     }catch(e){
-      _showSnackBar('err_sav'.tr);
+      SnackbarGet().showSnackBar('err'.tr, 'err_sav'.tr);
     }
   }
 
   Future<void> updateWish()async {
     if(controllerTitle.value.text.isEmpty){
-      _showSnackBar('warn_title'.tr);
+      SnackbarGet().showSnackBar('warning'.tr,'warn_title'.tr);
       return;
     }
     if (!await CheckConnect().check()){
-      _showSnackBar('err_network'.tr);
+      SnackbarGet().showSnackBar('warning'.tr, 'err_network'.tr);
     }
     currentWish.title = controllerTitle.value.text;
     currentWish.description = controllerDescription.value.text;
@@ -121,19 +114,9 @@ class WishController extends GetxController{
     try {
       await _firebaseRepository.updateUserWish(currentWish);
     }catch(e){
-      _showSnackBar('err_sav'.tr);
+      SnackbarGet().showSnackBar('err'.tr, 'err_sav'.tr);
     }
   }
-
-  void _showSnackBar(String message){
-    Get.snackbar(
-      'err'.tr,
-      message,
-      isDismissible: true,
-      duration: const Duration(seconds: 5),
-    );
-  }
-
 
   @override
   void onInit() {
@@ -148,19 +131,24 @@ class WishController extends GetxController{
   @override
   void onClose() async {
     if (isChanged) {
-      Get.defaultDialog(
-        title: 'save'.tr,
-        backgroundColor: Get.theme.backgroundColor,
-        buttonColor: Get.theme.buttonColor,
-        onConfirm: () async {
+      AppDialog(
+        titleText: 'save'.tr,
+        confirm: () async{
           await updateWish();
-          Get.back();
         },
-        onCancel: () => Get.back(),
-        middleText: '',
-      );
+      ).getDialog();
+      // Get.defaultDialog(
+      //   title: 'save'.tr,
+      //   backgroundColor: Get.theme.backgroundColor,
+      //   buttonColor: Get.theme.bottomAppBarColor,
+      //   onConfirm: () async {
+      //     await updateWish();
+      //     Get.back();
+      //   },
+      //   onCancel: () => Get.back(),
+      //   middleText: '',
+      // );
     }
     super.onClose();
   }
-
 }

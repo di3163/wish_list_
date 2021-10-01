@@ -32,6 +32,7 @@ ThemeData themeLightShampoo = _themeLight.copyWith(
     actionsIconTheme: IconThemeData(color: Colors.grey[200]),
     titleTextStyle: TextStyle(color: Colors.grey[200]),
     toolbarTextStyle: TextStyle(color: Colors.grey[200]),
+    shadowColor: Colors.grey[600]
   ),
 
   bottomNavigationBarTheme: BottomNavigationBarThemeData(

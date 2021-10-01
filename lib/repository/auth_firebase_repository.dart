@@ -5,10 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
-import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
-
-
 
 import 'package:wish_list_gx/core.dart';
 
@@ -135,13 +131,11 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
     try{
     await _firebaseAuth.verifyPhoneNumber(
         phoneNumber: '+$phoneNumber',
-        timeout: const Duration(seconds: 3),
+        timeout: const Duration(seconds: 5),
         verificationCompleted: (authCredential) =>
             _verificationComplete(authCredential, phoneNumber, email),
-        // if there is an exception, get the exception message and set it to the return value
         verificationFailed: (authException) => _verificationFailed(authException),
         codeAutoRetrievalTimeout: (verificationId) => _codeAutoRetrievalTimeout(verificationId),
-        // called when the SMS code is sent
         codeSent: (verificationId, int? resendToken) => _smsCodeSent(verificationId, phoneNumber, email)
     );
     } catch (e){
@@ -150,7 +144,6 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
   }
 
   _verificationComplete(AuthCredential authCredential, String phoneNumber, String email) async{
-     //FirebaseAuth.instance.signInWithCredential(authCredential).then((authResult) {});
      UserCredential authResult = await _firebaseAuth.signInWithCredential(authCredential);
      _phoneNumber = phoneNumber;
      _email = email;
@@ -171,18 +164,16 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
   }
 
   void _verificationFailed(FirebaseAuthException authException) {
-    Get.find<UserProfileController>().showSnackBar(authException.code);
+    Get.find<UserProfileController>().verificationFiled(authException.code);
   }
 
   void _codeAutoRetrievalTimeout(String verificationCode) {
-    // set the verification code so that we can use it to log the user in
     _verificationId = verificationCode;
   }
 
   @override
   Future<String> saveImage(File image) async{
     String imgURL = '';
-    //FirebaseStorage storage = FirebaseStorage.instance;
     try {
       Reference ref = FirebaseStorage.instance.ref().
       child('users/${_firebaseAuth.currentUser!.uid}/${image.path
@@ -225,84 +216,84 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
 
 }
 
-class MockAuthRepository extends AuthRepositoryInterface{
-
-  String _phoneNumber = '';
-  String _email = '';
-  late final FirebaseAuth _firebaseAuth;
-
-  @override
-  Future deleteImage(String imgUrl) {
-    // TODO: implement deleteImage
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Map> getAllRegistredUsers() async{
-    return <dynamic, dynamic>{};
-  }
-
-  @override
-  User? getCurrentUser() {
-    User? user =   _firebaseAuth.currentUser;
-    return user;
-  }
-
-  @override
-  Future<String> getUserAvatarURL(String id) async{
-    return '';
-  }
-
-  @override
-  Future<String> saveImage(File image) async{
-    return '';
-  }
-
-  @override
-  Future signIn({required String email, required String password}) {
-    // TODO: implement signIn
-    throw UnimplementedError();
-  }
-
-  @override
-  Future signOut() {
-    return _firebaseAuth.signOut();
-  }
-
-  @override
-  Future signUp({required String email, required String password, required String phone}) {
-    // TODO: implement signUp
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> signUpWithSMSCode({required String smsCode})async {
-    final googleSignIn = MockGoogleSignIn();
-    final signinAccount = await googleSignIn.signIn();
-    final googleAuth = await signinAccount!.authentication;
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    final user = MockUser(
-      isAnonymous: false,
-      uid: 'qu8HX5C4c1XSJHam259u2BKCgyu1',
-      email: 'merida-di@yandex.ru',
-      displayName: 'merida-di@yandex.ru',
-      photoURL: ''
-    );
-    _firebaseAuth = MockFirebaseAuth(mockUser: user);
-    await _firebaseAuth.signInWithCredential(credential);
-  }
-
-  @override
-  Future<void> updateUserProfile(String photoURL) async{
-    User? user = getCurrentUser();
-  }
-
-  @override
-  Future<void> verifyPhoneNumber({required String phoneNumber, required String email}) async {
-    _phoneNumber = phoneNumber;
-    _email = email;
-  }
-}
+// class MockAuthRepository extends AuthRepositoryInterface{
+//
+//   String _phoneNumber = '';
+//   String _email = '';
+//   late final FirebaseAuth _firebaseAuth;
+//
+//   @override
+//   Future deleteImage(String imgUrl) {
+//     // TODO: implement deleteImage
+//     throw UnimplementedError();
+//   }
+//
+//   @override
+//   Future<Map> getAllRegistredUsers() async{
+//     return <dynamic, dynamic>{};
+//   }
+//
+//   @override
+//   User? getCurrentUser() {
+//     User? user =   _firebaseAuth.currentUser;
+//     return user;
+//   }
+//
+//   @override
+//   Future<String> getUserAvatarURL(String id) async{
+//     return '';
+//   }
+//
+//   @override
+//   Future<String> saveImage(File image) async{
+//     return '';
+//   }
+//
+//   @override
+//   Future signIn({required String email, required String password}) {
+//     // TODO: implement signIn
+//     throw UnimplementedError();
+//   }
+//
+//   @override
+//   Future signOut() {
+//     return _firebaseAuth.signOut();
+//   }
+//
+//   @override
+//   Future signUp({required String email, required String password, required String phone}) {
+//     // TODO: implement signUp
+//     throw UnimplementedError();
+//   }
+//
+//   @override
+//   Future<void> signUpWithSMSCode({required String smsCode})async {
+//     final googleSignIn = MockGoogleSignIn();
+//     final signinAccount = await googleSignIn.signIn();
+//     final googleAuth = await signinAccount!.authentication;
+//     final AuthCredential credential = GoogleAuthProvider.credential(
+//       accessToken: googleAuth.accessToken,
+//       idToken: googleAuth.idToken,
+//     );
+//     final user = MockUser(
+//       isAnonymous: false,
+//       uid: 'qu8HX5C4c1XSJHam259u2BKCgyu1',
+//       email: 'merida-di@yandex.ru',
+//       displayName: 'merida-di@yandex.ru',
+//       photoURL: ''
+//     );
+//     _firebaseAuth = MockFirebaseAuth(mockUser: user);
+//     await _firebaseAuth.signInWithCredential(credential);
+//   }
+//
+//   @override
+//   Future<void> updateUserProfile(String photoURL) async{
+//     User? user = getCurrentUser();
+//   }
+//
+//   @override
+//   Future<void> verifyPhoneNumber({required String phoneNumber, required String email}) async {
+//     _phoneNumber = phoneNumber;
+//     _email = email;
+//   }
+// }

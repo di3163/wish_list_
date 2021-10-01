@@ -30,18 +30,20 @@ class Messages extends Translations{
           "wish_link": "Wish link",
           "empty_list": "The list is empty",
           "light_shampoo": "Shampoo theme",
-          "black_crows": "Graphite theme",
+          "black_crows": "Dark theme",
           "change_locale": "Change locale",
           "change_avatar": "Change avatar",
           "save": "save changes?",
           "del": "delete?",
           "err": "Error!",
           "auth_req": "authorization required",
+          "permit_req": "permission is required",
           "err_img_load": "image loading error",
           "err_auth": "authorization error",
           "warn_title": "the name is not filled in",
           "err_network": "network error",
-          "err_sav": "saving error"
+          "err_sav": "saving error",
+          "warning": "!"
 
         },
         'ru_RU': {
@@ -71,18 +73,20 @@ class Messages extends Translations{
           "wish_link": "ссылка",
           "empty_list": "список пуст",
           "light_shampoo": "Тема шампунь",
-          "black_crows": "Тема графит",
+          "black_crows": "Темная тема",
           "change_locale": "Переключить язык",
           "change_avatar": "Сменить фотку",
           "save": "сохранить изменения?",
           "del": "удалить?",
           "err": "Ошибка!",
           "auth_req": "требуется авторизация",
+          "permit_req": "необходимо разрешение",
           "err_img_load": "ошибка загрузки изображения",
           "err_auth": "ошибка авторизации",
           "warn_title": "название не заполнено, сохранение невозможно",
           "err_network": "ошибка сети",
-          "err_sav": "ошибка сохранения"
+          "err_sav": "ошибка сохранения",
+          "warning": "!"
         },
       };
 }

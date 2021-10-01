@@ -17,8 +17,7 @@ class HomeView extends StatelessWidget {
               (data) => data.value.appBarLeading(),
           _homeController.userWidget,
         ),
-        title:  
-         ObxValue<Rx<AppUserWidget>>(
+        title: ObxValue<Rx<AppUserWidget>>(
               (data) => data.value.appBarTitle(),
           _homeController.userWidget,
         ),
@@ -38,7 +37,10 @@ class HomeView extends StatelessWidget {
         shape: const ContinuousRectangleBorder(
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20))),
+                bottomRight: Radius.circular(20)
+            )
+        ),
+        elevation: 10,
       ),
       body: PageView(
         controller: _homeController.pageController,
@@ -57,9 +59,9 @@ class HomeView extends StatelessWidget {
           // );
         },
         children: [
-          ProfileView(),
-          ContactXView(),
-          WishList(),
+          const ProfileView(),
+          const ContactXView(),
+          const WishList(),
         ],
       ),
       bottomNavigationBar:
@@ -96,7 +98,7 @@ class HomeView extends StatelessWidget {
                 icon: tab.appTabIcon(),
                 title: Text(tab.localization(), style: const TextStyle(fontSize: 12)),
                 activeColor: Get.theme.focusColor,
-                inactiveColor: Get.theme.accentColor,
+                inactiveColor: Get.theme.splashColor,
               );
             }).toList(),
           ),

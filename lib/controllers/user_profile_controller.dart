@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'dart:ui';
 
@@ -32,32 +31,38 @@ class UserProfileController extends GetxController{
     }catch(e){
       user.value = UserEmpty();
       appFormWidget(LoginPhoneForm());
-      showSnackBar(e.toString());
+      SnackbarGet().showSnackBar('err'.tr, e.toString());
     }
   }
 
   Future<void> verifyPhone() async {
-    try {
       if (!formKey.currentState!.validate()) {
         formKey.currentState!.save();
       } else {
         String phoneN = _correctPhoneNum(formControllerPhone.text.trim());
-        await _firebaseRepository.verifyPhoneNumber(
+        try {
+          await _firebaseRepository.verifyPhoneNumber(
             phoneNumber: phoneN,
             email: formControllerEmail.text.trim()
-        );
-        //await _firebaseRepository.verifyPhoneNumber(phoneNumber: '79258036135',email: 'merida-di@yandex.ru');
+          );
+        } catch(e){
+          user.value = UserEmpty();
+          appFormWidget(RegisterPhoneForm());
+          SnackbarGet().showSnackBar('err'.tr, e.toString());
+        }
         appFormWidget(LoginPhoneForm());
       }
-     } catch(e){
-      user.value = UserEmpty();
-      appFormWidget(RegisterPhoneForm());
-      showSnackBar(e.toString());
-     }
+  }
+
+  void verificationFiled(String codeErr){
+    user.value = UserEmpty();
+    appFormWidget(RegisterPhoneForm());
+    SnackbarGet().showSnackBar('err'.tr, codeErr);
   }
 
   void autoVerification(){
     _confirmUser();
+    Get.find<ContactsXController>().getContacts();
   }
 
 
@@ -93,7 +98,7 @@ class UserProfileController extends GetxController{
         await _firebaseRepository.updateUserProfile(photoURL);
         avatarURL.value = photoURL;
       }catch(e){
-        showSnackBar(e.toString());
+        SnackbarGet().showSnackBar('err'.tr, e.toString());
       }
     }
   }
@@ -125,20 +130,10 @@ class UserProfileController extends GetxController{
   }
 
   void _initPreferences(){
-    _setPrefLocale(preferences.getString('locale') ?? Get.deviceLocale!.languageCode);
-    //_setPrefTheme(preferences.getString('theme') ?? 'lightshampoo');
+    var deviceLocale = Get.deviceLocale;
+    _setPrefLocale(preferences.getString('locale') ?? deviceLocale!.languageCode);
   }
 
-
-  void showSnackBar(String message){
-    Get.snackbar(
-      'err'.tr,
-      message,
-      isDismissible: true,
-      duration: const Duration(seconds: 10),
-    );
-  }
-  
 
   @override
   void onInit() async{

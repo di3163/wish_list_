@@ -23,8 +23,6 @@ ThemeData themeBlackCrows = _themeDark.copyWith(
     textTheme: _textTheme,
     primaryTextTheme: _textTheme,
 
-
-
     appBarTheme: AppBarTheme(
       color: Colors.grey[800],
       iconTheme: IconThemeData(color: Colors.grey[200]),
@@ -32,6 +30,7 @@ ThemeData themeBlackCrows = _themeDark.copyWith(
       actionsIconTheme: IconThemeData(color: Colors.grey[200]),
       titleTextStyle: TextStyle(color: Colors.grey[200]),
       toolbarTextStyle: TextStyle(color: Colors.grey[200]),
+      shadowColor: Colors.grey[400]
     ),
 
     bottomNavigationBarTheme: BottomNavigationBarThemeData(

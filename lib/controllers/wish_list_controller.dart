@@ -4,7 +4,7 @@ import 'package:wish_list_gx/core.dart';
 
 class WishListController extends GetxController{
   WishListController(this._firebaseRepository);
-  UserApp user = UserEmpty();
+  UserApp user = UserEmpty.empty();
   Rx<WishWidget> currentWishWidget = Rx<WishWidget>(const ErrWishWidget());
 
   final WishRepositoryInterface _firebaseRepository;
@@ -40,7 +40,7 @@ class WishListController extends GetxController{
       currentWishWidget(const UserWishWidget());
     }
     if (user.userStatus != UserStatus.unauthenticated) {
-      listWish.bindStream(_firebaseRepository.getUserWishStream(user.id));
+      listWish.bindStream(_firebaseRepository.fetchUserWishStream(user.id));
     }else{
       listWish.value.clear();
     }

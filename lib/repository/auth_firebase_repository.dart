@@ -8,11 +8,14 @@ import 'package:get/get.dart';
 
 import 'package:wish_list_gx/core.dart';
 
-class AllUsersListFailure implements Exception {}
+class AllUsersListFailure implements Exception {
+  final String? msg;
+  const AllUsersListFailure([this.msg]);
+}
 
 abstract class AuthRepositoryInterface {
 
-  Future<Map<dynamic, dynamic>> getAllRegistredUsers();
+  Future<Map<dynamic, dynamic>> fetchAllRegistredUsers();
 
   Future<void> signUpWithSMSCode({
     required String smsCode});
@@ -25,9 +28,9 @@ abstract class AuthRepositoryInterface {
 
   Future<void> updateUserProfile(String photoURL);
 
-  getCurrentUser();
+  currentUser();
 
-  Future<String> getUserAvatarURL(String id);
+  Future<String> fetchUserAvatarURL(String id);
   Future<String> saveImage(File image);
   Future deleteImage(String imgUrl);
 }
@@ -39,12 +42,12 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
   String _phoneNumber = '';
   String _email = '';
 
-  CollectionReference _getReference(String collection){
+  CollectionReference _fetchReference(String collection){
     return FirebaseFirestore.instance.collection(collection);
   }
 
   Future<void> _addUsersData(User user, String email, String phone)async {
-    CollectionReference ref = _getReference('users');
+    CollectionReference ref = _fetchReference('users');
     ref.doc(user.uid).set({
       'name': email,
       'email': email,
@@ -54,21 +57,21 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
   }
 
   @override
-  Future<String> getUserAvatarURL(String id)async{
+  Future<String> fetchUserAvatarURL(String id)async{
     String userData = '';
     try {
-      DocumentReference documentReference = _getReference('users').doc(id);
+      DocumentReference documentReference = _fetchReference('users').doc(id);
       await documentReference.get().then((DocumentSnapshot snapshot) {
         userData = (snapshot.data() as Map)['photoURL'] ?? '';
       });
     }catch(e) {
-      return Future.error('err_img_load'.tr);
+      return Future.error(e);
     }
     return userData;
   }
 
   Future<void> _addUserAvatar(String id, String photoURL)async{
-    DocumentReference documentReference = _getReference('users').doc(id);
+    DocumentReference documentReference = _fetchReference('users').doc(id);
     await documentReference.update(
         {
           'photoURL': photoURL
@@ -77,7 +80,7 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
   }
 
   Future<void> _addUserToAllRegistred(User user, String phone) async {
-    DocumentReference documentReference = _getReference('users').doc('register_users');
+    DocumentReference documentReference = _fetchReference('users').doc('register_users');
     FirebaseFirestore.instance.runTransaction((transaction) async {
       DocumentSnapshot snapshot = await transaction.get(documentReference);
       var data = snapshot.data() as Map;
@@ -88,19 +91,19 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
   }
 
   @override
-  Future<Map<dynamic, dynamic>> getAllRegistredUsers() async{
+  Future<Map<dynamic, dynamic>> fetchAllRegistredUsers() async{
     var allregisterMap = {};
-    DocumentReference documentReference = _getReference('users').doc('register_users');
+    DocumentReference documentReference = _fetchReference('users').doc('register_users');
     await documentReference.get().then((DocumentSnapshot snapshot) {
         allregisterMap = (snapshot.data() as Map)['all_register'] as Map;
     }).catchError((e) {
-        throw AllUsersListFailure();
+        throw AllUsersListFailure(e.toString());
     });
     return allregisterMap;
   }
 
   @override
-  User? getCurrentUser() {
+  User? currentUser() {
     User? user =   _firebaseAuth.currentUser;
     return user;
   }
@@ -122,7 +125,7 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
         _addUserToAllRegistred(user, _phoneNumber);
       }
     }catch(e) {
-      return Future.error('err_auth'.tr);
+      return Future.error(e);
     }
   }
 
@@ -139,7 +142,7 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
         codeSent: (verificationId, int? resendToken) => _smsCodeSent(verificationId, phoneNumber, email)
     );
     } catch (e){
-      return Future.error('err_auth'.tr);
+      return Future.error(e);
     }
   }
 
@@ -164,7 +167,7 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
   }
 
   void _verificationFailed(FirebaseAuthException authException) {
-    Get.find<UserProfileController>().verificationFiled(authException.code);
+    Get.find<UserProfileController>().verificationFiled(authException);
   }
 
   void _codeAutoRetrievalTimeout(String verificationCode) {
@@ -184,20 +187,20 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
         imgURL = await uploadTask.snapshot.ref.getDownloadURL();
       });
     }catch(e){
-      return Future.error('err_img_load'.tr);
+      return Future.error(e);
     }
     return imgURL;
   }
 
   @override
   Future<void> updateUserProfile(String photoURL)  async {
-    User? user = getCurrentUser();
+    User? user = currentUser();
     if(user != null) {
       try {
         user.updatePhotoURL(photoURL);
         _addUserAvatar(user.uid, photoURL);
       }catch(e){
-        return Future.error('err'.tr);
+        return Future.error(e);
       }
     }
   }
@@ -209,7 +212,7 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
       Reference ref = storage.refFromURL(imgUrl);
       await ref.delete();
     }catch(e){
-      return Future.error('err'.tr);
+      return Future.error(e);
     }
   }
 

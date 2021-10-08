@@ -24,15 +24,16 @@ class WishController extends GetxController{
         source: ImageSource.gallery,
         imageQuality: 25,
       );
-    }catch(e){
-      SnackbarGet().showSnackBar('err'.tr, 'err_img_load'.tr);
+    }catch(e, s){
+      await FirebaseCrash.error(e, s, 'err_img_load'.tr, false);
+      SnackbarGet.showSnackBar('err_img_load'.tr);
     }
   }
 
   void addImage() async {
     final pickedFile = await _pickedFile();
     if (pickedFile == null) {
-      SnackbarGet().showSnackBar('warning'.tr,'err_img_load'.tr);
+      SnackbarGet.showSnackBar('err_img_load'.tr);
       return;
     }
     if (!currentWish.isSaved) {
@@ -40,7 +41,7 @@ class WishController extends GetxController{
       update(['images']);
     } else {
       if (!await CheckConnect().check()){
-        SnackbarGet().showSnackBar('warning'.tr,'err_network'.tr);
+        SnackbarGet.showSnackBar('err_network'.tr);
       }
       try {
         String firebasePatch = await _firebaseRepository.saveImage(File(pickedFile.path));
@@ -48,8 +49,9 @@ class WishController extends GetxController{
         update(['images']);
         currentWish.listPicURL.add(firebasePatch);
         await _firebaseRepository.updateUserWish(currentWish);
-      } catch (e) {
-        SnackbarGet().showSnackBar('err'.tr, 'err_img_load'.tr);
+      } catch (e, s) {
+        await FirebaseCrash.error(e, s, 'err_img_load'.tr, false);
+        SnackbarGet.showSnackBar('err_img_load'.tr);
       }
     }
   }
@@ -57,7 +59,7 @@ class WishController extends GetxController{
   void deleteImage(String imgUrl)async{
     if(currentWish.isSaved) {
       if (!await CheckConnect().check()){
-        SnackbarGet().showSnackBar('warning'.tr,'err_network'.tr);
+        SnackbarGet.showSnackBar('err_network'.tr);
       }
       try {
         await _firebaseRepository.deleteImage(imgUrl);
@@ -65,8 +67,9 @@ class WishController extends GetxController{
         update(['images']);
         currentWish.listPicURL.remove(imgUrl);
         await _firebaseRepository.updateUserWish(currentWish);
-      } catch(e){
-        SnackbarGet().showSnackBar('err'.tr, e.toString());
+      } catch(e, s){
+        await FirebaseCrash.error(e, s, 'err_img_load'.tr, false);
+        SnackbarGet.showSnackBar('err'.tr);
       }
     }else{
       listImgT.remove(imgUrl);
@@ -83,11 +86,11 @@ class WishController extends GetxController{
 
   void saveWish()async{
     if(controllerTitle.value.text.isEmpty){
-      SnackbarGet().showSnackBar('warning'.tr,'warn_title'.tr);
+      SnackbarGet.showSnackBar('warn_title'.tr);
       return;
     }
     if (!await CheckConnect().check()){
-      SnackbarGet().showSnackBar('warning'.tr,'err_network'.tr);
+      SnackbarGet.showSnackBar('err_network'.tr);
     }
     try {
       await _addWishListPicURL();
@@ -95,26 +98,28 @@ class WishController extends GetxController{
       currentWish.description = controllerDescription.value.text;
       currentWish.link = controllerLink.value.text;
       _firebaseRepository.addUserWish(currentWish);
-    }catch(e){
-      SnackbarGet().showSnackBar('err'.tr, 'err_sav'.tr);
+    }catch(e, s){
+      await FirebaseCrash.error(e, s, 'err_sav'.tr, false);
+      SnackbarGet.showSnackBar('err_sav'.tr);
     }
   }
 
   Future<void> updateWish()async {
     if(controllerTitle.value.text.isEmpty){
-      SnackbarGet().showSnackBar('warning'.tr,'warn_title'.tr);
+      SnackbarGet.showSnackBar('warn_title'.tr);
       return;
     }
     if (!await CheckConnect().check()){
-      SnackbarGet().showSnackBar('warning'.tr, 'err_network'.tr);
+      SnackbarGet.showSnackBar('err_network'.tr);
     }
     currentWish.title = controllerTitle.value.text;
     currentWish.description = controllerDescription.value.text;
     currentWish.link = controllerLink.value.text;
     try {
       await _firebaseRepository.updateUserWish(currentWish);
-    }catch(e){
-      SnackbarGet().showSnackBar('err'.tr, 'err_sav'.tr);
+    }catch(e, s){
+      await FirebaseCrash.error(e, s, 'err_sav'.tr, false);
+      SnackbarGet.showSnackBar('err_sav'.tr);
     }
   }
 

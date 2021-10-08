@@ -78,7 +78,7 @@ class LoginPhoneForm extends AppForm{
       labelText: label,
       icon: icon,
     );
-  }
+    }
   }
 
 

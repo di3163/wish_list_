@@ -12,7 +12,18 @@ abstract class UserApp{
 }
 
 class UserEmpty extends UserApp{
-  UserEmpty() : super(id: '', userStatus:  UserStatus.unauthenticated, photoURL: '');
+  // UserEmpty() : super(id: '', userStatus:  UserStatus.unauthenticated, photoURL: '');
+  UserEmpty({required String id, required UserStatus userStatus, required String photoURL})
+      : super(id: id, userStatus: userStatus, photoURL: photoURL);
+
+  factory UserEmpty.empty(){
+    return UserEmpty(
+        id: '',
+        userStatus:  UserStatus.unauthenticated,
+        photoURL: ''
+    );
+  }
+
 }
 
 class UserFirebase extends UserApp {

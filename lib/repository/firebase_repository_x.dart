@@ -12,7 +12,7 @@ class WishOperationFailure implements Exception{}
 abstract class WishRepositoryInterface {
   Future updateUserWish(Wish wish);
   Future addUserWish(Wish wish);
-  Stream<List<Wish>> getUserWishStream(String id);
+  Stream<List<Wish>> fetchUserWishStream(String id);
   deleteWish(Wish wish);
   Future<String> saveImage(File image);
   Future deleteImage(String imgUrl);
@@ -23,14 +23,14 @@ class FirebaseWishRepository extends WishRepositoryInterface{
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  CollectionReference _getReference(String collection){
+  CollectionReference _fetchReference(String collection){
     return FirebaseFirestore.instance.collection(collection);
   }
 
   @override
   Future<void> addUserWish(Wish wish) async{
     try {
-      CollectionReference ref = _getReference(_firebaseAuth.currentUser!.uid);
+      CollectionReference ref = _fetchReference(_firebaseAuth.currentUser!.uid);
       await ref.add(
         wish.toJson()
       //     {
@@ -61,13 +61,13 @@ class FirebaseWishRepository extends WishRepositoryInterface{
   @override
   void deleteWish(Wish wish) async{
     //CollectionReference ref = _getReference(_firebaseAuth.currentUser!.uid);
-    await _getReference(_firebaseAuth.currentUser!.uid).doc(wish.id).delete();
+    await _fetchReference(_firebaseAuth.currentUser!.uid).doc(wish.id).delete();
   }
 
   @override
-  Stream<List<Wish>> getUserWishStream(String id) {
+  Stream<List<Wish>> fetchUserWishStream(String id) {
     try {
-      return _getReference(id).snapshots().map((QuerySnapshot querySnapshot) {
+      return _fetchReference(id).snapshots().map((QuerySnapshot querySnapshot) {
         return [for(var element in querySnapshot.docs) Wish.fromDocumentSnapshot(element)];
         // List<Wish> listWish = [];
         // for(var element in querySnapshot.docs){
@@ -101,7 +101,7 @@ class FirebaseWishRepository extends WishRepositoryInterface{
   @override
   Future<void> updateUserWish(Wish wish) async{
     try {
-      CollectionReference ref = _getReference(_firebaseAuth.currentUser!.uid);
+      CollectionReference ref = _fetchReference(_firebaseAuth.currentUser!.uid);
       await ref.doc(wish.id).update(
         wish.toJson()
           // {

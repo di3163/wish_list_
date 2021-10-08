@@ -37,10 +37,10 @@ class AppDialog {
 
 class SnackbarGet{
 
-  showSnackBar(String title, String message){
+  static showSnackBar(String title, [String? message]){
     Get.snackbar(
       title,
-      message,
+      message ?? '',
       colorText: Get.theme.hintColor,
       isDismissible: true,
       duration: const Duration(seconds: 5),

@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,8 @@ void main() async{
   String themeApp = preferences.getString('theme') ?? 'lightshampoo';
 
   await Firebase.initializeApp();
+  //FirebaseCrashlytics.instance.crash();
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   runApp(MyApp(themeApp));
 }
 

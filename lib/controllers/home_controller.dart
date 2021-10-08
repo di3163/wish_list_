@@ -13,7 +13,7 @@ class HomeController extends GetxController{
   var isThemeBlackCrows = false.obs;
 
   int tabIndex = 0;
-  UserApp user = UserEmpty();
+  UserApp user = UserEmpty.empty();
   Rx<AppUserWidget> userWidget = Rx<AppUserWidget>(UserWidget());
 
   void otherUserWishList(UserOther user){
@@ -31,6 +31,9 @@ class HomeController extends GetxController{
     }else {
       isVisibleSettingCog.value = false;
     }
+    // if(index == 1){
+    //   Get.find<ContactsXController>().updateContactWidget();
+    // }
     if(index == 2){
       isVisibleFAB.value = true;
       Get.find<WishListController>().bindListWish(user);

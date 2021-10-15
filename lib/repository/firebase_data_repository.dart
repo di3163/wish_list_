@@ -9,17 +9,30 @@ import 'package:wish_list_gx/core.dart';
 
 class WishOperationFailure implements Exception{}
 
-abstract class WishRepositoryInterface {
-  Future updateUserWish(Wish wish);
-  Future addUserWish(Wish wish);
-  Stream<List<Wish>> fetchUserWishStream(String id);
-  deleteWish(Wish wish);
-  Future<String> saveImage(File image);
-  Future deleteImage(String imgUrl);
+abstract class DataRepositoryInterface implements
+    ImageOperations,
+    UpdateUserWish,
+    AddUserWish,
+    FetchUserWishStream,
+    DeleteWish {
+  //Future updateUserWish(Wish wish);
+  // Future addUserWish(Wish wish);
+  // Stream<List<Wish>> fetchUserWishStream(String id);
+  // deleteWish(Wish wish);
+  // Future<String> saveImage(File image);
+  // Future deleteImage(String imgUrl);
 }
 
 
-class FirebaseWishRepository extends WishRepositoryInterface{
+class FirebaseDataRepository implements DataRepositoryInterface{
+
+  static final FirebaseDataRepository _firebaseDataRepository = FirebaseDataRepository._internal();
+
+  factory FirebaseDataRepository(){
+    return _firebaseDataRepository;
+  }
+
+  FirebaseDataRepository._internal();
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
@@ -41,7 +54,7 @@ class FirebaseWishRepository extends WishRepositoryInterface{
       // }
       );
     }catch(e){
-      print('repository addUserW ${e.toString()}');
+      //print('repository addUserW ${e.toString()}');
       return Future.error('err_network'.tr);
       //throw WishOperationFailure();
     }

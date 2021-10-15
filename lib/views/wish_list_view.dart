@@ -59,7 +59,7 @@ class WishList extends StatelessWidget {
         ),
         title: Text(
             wishListController.listWish.value[index].title,
-            style: TextStyle(fontSize: 18),
+            style: const TextStyle(fontSize: 18),
         ),
         subtitle: const Text(''),
       ),

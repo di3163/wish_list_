@@ -8,47 +8,70 @@ import 'package:get/get.dart';
 
 import 'package:wish_list_gx/core.dart';
 
-class AllUsersListFailure implements Exception {
-  final String? msg;
-  const AllUsersListFailure([this.msg]);
-}
 
-abstract class AuthRepositoryInterface {
+abstract class AuthRepositoryInterface implements
+    FetchAllRegistredUsers,
+    SignUpWithSMSCode,
+    VerifyPhoneNumber,
+    UpdateUserProfile,
+    ImageOperations,
+    FetchUserAvatarURL {
 
-  Future<Map<dynamic, dynamic>> fetchAllRegistredUsers();
+  //Future<RequestBody> fetchAllRegistredUsers();
 
-  Future<void> signUpWithSMSCode({
-    required String smsCode});
+  // Future<void> signUpWithSMSCode({
+  //   required String smsCode});
 
-  Future verifyPhoneNumber({
-    required String phoneNumber,
-    required String email});
+  // Future verifyPhoneNumber({
+  //   required String phoneNumber,
+  //   required String email});
 
   Future signOut();
 
-  Future<void> updateUserProfile(String photoURL);
+  // Future<void> updateUserProfile(String photoURL);
 
   currentUser();
 
-  Future<String> fetchUserAvatarURL(String id);
-  Future<String> saveImage(File image);
-  Future deleteImage(String imgUrl);
+  // Future<String> fetchUserAvatarURL(String id);
+  // Future<String> saveImage(File image);
+  // Future deleteImage(String imgUrl);
 }
 
-class FirebaseAuthRepository extends AuthRepositoryInterface{
+typedef FunctionDocReference = DocumentReference Function(String docName);
+
+class FirebaseAuthRepository implements AuthRepositoryInterface{
+
+  static final FirebaseAuthRepository _firebaseAuthRepository = FirebaseAuthRepository._internal();
+
+  factory FirebaseAuthRepository(){
+    return _firebaseAuthRepository;
+  }
+
+  FirebaseAuthRepository._internal();
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   String _verificationId = '';
   String _phoneNumber = '';
   String _email = '';
 
-  CollectionReference _fetchReference(String collection){
-    return FirebaseFirestore.instance.collection(collection);
+  // CollectionReference _fetchReference(String collection){
+  //   return FirebaseFirestore.instance.collection(collection);
+  // }
+
+  DocumentReference _usersDocRef(String docName){
+    return FirebaseFirestore.instance.collection('users').
+      doc(docName);
   }
 
-  Future<void> _addUsersData(User user, String email, String phone)async {
-    CollectionReference ref = _fetchReference('users');
-    ref.doc(user.uid).set({
+  Future<void> _addUsersData(
+      User user,
+      String email,
+      String phone,
+      FunctionDocReference docReference
+      )async {
+    //CollectionReference ref = _fetchReference('users');
+    //ref.doc(user.uid).set({
+    docReference(user.uid).set({
       'name': email,
       'email': email,
       'phone' :  phone,
@@ -60,8 +83,10 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
   Future<String> fetchUserAvatarURL(String id)async{
     String userData = '';
     try {
-      DocumentReference documentReference = _fetchReference('users').doc(id);
-      await documentReference.get().then((DocumentSnapshot snapshot) {
+
+      //DocumentReference documentReference = _fetchReference('users').doc(id);
+      //await documentReference.get().then((DocumentSnapshot snapshot) {
+      await _usersDocRef(id).get().then((DocumentSnapshot snapshot) {
         userData = (snapshot.data() as Map)['photoURL'] ?? '';
       });
     }catch(e) {
@@ -70,32 +95,44 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
     return userData;
   }
 
-  Future<void> _addUserAvatar(String id, String photoURL)async{
-    DocumentReference documentReference = _fetchReference('users').doc(id);
-    await documentReference.update(
-        {
-          'photoURL': photoURL
+  Future<void> _addUserAvatar(
+      String id,
+      String photoURL,
+      FunctionDocReference docReference
+      )async{
+    //DocumentReference documentReference = _fetchReference('users').doc(id);
+    //await documentReference.update(
+        await docReference(id).update(
+          {
+            'photoURL': photoURL
         }
-    );
+        );
   }
 
-  Future<void> _addUserToAllRegistred(User user, String phone) async {
-    DocumentReference documentReference = _fetchReference('users').doc('register_users');
-    FirebaseFirestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot snapshot = await transaction.get(documentReference);
-      var data = snapshot.data() as Map;
-      Map<String, dynamic> allregisterMap = data['all_register'] as Map<String, dynamic>;
-      allregisterMap[phone] = user.uid;
-      transaction.update(documentReference, {'all_register': allregisterMap});
-    });
+  Future<void> _addUserToAllRegistred(
+      User user,
+      String phone,
+      FunctionDocReference docReference
+      ) async {
+    //DocumentReference documentReference = _fetchReference('users').doc('register_users');
+        var documentReference = docReference('register_users');
+
+        FirebaseFirestore.instance.runTransaction((transaction) async {
+          DocumentSnapshot snapshot = await transaction.get(documentReference);
+          var data = snapshot.data() as Map;
+          RequestBody allregisterMap = data['all_register'] as RequestBody;
+          allregisterMap[phone] = user.uid;
+          transaction.update(documentReference, {'all_register': allregisterMap});
+        });
   }
 
   @override
-  Future<Map<dynamic, dynamic>> fetchAllRegistredUsers() async{
-    var allregisterMap = {};
-    DocumentReference documentReference = _fetchReference('users').doc('register_users');
+  Future<RequestBody> fetchAllRegistredUsers() async{
+    RequestBody allregisterMap = {};
+    //DocumentReference documentReference = _fetchReference('users').doc('register_users');
+    var documentReference = _usersDocRef('register_users');
     await documentReference.get().then((DocumentSnapshot snapshot) {
-        allregisterMap = (snapshot.data() as Map)['all_register'] as Map;
+        allregisterMap = (snapshot.data() as Map)['all_register'] as RequestBody;
     }).catchError((e) {
         throw AllUsersListFailure(e.toString());
     });
@@ -121,8 +158,8 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
       UserCredential authResult = await _firebaseAuth.signInWithCredential(credential);
       User? user = _firebaseAuth.currentUser;
       if(authResult.additionalUserInfo!.isNewUser){
-        _addUsersData(user!, _email, _phoneNumber);
-        _addUserToAllRegistred(user, _phoneNumber);
+        _addUsersData(user!, _email, _phoneNumber, _usersDocRef);
+        _addUserToAllRegistred(user, _phoneNumber, _usersDocRef);
       }
     }catch(e) {
       return Future.error(e);
@@ -152,8 +189,8 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
      _email = email;
      User? user = _firebaseAuth.currentUser;
      if(authResult.additionalUserInfo!.isNewUser){
-       _addUsersData(user!, _email, _phoneNumber);
-       _addUserToAllRegistred(user, _phoneNumber);
+       _addUsersData(user!, _email, _phoneNumber, _usersDocRef);
+       _addUserToAllRegistred(user, _phoneNumber, _usersDocRef);
      }
      if(user != null) {
        Get.find<UserProfileController>().autoVerification();
@@ -198,7 +235,7 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
     if(user != null) {
       try {
         user.updatePhotoURL(photoURL);
-        _addUserAvatar(user.uid, photoURL);
+        _addUserAvatar(user.uid, photoURL, _usersDocRef);
       }catch(e){
         return Future.error(e);
       }
@@ -227,7 +264,7 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
 //
 //   @override
 //   Future deleteImage(String imgUrl) {
-//     // TODO: implement deleteImage
+//
 //     throw UnimplementedError();
 //   }
 //
@@ -254,7 +291,7 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
 //
 //   @override
 //   Future signIn({required String email, required String password}) {
-//     // TODO: implement signIn
+//
 //     throw UnimplementedError();
 //   }
 //
@@ -265,7 +302,7 @@ class FirebaseAuthRepository extends AuthRepositoryInterface{
 //
 //   @override
 //   Future signUp({required String email, required String password, required String phone}) {
-//     // TODO: implement signUp
+//
 //     throw UnimplementedError();
 //   }
 //

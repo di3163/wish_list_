@@ -33,7 +33,7 @@ class ContactsXController extends GetxController{
     }
   }
 
-  Future<List<UserOther>> _fetchUserContacts(List<Contact> contactList, Map<dynamic, dynamic> allRegistredUsers)async{
+  Future<List<UserOther>> _fetchUserContacts(List<Contact> contactList, Map<String, dynamic> allRegistredUsers)async{
     Map<String, UserOther> contactMaps = {};
     for (Contact element in contactList){
       String email = '';
@@ -100,12 +100,14 @@ class ContactsXController extends GetxController{
 
         List<UserOther> userContactList = await _fetchContacts();
         contactWidget(LoadedContactWidget(userContactList));
-        //throw ContactServiceException('eine Warnung');
-      }on ContactServiceException{
-        FirebaseCrash.log('contact_service_err'.tr);
+        //throw const ContactServiceException('eine Warnung');
+      }on ContactServiceException catch(e){
+        //FirebaseCrash.log('contact_service_err'.tr);
+        await FirebaseCrash.errorN(error: e, reason: e.msg, isFatal: false);
         contactWidget(ErrorContactWidget('err'.tr));
       }catch(e, s){
         await FirebaseCrash.error(e, s, 'err'.tr, false);
+        contactWidget(ErrorContactWidget('err'.tr));
       }
     }
   }

@@ -8,7 +8,7 @@ import 'package:wish_list_gx/core.dart';
 class WishController extends GetxController{
   WishController(this._firebaseRepository, this._picker);
 
-  final WishRepositoryInterface _firebaseRepository;
+  final DataRepositoryInterface _firebaseRepository;
   final controllerTitle = TextEditingController().obs;
   final controllerDescription = TextEditingController().obs;
   final controllerLink = TextEditingController().obs;

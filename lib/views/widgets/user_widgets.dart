@@ -18,7 +18,7 @@ class OtherUserWidget extends AppUserWidget{
         builder: (BuildContext context) {
           return IconButton(
             icon: const Icon(iconBack),
-            onPressed: () {Get.find<HomeController>().pageController.jumpToPage(1);},
+            onPressed: () => Get.find<HomeController>().pageController.jumpToPage(1),
           );
         }
     );

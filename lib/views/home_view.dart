@@ -8,28 +8,28 @@ import 'package:wish_list_gx/core.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({Key? key}) : super(key: key);
-  final _homeController = Get.find<HomeController>();
+  final HomeController _homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: ObxValue<Rx<AppUserWidget>>(
               (data) => data.value.appBarLeading(),
-          _homeController.userWidget,
+          Get.find<HomeController>().userWidget,
         ),
         title: ObxValue<Rx<AppUserWidget>>(
               (data) => data.value.appBarTitle(),
-          _homeController.userWidget,
+          Get.find<HomeController>().userWidget,
         ),
         actions: [
           Obx(() =>
               Visibility(
 
-                  child: IconButton(
-                    icon: Icon(iconCog),
-                    onPressed: () => Get.bottomSheet(BottomSheetSetting()),
-                  ),
-                visible: _homeController.isVisibleSettingCog.value,
+                child: IconButton(
+                  icon: Icon(iconCog),
+                  onPressed: () => Get.bottomSheet(BottomSheetSetting()),
+                ),
+                visible: Get.find<HomeController>().isVisibleSettingCog.value,
               ),
           ),
         ],
@@ -64,46 +64,7 @@ class HomeView extends StatelessWidget {
           const WishList(),
         ],
       ),
-      bottomNavigationBar:
-      GetBuilder<HomeController>(
-        builder: (controller) => Container(
-          padding: const EdgeInsets.only(top: 10),
-          decoration: BoxDecoration(
-            color: Get.theme.bottomAppBarColor,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-            boxShadow: [
-              BoxShadow(
-                //color: Colors.grey[600]!.withOpacity(0.5),
-                color: Get.theme.shadowColor,
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: BottomNavyBar(
-            selectedIndex: controller.tabIndex,
-            showElevation: false,
-            backgroundColor: Get.theme.bottomAppBarColor,
-            curve: Curves.fastOutSlowIn,
-
-            onItemSelected: (index) {
-              controller.tabIndex = index;
-              controller.user = Get.find<UserProfileController>().user.value;
-              //controller.onChangeTabIndex(index);
-              controller.pageController.jumpToPage(index);
-            },
-            items: AppTab.values.map((tab) {
-              return BottomNavyBarItem(
-                icon: tab.appTabIcon(),
-                title: Text(tab.localization(), style: const TextStyle(fontSize: 12)),
-                activeColor: Get.theme.focusColor,
-                inactiveColor: Get.theme.splashColor,
-              );
-            }).toList(),
-          ),
-        ),
-      ),
+      bottomNavigationBar: _BottomNavyBarWidget(),
       floatingActionButton: Obx(() =>
          Visibility(
           child: FloatingActionButton(
@@ -119,3 +80,49 @@ class HomeView extends StatelessWidget {
     );
   }
 }
+
+class _BottomNavyBarWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<HomeController>(
+      builder: (controller) => Container(
+        padding: const EdgeInsets.only(top: 10),
+        decoration: BoxDecoration(
+          color: Get.theme.bottomAppBarColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+              //color: Colors.grey[600]!.withOpacity(0.5),
+              color: Get.theme.shadowColor,
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: BottomNavyBar(
+          selectedIndex: controller.tabIndex,
+          showElevation: false,
+          backgroundColor: Get.theme.bottomAppBarColor,
+          curve: Curves.fastOutSlowIn,
+
+          onItemSelected: (index) {
+            controller.tabIndex = index;
+            controller.user = Get.find<UserProfileController>().user.value;
+            //controller.onChangeTabIndex(index);
+            controller.pageController.jumpToPage(index);
+          },
+          items: AppTab.values.map((tab) {
+            return BottomNavyBarItem(
+              icon: tab.appTabIcon(),
+              title: Text(tab.localization(), style: const TextStyle(fontSize: 12)),
+              activeColor: Get.theme.focusColor,
+              inactiveColor: Get.theme.splashColor,
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+}
+

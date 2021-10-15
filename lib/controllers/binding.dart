@@ -1,18 +1,15 @@
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:wish_list_gx/repository/firebase_repository_x.dart';
+import 'package:wish_list_gx/repository/firebase_data_repository.dart';
 import 'package:wish_list_gx/core.dart';
 
 class MainBinding extends Bindings{
   @override
   void dependencies() {
 
-    Get.put<UserProfileController>(UserProfileController(
-        FirebaseAuthRepository()
-      )
-    );
+    Get.put<UserProfileController>(UserProfileController(FirebaseAuthRepository()));
     Get.put<HomeController>(HomeController());
-    Get.put<WishListController>(WishListController(FirebaseWishRepository()));
+    Get.put<WishListController>(WishListController(FirebaseDataRepository()));
     Get.put<ContactsXController>(ContactsXController(FirebaseAuthRepository()));
   }
 }
@@ -20,7 +17,7 @@ class MainBinding extends Bindings{
 class WishBindings extends Bindings{
   @override
   void dependencies() {
-    Get.put<WishController>(WishController(FirebaseWishRepository(), ImagePicker()));
+    Get.put<WishController>(WishController(FirebaseDataRepository(), ImagePicker()));
   }
 
 }

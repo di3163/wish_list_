@@ -78,7 +78,7 @@ class UserProfileController extends GetxController {
     await _firebaseRepository.signOut();
     Get.delete<WishListController>();
     Get.lazyPut<WishListController>(() =>
-        WishListController(FirebaseWishRepository()));
+        WishListController(FirebaseDataRepository()));
     user.value = UserEmpty.empty();
     profileWidget(const LoginWidget());
     //Get.find<ContactsXController>().getContacts();

@@ -7,7 +7,7 @@ class WishListController extends GetxController{
   UserApp user = UserEmpty.empty();
   Rx<WishWidget> currentWishWidget = Rx<WishWidget>(const ErrWishWidget());
 
-  final WishRepositoryInterface _firebaseRepository;
+  final DataRepositoryInterface _firebaseRepository;
   Rx<List<Wish>> listWish = Rx<List<Wish>>([]);
 
   void deleteWish(Wish wish){

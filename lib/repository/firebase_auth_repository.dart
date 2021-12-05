@@ -54,10 +54,6 @@ class FirebaseAuthRepository implements AuthRepositoryInterface{
   String _phoneNumber = '';
   String _email = '';
 
-  // CollectionReference _fetchReference(String collection){
-  //   return FirebaseFirestore.instance.collection(collection);
-  // }
-
   DocumentReference _usersDocRef(String docName){
     return FirebaseFirestore.instance.collection('users').
       doc(docName);

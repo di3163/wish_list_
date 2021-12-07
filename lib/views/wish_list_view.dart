@@ -12,7 +12,7 @@ class WishList extends StatelessWidget {
     return GetX<WishListController>(
           builder: (WishListController wishListController){
             if(wishListController.listWish.value.isNotEmpty){
-              return _listViewWish(wishListController);
+              return const _ListViewWish();
             }else {
               return Center(child: Text('empty_list'.tr));
             }
@@ -20,29 +20,132 @@ class WishList extends StatelessWidget {
     );
   }
 
-  Widget _listViewWish(WishListController wishListController){
+
+
+  // Widget _listViewWish(WishListController wishListController){
+  //   return ListView.builder(
+  //     itemCount: wishListController.listWish.value.length,
+  //     itemBuilder: (_, index) => ListTile(
+  //       onTap: () => Get.toNamed(
+  //         '/wish',
+  //         arguments: wishListController.listWish.value[index],
+  //       ),
+  //       onLongPress: () {
+  //         Get.defaultDialog(
+  //           title: 'del'.tr,
+  //           backgroundColor: Get.theme.backgroundColor,
+  //           buttonColor: Get.theme.bottomAppBarColor,
+  //           onConfirm: ()  {
+  //             wishListController
+  //                 .deleteWish(wishListController.listWish.value[index]);
+  //             Get.back();
+  //           },
+  //           onCancel: () => Get.back(),
+  //           middleText: '',
+  //         );
+  //
+  //         // AppDialog(
+  //         //     titleText: 'del'.tr,
+  //         //     confirm: () {
+  //         //       wishListController
+  //         //           .deleteWish(wishListController.listWish.value[index]);
+  //         //     },
+  //         //     ).getDialog();
+  //       },
+  //
+  //       //wishListController.deleteWish(wishListController.listWish.value[index]),
+  //       leading: wishListController.listWish.value[index].listPicURL.isEmpty ?
+  //       Icon(iconCameraSt, size: 30, color: Get.theme.focusColor,) :
+  //       CachedNetworkImage(
+  //         imageUrl: wishListController.listWish.value[index].listPicURL[0],
+  //         imageBuilder: (context, imageProvider) => Container(
+  //           height: 40,
+  //           width: 40,
+  //           decoration: BoxDecoration(
+  //             borderRadius: const BorderRadius.vertical(top: Radius.circular(5), bottom: Radius.circular(5)),
+  //             image: DecorationImage(
+  //               image: imageProvider,
+  //               fit: BoxFit.fill,
+  //             ),
+  //           ),
+  //         ),
+  //         placeholder: (context, url) => LineIcon.retroCamera(size: 30,),
+  //         errorWidget: (context, url, error) => LineIcon.exclamationCircle(size: 30,),
+  //       ),
+  //       title: Text(
+  //           wishListController.listWish.value[index].title,
+  //           style: const TextStyle(fontSize: 18),
+  //       ),
+  //       subtitle: const Text(''),
+  //       trailing: IconButton(
+  //         onPressed: () {
+  //           Get.defaultDialog(
+  //             title: 'del'.tr,
+  //             backgroundColor: Get.theme.backgroundColor,
+  //             buttonColor: Get.theme.bottomAppBarColor,
+  //             onConfirm: ()  {
+  //               wishListController
+  //                   .deleteWish(wishListController.listWish.value[index]);
+  //               Get.back();
+  //             },
+  //             onCancel: () => Get.back(),
+  //             middleText: '',
+  //           );
+  //         },
+  //         icon: Icon(
+  //           iconDelete,
+  //           color: Get.theme.focusColor,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+}
+
+class _ListViewWish extends StatelessWidget {
+  const _ListViewWish({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final _wishListController = Get.find<WishListController>();
+    //ConfirmOperation<Wish> confirmDelete = (Wish wish) => _wishListController
+    //    .deleteWish(wish);
+
     return ListView.builder(
-      itemCount: wishListController.listWish.value.length,
+      itemCount: _wishListController.listWish.value.length,
       itemBuilder: (_, index) => ListTile(
         onTap: () => Get.toNamed(
           '/wish',
-          arguments: wishListController.listWish.value[index],
+          arguments: _wishListController.listWish.value[index],
         ),
         onLongPress: () {
-          AppDialog(
-              titleText: 'del'.tr,
-              confirm: () {
-                wishListController
-                    .deleteWish(wishListController.listWish.value[index]);
-              },
-              ).getDialog();
+          Get.defaultDialog(
+            title: 'del'.tr,
+            backgroundColor: Get.theme.backgroundColor,
+            buttonColor: Get.theme.bottomAppBarColor,
+            onConfirm: ()  {
+              _wishListController
+                  .deleteWish(_wishListController.listWish.value[index]);
+              Get.back();
+            },
+            onCancel: () => Get.back(),
+            middleText: '',
+          );
+
+          // AppDialog(
+          //     titleText: 'del'.tr,
+          //     confirm: () {
+          //       wishListController
+          //           .deleteWish(wishListController.listWish.value[index]);
+          //     },
+          //     ).getDialog();
         },
 
         //wishListController.deleteWish(wishListController.listWish.value[index]),
-        leading: wishListController.listWish.value[index].listPicURL.isEmpty ?
+        leading: _wishListController.listWish.value[index].listPicURL.isEmpty ?
         Icon(iconCameraSt, size: 30, color: Get.theme.focusColor,) :
         CachedNetworkImage(
-          imageUrl: wishListController.listWish.value[index].listPicURL[0],
+          imageUrl: _wishListController.listWish.value[index].listPicURL[0],
           imageBuilder: (context, imageProvider) => Container(
             height: 40,
             width: 40,
@@ -58,11 +161,39 @@ class WishList extends StatelessWidget {
           errorWidget: (context, url, error) => LineIcon.exclamationCircle(size: 30,),
         ),
         title: Text(
-            wishListController.listWish.value[index].title,
-            style: const TextStyle(fontSize: 18),
+          _wishListController.listWish.value[index].title,
+          style: const TextStyle(fontSize: 18),
         ),
         subtitle: const Text(''),
+        trailing: IconButton(
+          onPressed: () {
+            // AppDialog(
+            //     titleText: 'del'.tr,
+            //     confirm: (Wish wish) =>
+            //       confirmDelete(_wishListController.listWish.value[index])
+            //     ,
+            //     ).getDialog();
+
+            Get.defaultDialog(
+              title: 'del'.tr,
+              backgroundColor: Get.theme.backgroundColor,
+              buttonColor: Get.theme.bottomAppBarColor,
+              onConfirm: ()  {
+                _wishListController
+                    .deleteWish(_wishListController.listWish.value[index]);
+                Get.back();
+              },
+              onCancel: () => Get.back(),
+              middleText: '',
+            );
+          },
+          icon: Icon(
+            iconDelete,
+            color: Get.theme.focusColor,
+          ),
+        ),
       ),
     );
   }
 }
+

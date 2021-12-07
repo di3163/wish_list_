@@ -97,11 +97,13 @@ class WishController extends GetxController{
       currentWish.title = controllerTitle.value.text;
       currentWish.description = controllerDescription.value.text;
       currentWish.link = controllerLink.value.text;
-      _firebaseRepository.addUserWish(currentWish);
+      await _firebaseRepository.addUserWish(currentWish);
     }catch(e, s){
       await FirebaseCrash.error(e, s, 'err_sav'.tr, false);
       SnackbarGet.showSnackBar('err_sav'.tr);
     }
+    isChanged = false;
+    Get.back();
   }
 
   Future<void> updateWish()async {
@@ -145,7 +147,7 @@ class WishController extends GetxController{
       Get.defaultDialog(
         title: 'save'.tr,
         backgroundColor: Get.theme.backgroundColor,
-        buttonColor: Get.theme.bottomAppBarColor,
+        //buttonColor: Get.theme.bottomAppBarColor,
         onConfirm: () async {
           await updateWish();
           Get.back();

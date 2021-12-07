@@ -7,13 +7,9 @@ class ContactXView extends StatelessWidget {
   const ContactXView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-     return
-    // Container(
-    //   child:
-      GetX<ContactsXController>(
+     return GetX<ContactsXController>(
           builder: (ContactsXController contactsController) {
-        return contactsController.contactWidget.value.render();
+        return contactsController.contactWidget.value;
       });
-    //);
   }
 }

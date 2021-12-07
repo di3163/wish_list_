@@ -90,24 +90,24 @@ class ContactsXController extends GetxController{
   Future<void> updateContactWidget()async {
     //await checkPermit();
     if (!contactsPermissionStatus.isGranted) {
-      contactWidget(ErrorContactWidget('permit_req'.tr));
+      contactWidget(ErrorContactWidget(state: 'permit_req'.tr,));
     }else if(Get.find<UserProfileController>().
         user.value.userStatus == UserStatus.unauthenticated){
-      contactWidget(ErrorContactWidget('auth_req'.tr));
+      contactWidget(ErrorContactWidget(state: 'auth_req'.tr));
     }else{
       contactWidget(LoadingContactWidget());
       try {
 
         List<UserOther> userContactList = await _fetchContacts();
-        contactWidget(LoadedContactWidget(userContactList));
+        contactWidget(LoadedContactWidget(contacts: userContactList));
         //throw const ContactServiceException('eine Warnung');
       }on ContactServiceException catch(e){
         //FirebaseCrash.log('contact_service_err'.tr);
         await FirebaseCrash.errorN(error: e, reason: e.msg, isFatal: false);
-        contactWidget(ErrorContactWidget('err'.tr));
+        contactWidget(ErrorContactWidget(state:'err'.tr));
       }catch(e, s){
         await FirebaseCrash.error(e, s, 'err'.tr, false);
-        contactWidget(ErrorContactWidget('err'.tr));
+        contactWidget(ErrorContactWidget(state:'err'.tr));
       }
     }
   }

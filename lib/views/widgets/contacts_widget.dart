@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
-abstract class ContactWidget {
-  Widget render();
+abstract class ContactWidget extends StatelessWidget{
+  const ContactWidget({Key? key}) : super(key: key);
+  //Widget render();
 }
 
 class ErrorContactWidget extends ContactWidget{
-  String state;
+  final String state;
 
-  ErrorContactWidget(this.state);
+  const ErrorContactWidget({Key? key, required this.state}) : super(key: key);
 
   @override
-  Widget render() {
+  Widget build(BuildContext context) {
     return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -29,23 +30,24 @@ class ErrorContactWidget extends ContactWidget{
 }
 
 class EmptyContactWidget extends ContactWidget{
-
+  const EmptyContactWidget({Key? key}) : super(key: key);
   @override
-  Widget render() {
+  Widget build(BuildContext context) {
     return Center(
-      child:
+        child:
         Text('empty_list' .tr)
     );
   }
 }
 
 class LoadedContactWidget extends ContactWidget{
-  List<UserOther> contacts;
+  final List<UserOther> contacts;
 
-  LoadedContactWidget(this.contacts);
+  const LoadedContactWidget({Key? key, required this.contacts}) : super(key: key);
+
 
   @override
-  Widget render() {
+  Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: contacts.length,
       itemBuilder: (_, val) => ListTile(
@@ -57,34 +59,35 @@ class LoadedContactWidget extends ContactWidget{
         trailing: contacts[val].photoURL.isEmpty ?
         Icon(iconPerson, color: Get.theme.accentColor) :
 
-          CachedNetworkImage(
-            imageUrl: contacts[val].photoURL,
-            imageBuilder: (context, imageProvider) => Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                image: DecorationImage(
-                  image: imageProvider,
-                  fit: BoxFit.fill,
-                ),
+        CachedNetworkImage(
+          imageUrl: contacts[val].photoURL,
+          imageBuilder: (context, imageProvider) => Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.fill,
               ),
             ),
-            placeholder: (context, url) => Icon(iconPerson, color: Get.theme.accentColor),
-            errorWidget: (context, url, error) => Icon(iconPerson, color: Get.theme.accentColor),
           ),
+          placeholder: (context, url) => Icon(iconPerson, color: Get.theme.accentColor),
+          errorWidget: (context, url, error) => Icon(iconPerson, color: Get.theme.accentColor),
         ),
-
+      ),
     );
   }
 }
 
 class LoadingContactWidget extends ContactWidget{
 
+  const LoadingContactWidget({Key? key}) : super(key: key);
+
   @override
-  Widget render() {
+  Widget build(BuildContext context) {
     return const Center(
-        child: CircularProgressIndicator()
+        child: CircularProgressIndicator(),
     );
   }
 }

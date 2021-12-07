@@ -1,14 +1,17 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:wish_list_gx/core.dart';
 
+typedef ConfirmOperation<Wish> = Function(Wish wish);
 
 class AppDialog {
 
   final String? titleText;
   final String? middleText;
-  final VoidCallback? confirm;
+  final ConfirmOperation<Wish>? confirm;
   final VoidCallback? cancel;
+  //Confirm confirm;
 
   const AppDialog({
     this.titleText,
@@ -23,7 +26,7 @@ class AppDialog {
       backgroundColor: Get.theme.backgroundColor,
       buttonColor: Get.theme.bottomAppBarColor,
       onConfirm: () {
-        confirm ?? {};
+        this.confirm ?? {};
         Get.back();
       },
       onCancel: () {

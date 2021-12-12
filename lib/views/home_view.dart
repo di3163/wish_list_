@@ -42,27 +42,35 @@ class HomeView extends StatelessWidget {
         ),
         elevation: 10,
       ),
-      body: PageView(
-        controller: _homeController.pageController,
-        physics: const BouncingScrollPhysics(),
-        onPageChanged: (index){
-          _homeController.tabIndex = index;
-          if (_homeController.user.userStatus == UserStatus.other){
-            _homeController.user = Get.find<UserProfileController>().user.value;
-          }else{
-            _homeController.onChangeTabIndex(index);
-            _homeController.update();
-          }
-          //Get.find<HomeController>().pageController.jumpToPage(index);
-          // Get.find<HomeController>().changeTabIndex(
-          //     index, Get.find<UserProfileController>().user.value
-          // );
-        },
-        children: [
-          const ProfileView(),
-          const ContactXView(),
-          const WishList(),
-        ],
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(image: AssetImage('assets/images/wall_blue.png'),
+          fit: BoxFit.cover,
+            //colorFilter: ColorFilter.mode(Colors.grey, BlendMode.saturation)
+          ),
+        ),
+        child: PageView(
+          controller: _homeController.pageController,
+          physics: const BouncingScrollPhysics(),
+          onPageChanged: (index){
+            _homeController.tabIndex = index;
+            if (_homeController.user.userStatus == UserStatus.other){
+              _homeController.user = Get.find<UserProfileController>().user.value;
+            }else{
+              _homeController.onChangeTabIndex(index);
+              _homeController.update();
+            }
+            //Get.find<HomeController>().pageController.jumpToPage(index);
+            // Get.find<HomeController>().changeTabIndex(
+            //     index, Get.find<UserProfileController>().user.value
+            // );
+          },
+          children: const[
+             ProfileView(),
+             ContactXView(),
+             WishList(),
+          ],
+        ),
       ),
       bottomNavigationBar: _BottomNavyBarWidget(),
       floatingActionButton: Obx(() =>

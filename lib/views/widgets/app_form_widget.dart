@@ -38,7 +38,7 @@ class RegisterPhoneForm extends AppForm{
             decoration: _buildInputDecoration('phone' .tr , Icon(iconPhone, size: 30)),
           ),
           const SizedBox(height: 20),
-          const _FormButtonWidget(formButton: RegisterPhoneButton()),
+          ButtonWidget(formButton: RegisterPhoneButton(onClic: () => Get.find<UserProfileController>().verifyPhone())),
         ],
       ),
     );
@@ -68,7 +68,7 @@ class LoginPhoneForm extends AppForm{
             decoration: _buildInputDecoration('code' .tr, const Icon(iconCode, size: 30,)),
           ),
           const SizedBox(height: 20),
-          const _FormButtonWidget(formButton: CodeSendButton()),
+          ButtonWidget(formButton: CodeSendButton(onClic: () => Get.find<UserProfileController>().signUpWithSMSCode())),
         ],
       ),
     );
@@ -82,17 +82,17 @@ class LoginPhoneForm extends AppForm{
   }
 
 
-class _FormButtonWidget extends StatelessWidget {
-  final FormButton formButton;
-
-  const _FormButtonWidget({Key? key, this.formButton = const EmptyFormButton()})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: formButton.onButtonClicked,
-      child: Text(formButton.text),
-    );
-  }
-}
+// class _FormButtonWidget extends StatelessWidget {
+//   final FormButton formButton;
+//
+//   const _FormButtonWidget({Key? key, this.formButton = const EmptyFormButton()})
+//       : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return ElevatedButton(
+//       onPressed: formButton.onButtonClicked,
+//       child: Text(formButton.text),
+//     );
+//   }
+// }

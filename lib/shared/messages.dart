@@ -34,8 +34,8 @@ class Messages extends Translations{
           "change_locale": "Change locale",
           "change_avatar": "Change avatar",
           "save": "save changes?",
-          "del": "delete?",
-          "err": "Error!",
+          "del": "Delete ?",
+          "err": "Error !",
           "auth_req": "authorization required",
           "permit_req": "permission is required",
           "err_photo_url": "fetch photoURL error",
@@ -45,7 +45,9 @@ class Messages extends Translations{
           "warn_title": "the name is not filled in",
           "err_network": "network error",
           "err_sav": "saving error",
-          "warning": "!"
+          "warning": "!",
+          "ok": "Ok",
+          "cancel": "Cancel"
 
         },
         'ru_RU': {
@@ -90,7 +92,9 @@ class Messages extends Translations{
           "warn_title": "название не заполнено, сохранение невозможно",
           "err_network": "ошибка сети",
           "err_sav": "ошибка сохранения",
-          "warning": "!"
+          "warning": "!",
+          "ok": "Да",
+          "cancel": "Нет"
         },
       };
 }

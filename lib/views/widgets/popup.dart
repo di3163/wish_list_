@@ -3,28 +3,29 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
-typedef ConfirmOperation<Wish> = Function(Wish wish);
+typedef ConfirmOperation = void Function();
 
 class AppDialog {
 
   final String? titleText;
   final String? middleText;
-  final ConfirmOperation<Wish>? confirm;
+  final ConfirmOperation? confirm;
   final VoidCallback? cancel;
   //Confirm confirm;
 
-  const AppDialog({
+  AppDialog({
     this.titleText,
     this.middleText,
     this.confirm,
     this.cancel
   });
 
-  getDialog(){
+  Future<void> getDialog() async{
     return Get.defaultDialog(
       title: titleText ?? '',
       backgroundColor: Get.theme.backgroundColor,
       buttonColor: Get.theme.bottomAppBarColor,
+
       onConfirm: () {
         this.confirm ?? {};
         Get.back();

@@ -198,6 +198,7 @@ class UserWishWidget extends WishWidget{
 
 
 class _WishImages extends StatelessWidget {
+  _WishImages({Key? key}) : super(key: key);
   final controller = Get.find<WishController>();
 
   @override

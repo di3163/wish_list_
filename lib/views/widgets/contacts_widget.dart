@@ -49,6 +49,7 @@ class LoadedContactWidget extends ContactWidget{
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      key: PageStorageKey(key),
       itemCount: contacts.length,
       itemBuilder: (_, val) => ListTile(
         onTap: () {

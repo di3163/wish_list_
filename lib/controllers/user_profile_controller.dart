@@ -69,7 +69,6 @@ class UserProfileController extends GetxController {
 
   void autoVerification() {
     _confirmUser();
-    //Get.find<ContactsXController>().getContacts();
     Get.find<ContactsXController>().updateContactWidget();
   }
 
@@ -81,7 +80,6 @@ class UserProfileController extends GetxController {
         WishListController(FirebaseDataRepository()));
     user.value = UserEmpty.empty();
     profileWidget(const LoginWidget());
-    //Get.find<ContactsXController>().getContacts();
     Get.find<ContactsXController>().updateContactWidget();
   }
 

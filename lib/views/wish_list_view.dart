@@ -40,15 +40,19 @@ class _ListViewWish extends StatelessWidget {
                         arguments: wishListController.listWish.value[index],
                       ),
                   onLongPress: () {
-                    DialogBox(
-                      title: 'del'.tr,
-                      onClickAction: () {
-                        wishListController
-                            .deleteWish(
-                            wishListController.listWish.value[index]);
-                        Get.back();
+                    showDialog(context: context,
+                      builder: (BuildContext context){
+                        return DialogBox(
+                          title: 'del'.tr,
+                          onClickAction: () {
+                            wishListController
+                                .deleteWish(
+                                wishListController.listWish.value[index]);
+                            Get.back();
+                          },
+                          onCancelAction: () => Get.back(),
+                        );
                       },
-                      onCancelAction: () => Get.back(),
                     );
                     // Get.defaultDialog(
                     //   title: 'del'.tr,

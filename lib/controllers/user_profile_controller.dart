@@ -18,13 +18,22 @@ class UserProfileController extends GetxController {
   final TextEditingController formControllerPhone = TextEditingController();
   final TextEditingController formControllerCode = TextEditingController();
 
+
   Rx<UserApp> user = Rx<UserApp>(UserEmpty.empty());
   Rx<String> avatarURL = Rx<String>('');
   Rx<AppForm> appFormWidget = Rx<AppForm>(RegisterPhoneForm());
   Rx<ProfileViewWidget> profileWidget = Rx<ProfileViewWidget>(
       const LoginWidget());
+  Rx<dynamic> autchData = Rx<dynamic>('');
+
+  void bindUid(){
+    autchData.bindStream(_firebaseRepository.fetchAutchDataStream());
+  }
 
   Future<void> signUpWithSMSCode() async {
+    if (!await CheckConnect.check()){
+      SnackbarGet.showSnackBar('err_network'.tr);
+    }
     try {
       await _firebaseRepository.signUpWithSMSCode(
           smsCode: formControllerCode.text.trim());
@@ -39,37 +48,64 @@ class UserProfileController extends GetxController {
     }
   }
 
-  Future<void> verifyPhone() async {
+  void verifyPhone() async {
+    if (!await CheckConnect.check()){
+      SnackbarGet.showSnackBar('err_network'.tr);
+    }
     if (!formKey.currentState!.validate()) {
       formKey.currentState!.save();
     } else {
       String phoneN = _correctPhoneNum(formControllerPhone.text.trim());
       try {
-        await _firebaseRepository.verifyPhoneNumber(
+         await _firebaseRepository.verifyPhoneNumber(
             phoneNumber: phoneN,
-            email: formControllerEmail.text.trim()
-        );
-      } catch (e, s) {
+            email: formControllerEmail.text.trim());
+         //    ).then((_) => _autoVerification()
+         //    ).catchError((e, s)async{
+         //      user.value = UserEmpty.empty();
+         //      appFormWidget(RegisterPhoneForm());
+         //      await FirebaseCrash.error(e, s, 'err_auth'.tr, false);
+         //      SnackbarGet.showSnackBar('err_auth'.tr);
+         //    }
+         // );
+         // await Future.delayed(const Duration(seconds: 6));
+         // _confirmUser();
+         //
+         if (user.value.userStatus == UserStatus.unauthenticated ){
+            appFormWidget(LoginPhoneForm());
+         }
+       } catch (e, s) {
         user.value = UserEmpty.empty();
         appFormWidget(RegisterPhoneForm());
         await FirebaseCrash.error(e, s, 'err_auth'.tr, false);
         SnackbarGet.showSnackBar('err_auth'.tr);
       }
-      appFormWidget(LoginPhoneForm());
     }
   }
 
-  void verificationFiled(Exception err) {
+  void verificationFiled(Exception? err, StackTrace? s) async{
     user.value = UserEmpty.empty();
     appFormWidget(RegisterPhoneForm());
-    //TODO log into crashlytic
-    //await FirebaseCrash.error(err., s, 'err_auth'.tr, false);
+    await FirebaseCrash.error(err, s, 'err_auth'.tr, false);
     SnackbarGet.showSnackBar('err_auth'.tr);
   }
 
+  // void verificationStrimHandling(){
+  //   if(uid.value is Exception){
+  //     _verificationFiled(uid.value, uid.value.stackTrace);
+  //   } else{
+  //     _autoVerification();
+  //   }
+  // }
+
   void autoVerification() {
-    _confirmUser();
-    Get.find<ContactsXController>().updateContactWidget();
+    if(_firebaseRepository.fetchCurrentUser() != null) {
+      _confirmUser();
+      Get.find<ContactsXController>().updateContactWidget();
+    }else{
+      appFormWidget(LoginPhoneForm());
+    }
+
   }
 
 
@@ -81,14 +117,19 @@ class UserProfileController extends GetxController {
     user.value = UserEmpty.empty();
     profileWidget(const LoginWidget());
     Get.find<ContactsXController>().updateContactWidget();
+    bindUid();
   }
 
   void _confirmUser() {
     user.value =
-        UserFirebase.fromFirebaseUser(_firebaseRepository.currentUser());
+        UserFirebase.fromFirebaseUser(_firebaseRepository.fetchCurrentUser());
     avatarURL.value = user.value.photoURL;
     if (user.value.userStatus == UserStatus.authenticated) {
       profileWidget(const ProfileWidget());
+      Get.find<HomeController>().user = user.value;
+      //autchData.close();
+    }else{
+      bindUid();
     }
   }
 
@@ -110,7 +151,7 @@ class UserProfileController extends GetxController {
       SnackbarGet.showSnackBar('err_img_load'.tr);
       return;
     }
-    if (!await CheckConnect().check()) {
+    if (!await CheckConnect.check()) {
       SnackbarGet.showSnackBar('err_network'.tr);
     }
     try {
@@ -165,7 +206,16 @@ class UserProfileController extends GetxController {
     _confirmUser();
     await _fetchPreferencesInstance();
     _initPreferences();
+
     super.onInit();
   }
+
+  @override
+  void onClose() {
+    autchData.close();
+    super.onClose();
+  }
+
+
 
 }

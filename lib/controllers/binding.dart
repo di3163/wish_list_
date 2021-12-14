@@ -6,9 +6,8 @@ import 'package:wish_list_gx/core.dart';
 class MainBinding extends Bindings{
   @override
   void dependencies() {
-
-    Get.put<UserProfileController>(UserProfileController(FirebaseAuthRepository()));
     Get.put<HomeController>(HomeController());
+    Get.put<UserProfileController>(UserProfileController(FirebaseAuthRepository()));
     Get.put<WishListController>(WishListController(FirebaseDataRepository()));
     Get.put<ContactsXController>(ContactsXController(FirebaseAuthRepository()));
   }

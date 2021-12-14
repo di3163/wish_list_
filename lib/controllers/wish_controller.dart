@@ -40,7 +40,7 @@ class WishController extends GetxController{
       listImgT.add(pickedFile.path);
       update(['images']);
     } else {
-      if (!await CheckConnect().check()){
+      if (!await CheckConnect.check()){
         SnackbarGet.showSnackBar('err_network'.tr);
       }
       try {
@@ -58,7 +58,7 @@ class WishController extends GetxController{
 
   void deleteImage(String imgUrl)async{
     if(currentWish.isSaved) {
-      if (!await CheckConnect().check()){
+      if (!await CheckConnect.check()){
         SnackbarGet.showSnackBar('err_network'.tr);
       }
       try {
@@ -89,7 +89,7 @@ class WishController extends GetxController{
       SnackbarGet.showSnackBar('warn_title'.tr);
       return;
     }
-    if (!await CheckConnect().check()){
+    if (!await CheckConnect.check()){
       SnackbarGet.showSnackBar('err_network'.tr);
     }
     try {
@@ -111,7 +111,7 @@ class WishController extends GetxController{
       SnackbarGet.showSnackBar('warn_title'.tr);
       return;
     }
-    if (!await CheckConnect().check()){
+    if (!await CheckConnect.check()){
       SnackbarGet.showSnackBar('err_network'.tr);
     }
     currentWish.title = controllerTitle.value.text;

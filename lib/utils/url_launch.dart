@@ -1,7 +1,10 @@
 import 'package:url_launcher/url_launcher.dart';
 
 class UrlLaunch {
-  launchURL(String url) async {
+
+  UrlLaunch._();
+
+  static Future<void> launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -9,7 +12,7 @@ class UrlLaunch {
     }
   }
 
-  forceLaunchURL(String url) async {
+  static Future<void> forceLaunchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url, forceWebView: true);
     } else {

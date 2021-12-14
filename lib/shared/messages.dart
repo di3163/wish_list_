@@ -81,7 +81,7 @@ class Messages extends Translations{
           "change_locale": "Переключить язык",
           "change_avatar": "Сменить фотку",
           "save": "сохранить изменения?",
-          "del": "удалить?",
+          "del": "Удалить?",
           "err": "Ошибка!",
           "auth_req": "требуется авторизация",
           "permit_req": "необходимо разрешение",

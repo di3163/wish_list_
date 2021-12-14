@@ -35,7 +35,8 @@ class DialogBox extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const SizedBox(height: 15,),
-                Text(title, style: Get.theme.primaryTextTheme.button),
+                // Text(title, style: Get.theme. primaryTextTheme.button),
+                Text(title, style: Get.theme.textTheme.headline5),
                 const SizedBox(height: 15,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

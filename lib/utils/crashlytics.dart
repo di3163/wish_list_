@@ -3,6 +3,8 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 class FirebaseCrash{
 
+  FirebaseCrash._();
+
   static Future<void> error(
       dynamic error,
       StackTrace? stack,

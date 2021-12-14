@@ -1,40 +1,28 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get.dart';
 
 import 'package:wish_list_gx/core.dart';
 
+class VerificationFailedException implements Exception{
+
+}
 
 abstract class AuthRepositoryInterface implements
     FetchAllRegistredUsers,
     SignUpWithSMSCode,
     VerifyPhoneNumber,
+    FetchAutchDataStream,
     UpdateUserProfile,
     ImageOperations,
     FetchUserAvatarURL {
 
-  //Future<RequestBody> fetchAllRegistredUsers();
-
-  // Future<void> signUpWithSMSCode({
-  //   required String smsCode});
-
-  // Future verifyPhoneNumber({
-  //   required String phoneNumber,
-  //   required String email});
-
   Future signOut();
+  fetchCurrentUser();
 
-  // Future<void> updateUserProfile(String photoURL);
-
-  currentUser();
-
-  // Future<String> fetchUserAvatarURL(String id);
-  // Future<String> saveImage(File image);
-  // Future deleteImage(String imgUrl);
 }
 
 typedef FunctionDocReference = DocumentReference Function(String docName);
@@ -53,6 +41,8 @@ class FirebaseAuthRepository implements AuthRepositoryInterface{
   String _verificationId = '';
   String _phoneNumber = '';
   String _email = '';
+  int? _resendToken;
+  final StreamController<dynamic> _autchDataController = StreamController();
 
   DocumentReference _usersDocRef(String docName){
     return FirebaseFirestore.instance.collection('users').
@@ -65,8 +55,6 @@ class FirebaseAuthRepository implements AuthRepositoryInterface{
       String phone,
       FunctionDocReference docReference
       )async {
-    //CollectionReference ref = _fetchReference('users');
-    //ref.doc(user.uid).set({
     docReference(user.uid).set({
       'name': email,
       'email': email,
@@ -79,9 +67,6 @@ class FirebaseAuthRepository implements AuthRepositoryInterface{
   Future<String> fetchUserAvatarURL(String id)async{
     String userData = '';
     try {
-
-      //DocumentReference documentReference = _fetchReference('users').doc(id);
-      //await documentReference.get().then((DocumentSnapshot snapshot) {
       await _usersDocRef(id).get().then((DocumentSnapshot snapshot) {
         userData = (snapshot.data() as Map)['photoURL'] ?? '';
       });
@@ -96,8 +81,6 @@ class FirebaseAuthRepository implements AuthRepositoryInterface{
       String photoURL,
       FunctionDocReference docReference
       )async{
-    //DocumentReference documentReference = _fetchReference('users').doc(id);
-    //await documentReference.update(
         await docReference(id).update(
           {
             'photoURL': photoURL
@@ -110,7 +93,6 @@ class FirebaseAuthRepository implements AuthRepositoryInterface{
       String phone,
       FunctionDocReference docReference
       ) async {
-    //DocumentReference documentReference = _fetchReference('users').doc('register_users');
         var documentReference = docReference('register_users');
 
         FirebaseFirestore.instance.runTransaction((transaction) async {
@@ -125,7 +107,6 @@ class FirebaseAuthRepository implements AuthRepositoryInterface{
   @override
   Future<RequestBody> fetchAllRegistredUsers() async{
     RequestBody allregisterMap = {};
-    //DocumentReference documentReference = _fetchReference('users').doc('register_users');
     var documentReference = _usersDocRef('register_users');
     await documentReference.get().then((DocumentSnapshot snapshot) {
         allregisterMap = (snapshot.data() as Map)['all_register'] as RequestBody;
@@ -136,7 +117,7 @@ class FirebaseAuthRepository implements AuthRepositoryInterface{
   }
 
   @override
-  User? currentUser() {
+  User? fetchCurrentUser() {
     User? user =   _firebaseAuth.currentUser;
     return user;
   }
@@ -152,7 +133,7 @@ class FirebaseAuthRepository implements AuthRepositoryInterface{
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: _verificationId, smsCode: smsCode);
       UserCredential authResult = await _firebaseAuth.signInWithCredential(credential);
-      User? user = _firebaseAuth.currentUser;
+      User? user = fetchCurrentUser() ;
       if(authResult.additionalUserInfo!.isNewUser){
         _addUsersData(user!, _email, _phoneNumber, _usersDocRef);
         _addUserToAllRegistred(user, _phoneNumber, _usersDocRef);
@@ -163,56 +144,77 @@ class FirebaseAuthRepository implements AuthRepositoryInterface{
   }
 
   @override
-  Future verifyPhoneNumber({required String phoneNumber, required String email}) async{
-    try{
-    await _firebaseAuth.verifyPhoneNumber(
-        phoneNumber: '+$phoneNumber',
-        timeout: const Duration(seconds: 5),
-        verificationCompleted: (authCredential) =>
-            _verificationComplete(authCredential, phoneNumber, email),
-        verificationFailed: (authException) => _verificationFailed(authException),
-        codeAutoRetrievalTimeout: (verificationId) => _codeAutoRetrievalTimeout(verificationId),
-        codeSent: (verificationId, int? resendToken) => _smsCodeSent(verificationId, phoneNumber, email)
-    );
+  Future<void> verifyPhoneNumber({required String phoneNumber, required String email}) async{
+
+    try {
+      await _firebaseAuth.verifyPhoneNumber(
+          phoneNumber: '+$phoneNumber',
+          timeout: const Duration(seconds: 5),
+          forceResendingToken: _resendToken,
+          verificationCompleted: (authCredential) =>
+              _verificationComplete(authCredential, phoneNumber, email),
+          verificationFailed: (authException) => _verificationFailed(authException),
+          codeAutoRetrievalTimeout: (verificationId) =>
+              _codeAutoRetrievalTimeout(verificationId),
+          codeSent: (verificationId, int? resendToken) =>
+              _smsCodeSent(verificationId, resendToken, phoneNumber, email)
+      );
+    }on Exception catch(e){
+      return Future.error(e);
     } catch (e){
       return Future.error(e);
     }
   }
 
-  _verificationComplete(AuthCredential authCredential, String phoneNumber, String email) async{
+  Future<void> _verificationComplete(AuthCredential authCredential, String phoneNumber, String email) async{
      UserCredential authResult = await _firebaseAuth.signInWithCredential(authCredential);
      _phoneNumber = phoneNumber;
      _email = email;
-     User? user = _firebaseAuth.currentUser;
+     User? user = fetchCurrentUser();
      if(authResult.additionalUserInfo!.isNewUser){
        _addUsersData(user!, _email, _phoneNumber, _usersDocRef);
        _addUserToAllRegistred(user, _phoneNumber, _usersDocRef);
      }
-     if(user != null) {
-       Get.find<UserProfileController>().autoVerification();
-     }
+      if(user != null) {
+        _autchDataController.add(user.uid);
+     //   Get.find<UserProfileController>().autoVerification();
+      }
   }
 
-  void _smsCodeSent(String verificationId, String phoneNumber, String email) {
+  void _smsCodeSent(String verificationId, int? resendToken, String phoneNumber, String email) {
     _verificationId = verificationId;
+    _resendToken = resendToken;
     _phoneNumber = phoneNumber;
     _email = email;
   }
 
   void _verificationFailed(FirebaseAuthException authException) {
-    Get.find<UserProfileController>().verificationFiled(authException);
+    _autchDataController.add(authException);
+    //return Future.error(authException);
+    //Get.find<UserProfileController>().verificationFiled(authException);
   }
 
   void _codeAutoRetrievalTimeout(String verificationCode) {
     _verificationId = verificationCode;
   }
 
+  // Stream<String> fetchUserIdStream(){
+  //   User? user = currentUser();
+  //
+  //   try{
+  //     return  user.uid;
+  //   }catch(e){
+  //
+  //   }
+  //
+  // }
+
   @override
   Future<String> saveImage(File image) async{
     String imgURL = '';
     try {
       Reference ref = FirebaseStorage.instance.ref().
-      child('users/${_firebaseAuth.currentUser!.uid}/${image.path
+      child('users/${fetchCurrentUser()!.uid}/${image.path
           .split('/')
           .last}');
       UploadTask uploadTask = ref.putFile(image);
@@ -227,7 +229,7 @@ class FirebaseAuthRepository implements AuthRepositoryInterface{
 
   @override
   Future<void> updateUserProfile(String photoURL)  async {
-    User? user = currentUser();
+    User? user = fetchCurrentUser();
     if(user != null) {
       try {
         user.updatePhotoURL(photoURL);
@@ -247,6 +249,11 @@ class FirebaseAuthRepository implements AuthRepositoryInterface{
     }catch(e){
       return Future.error(e);
     }
+  }
+
+  @override
+  Stream<dynamic> fetchAutchDataStream() {
+    return _autchDataController.stream;
   }
 
 

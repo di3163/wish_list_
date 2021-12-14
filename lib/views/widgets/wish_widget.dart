@@ -74,7 +74,7 @@ class OtherWishWidget extends WishWidget{
                 controller.currentWish.link!.isNotEmpty
                     ? IconButton(
                       onPressed: () =>
-                        UrlLaunch().launchURL(controller.currentWish.link!),
+                        UrlLaunch.launchURL(controller.currentWish.link!),
                       icon: const Icon(iconView),
                       color: Get.theme.hintColor,
                     ) : const SizedBox(width: 1,)
@@ -172,7 +172,7 @@ class UserWishWidget extends WishWidget{
               controller.currentWish.link!.isNotEmpty
                     ? IconButton(
                         onPressed: () =>
-                          UrlLaunch().launchURL(controller.currentWish.link!),
+                          UrlLaunch.launchURL(controller.currentWish.link!),
                         icon: const Icon(iconView),
                         color: Get.theme.hintColor,
                   ) :

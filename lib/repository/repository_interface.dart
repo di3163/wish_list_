@@ -29,6 +29,10 @@ abstract class UpdateUserProfile{
   Future<void> updateUserProfile(String photoURL);
 }
 
+abstract class FetchAutchDataStream {
+  Stream<dynamic> fetchAutchDataStream();
+}
+
 abstract class ImageOperations{
   Future<String> saveImage(File image);
   Future deleteImage(String imgUrl);

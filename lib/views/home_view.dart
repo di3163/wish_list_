@@ -43,11 +43,14 @@ class HomeView extends StatelessWidget {
         elevation: 10,
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(image: AssetImage('assets/images/wall_blue.png'),
-          fit: BoxFit.cover,
-            //colorFilter: ColorFilter.mode(Colors.grey, BlendMode.saturation)
-          ),
+        decoration: BoxDecoration(
+          image: Get.isDarkMode?
+            const DecorationImage(
+              image: AssetImage('assets/images/wall_dark.png'), fit: BoxFit.cover,
+            ):
+            const DecorationImage(
+              image: AssetImage('assets/images/wall_light.png'), fit: BoxFit.cover,
+            ),
         ),
         child: PageView(
           controller: _homeController.pageController,

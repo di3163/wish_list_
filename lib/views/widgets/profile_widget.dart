@@ -64,7 +64,7 @@ class LoginWidget extends ProfileViewWidget {
         const SizedBox(height: 20),
         GetX<UserProfileController>(
           builder: (UserProfileController userProfileController){
-            return userProfileController.appFormWidget.value.render();
+            return userProfileController.appFormWidget.value;
           }
         )
         //RegisterForm(),

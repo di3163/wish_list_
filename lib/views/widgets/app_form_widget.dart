@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
-abstract class AppForm{
-  Widget render();
+abstract class AppForm extends StatelessWidget{
+  const AppForm({Key? key}) : super(key: key);
+  //Widget render();
 }
 
 class RegisterPhoneForm extends AppForm{
-
+  const RegisterPhoneForm({Key? key}) : super(key: key);
   
   @override
-  Widget render() {
+  Widget build(BuildContext context) {
     return Form(
       key: Get.find<UserProfileController>().formKey,
       child: Column(
@@ -54,9 +55,10 @@ class RegisterPhoneForm extends AppForm{
 }
 
 class LoginPhoneForm extends AppForm{
+  const LoginPhoneForm({Key? key}) : super(key: key);
 
   @override
-  Widget render() {
+  Widget build(BuildContext context) {
     return Form(
       key: Get.find<UserProfileController>().formKey,
       child: Column(
@@ -81,18 +83,3 @@ class LoginPhoneForm extends AppForm{
     }
   }
 
-
-// class _FormButtonWidget extends StatelessWidget {
-//   final FormButton formButton;
-//
-//   const _FormButtonWidget({Key? key, this.formButton = const EmptyFormButton()})
-//       : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return ElevatedButton(
-//       onPressed: formButton.onButtonClicked,
-//       child: Text(formButton.text),
-//     );
-//   }
-// }

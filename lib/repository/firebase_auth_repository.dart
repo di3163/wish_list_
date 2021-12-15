@@ -7,9 +7,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:wish_list_gx/core.dart';
 
-class VerificationFailedException implements Exception{
-
-}
 
 abstract class AuthRepositoryInterface implements
     FetchAllRegistredUsers,
@@ -198,16 +195,6 @@ class FirebaseAuthRepository implements AuthRepositoryInterface{
     _verificationId = verificationCode;
   }
 
-  // Stream<String> fetchUserIdStream(){
-  //   User? user = currentUser();
-  //
-  //   try{
-  //     return  user.uid;
-  //   }catch(e){
-  //
-  //   }
-  //
-  // }
 
   @override
   Future<String> saveImage(File image) async{

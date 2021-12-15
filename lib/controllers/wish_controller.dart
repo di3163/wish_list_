@@ -135,27 +135,27 @@ class WishController extends GetxController{
     super.onInit();
   }
 
-  @override
-  void onClose() async {
-    if (isChanged) {
-      // AppDialog(
-      //   titleText: 'save'.tr,
-      //   confirm: () async{
-      //     await updateWish();
-      //   },
-      // ).getDialog();
-      Get.defaultDialog(
-        title: 'save'.tr,
-        backgroundColor: Get.theme.backgroundColor,
-        //buttonColor: Get.theme.bottomAppBarColor,
-        onConfirm: () async {
-          await updateWish();
-          Get.back();
-        },
-        onCancel: () => Get.back(),
-        middleText: '',
-      );
-    }
-    super.onClose();
-  }
+  // @override
+  // void onClose() {
+  //   // if (isChanged) {
+  //   //   // AppDialog(
+  //   //   //   titleText: 'save'.tr,
+  //   //   //   confirm: () async{
+  //   //   //     await updateWish();
+  //   //   //   },
+  //   //   // ).getDialog();
+  //   //   Get.defaultDialog(
+  //   //     title: 'save'.tr,
+  //   //     backgroundColor: Get.theme.backgroundColor,
+  //   //     //buttonColor: Get.theme.bottomAppBarColor,
+  //   //     onConfirm: () async {
+  //   //       await updateWish();
+  //   //       Get.back();
+  //   //     },
+  //   //     onCancel: () => Get.back(),
+  //   //     middleText: '',
+  //   //   );
+  //   // }
+  //   super.onClose();
+  //}
 }

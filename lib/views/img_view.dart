@@ -9,7 +9,7 @@ import 'package:wish_list_gx/core.dart';
 class ImgView extends StatelessWidget {
   final String patch;
 
-  ImgView({Key? key, required this.patch}) : super(key: key);
+  const ImgView({Key? key, required this.patch}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

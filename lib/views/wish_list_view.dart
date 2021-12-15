@@ -54,27 +54,6 @@ class _ListViewWish extends StatelessWidget {
                         );
                       },
                     );
-                    // Get.defaultDialog(
-                    //   title: 'del'.tr,
-                    //   backgroundColor: Get.theme.backgroundColor,
-                    //   buttonColor: Get.theme.bottomAppBarColor,
-                    //   onConfirm: () {
-                    //     wishListController
-                    //         .deleteWish(
-                    //         wishListController.listWish.value[index]);
-                    //     Get.back();
-                    //   },
-                    //   onCancel: () => Get.back(),
-                    //   middleText: '',
-                    // );
-
-                    // AppDialog(
-                    //     titleText: 'del'.tr,
-                    //     confirm: () {
-                    //       wishListController
-                    //           .deleteWish(wishListController.listWish.value[index]);
-                    //     },
-                    //     ).getDialog();
                   },
 
                   //wishListController.deleteWish(wishListController.listWish.value[index]),
@@ -125,28 +104,6 @@ class _ListViewWish extends StatelessWidget {
                             },
                           );
 
-
-                      // AppDialog(
-                      //     titleText: 'del'.tr,
-                      //     confirm: () { wishListController
-                      //              .deleteWish(
-                      //             wishListController.listWish.value[index]);
-                      //       },
-                      //     ).getDialog();
-
-                      // Get.defaultDialog(
-                      //   title: 'del'.tr,
-                      //   backgroundColor: Get.theme.backgroundColor,
-                      //   buttonColor: Get.theme.bottomAppBarColor,
-                      //   onConfirm: () {
-                      //     wishListController
-                      //         .deleteWish(
-                      //         wishListController.listWish.value[index]);
-                      //     Get.back();
-                      //   },
-                      //   onCancel: () => Get.back(),
-                      //   middleText: '',
-                      // );
                     },
                     icon: Icon(
                       iconDelete,

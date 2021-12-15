@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/simple/simple_builder.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icon.dart';
@@ -41,7 +40,7 @@ class OtherWishWidget extends WishWidget{
             const SizedBox(height: 10),
             GetBuilder<WishController>(
               id: 'images',
-              builder: (controller) => _WishImages(),
+              builder: (controller) => const _WishImages(),
             ),
             const SizedBox(height: 10,),
             Row(
@@ -87,6 +86,42 @@ class OtherWishWidget extends WishWidget{
 
 }
 
+class ControlWidget extends StatefulWidget {
+  const ControlWidget({Key? key, required this.controller}) : super(key: key);
+  final WishController controller;
+
+  @override
+  _ControlWidgetState createState() => _ControlWidgetState();
+
+}
+
+class _ControlWidgetState extends State<ControlWidget> {
+
+  @override
+  void deactivate(){
+    super.deactivate();
+    if (widget.controller.isChanged){
+      showDialog(context: context,
+        builder: (BuildContext context){
+          return DialogBox(
+            title: 'save'.tr,
+            onClickAction: () async{
+              await widget.controller.updateWish();
+              Get.back();
+            },
+            onCancelAction: () => Get.back(),
+          );
+        },
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox(height: 10);
+  }
+}
+
 
 
 class UserWishWidget extends WishWidget{
@@ -103,9 +138,10 @@ class UserWishWidget extends WishWidget{
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 10),
+          //ControlWidget(controller: controller),
           GetBuilder<WishController>(
             id: 'images',
-            builder: (controller) => _WishImages(),
+            builder: (controller) => const _WishImages(),
           ),
           const SizedBox(
             height: 10,
@@ -198,11 +234,12 @@ class UserWishWidget extends WishWidget{
 
 
 class _WishImages extends StatelessWidget {
-  _WishImages({Key? key}) : super(key: key);
-  final controller = Get.find<WishController>();
+  const _WishImages({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<WishController>();
     return ValueBuilder<int?>(
         initialValue: 0,
         builder: (currentImage, updateFn) => Column(
@@ -246,12 +283,13 @@ class _WishImages extends StatelessWidget {
 
 class _ImgContainer extends StatelessWidget {
   final String patch;
-  final controller = Get.find<WishController>();
 
-  _ImgContainer({Key? key, required this.patch}) : super(key: key);
+
+  const _ImgContainer({Key? key, required this.patch}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<WishController>();
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

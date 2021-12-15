@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,9 +8,9 @@ import 'package:wish_list_gx/core.dart';
 
 class UserProfileController extends GetxController {
 
-  UserProfileController(this._firebaseRepository);
+  UserProfileController(this._authRepository);
 
-  final AuthRepositoryInterface _firebaseRepository;
+  final AuthRepositoryInterface _authRepository;
   late SharedPreferences preferences;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController formControllerEmail = TextEditingController();
@@ -26,16 +25,16 @@ class UserProfileController extends GetxController {
       const LoginWidget());
   Rx<dynamic> autchData = Rx<dynamic>('');
 
-  void bindUid(){
-    autchData.bindStream(_firebaseRepository.fetchAutchDataStream());
+  void _bindUid(){
+    autchData.bindStream(_authRepository.fetchAutchDataStream());
   }
 
-  Future<void> signUpWithSMSCode() async {
+  void signUpWithSMSCode() async {
     if (!await CheckConnect.check()){
       SnackbarGet.showSnackBar('err_network'.tr);
     }
     try {
-      await _firebaseRepository.signUpWithSMSCode(
+      await _authRepository.signUpWithSMSCode(
           smsCode: formControllerCode.text.trim());
       _confirmUser();
       //Get.find<ContactsXController>().getContacts();
@@ -57,20 +56,10 @@ class UserProfileController extends GetxController {
     } else {
       String phoneN = _correctPhoneNum(formControllerPhone.text.trim());
       try {
-         await _firebaseRepository.verifyPhoneNumber(
+         await _authRepository.verifyPhoneNumber(
             phoneNumber: phoneN,
-            email: formControllerEmail.text.trim());
-         //    ).then((_) => _autoVerification()
-         //    ).catchError((e, s)async{
-         //      user.value = UserEmpty.empty();
-         //      appFormWidget(RegisterPhoneForm());
-         //      await FirebaseCrash.error(e, s, 'err_auth'.tr, false);
-         //      SnackbarGet.showSnackBar('err_auth'.tr);
-         //    }
-         // );
-         // await Future.delayed(const Duration(seconds: 6));
-         // _confirmUser();
-         //
+            email: formControllerEmail.text.trim()
+         );
          if (user.value.userStatus == UserStatus.unauthenticated ){
             appFormWidget(LoginPhoneForm());
          }
@@ -90,16 +79,9 @@ class UserProfileController extends GetxController {
     SnackbarGet.showSnackBar('err_auth'.tr);
   }
 
-  // void verificationStrimHandling(){
-  //   if(uid.value is Exception){
-  //     _verificationFiled(uid.value, uid.value.stackTrace);
-  //   } else{
-  //     _autoVerification();
-  //   }
-  // }
 
   void autoVerification() {
-    if(_firebaseRepository.fetchCurrentUser() != null) {
+    if(_authRepository.fetchCurrentUser() != null) {
       _confirmUser();
       Get.find<ContactsXController>().updateContactWidget();
     }else{
@@ -109,27 +91,27 @@ class UserProfileController extends GetxController {
   }
 
 
-  Future<void> signOut() async {
-    await _firebaseRepository.signOut();
+  void signOut() async {
+    await _authRepository.signOut();
     Get.delete<WishListController>();
     Get.lazyPut<WishListController>(() =>
         WishListController(FirebaseDataRepository()));
     user.value = UserEmpty.empty();
     profileWidget(const LoginWidget());
     Get.find<ContactsXController>().updateContactWidget();
-    bindUid();
+    _bindUid();
   }
 
   void _confirmUser() {
     user.value =
-        UserFirebase.fromFirebaseUser(_firebaseRepository.fetchCurrentUser());
+        UserFirebase.fromFirebaseUser(_authRepository.fetchCurrentUser());
     avatarURL.value = user.value.photoURL;
     if (user.value.userStatus == UserStatus.authenticated) {
       profileWidget(const ProfileWidget());
       Get.find<HomeController>().user = user.value;
       //autchData.close();
     }else{
-      bindUid();
+      _bindUid();
     }
   }
 
@@ -156,11 +138,11 @@ class UserProfileController extends GetxController {
     }
     try {
       if (user.value.photoURL.isNotEmpty) {
-        await _firebaseRepository.deleteImage(user.value.photoURL);
+        await _authRepository.deleteImage(user.value.photoURL);
       }
-      String photoURL = await _firebaseRepository.saveImage(
+      String photoURL = await _authRepository.saveImage(
           File(pickedFile.path));
-      await _firebaseRepository.updateUserProfile(photoURL);
+      await _authRepository.updateUserProfile(photoURL);
       avatarURL.value = photoURL;
     } catch (e, s) {
       await FirebaseCrash.error(e, s, 'err_img_load'.tr, false);
@@ -183,7 +165,7 @@ class UserProfileController extends GetxController {
   }
 
 
-  _fetchPreferencesInstance() async {
+  Future<void> _fetchPreferencesInstance() async {
     preferences = await SharedPreferences.getInstance();
   }
 

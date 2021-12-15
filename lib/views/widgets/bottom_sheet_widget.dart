@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wish_list_gx/controllers/home_controller.dart';
+
 import 'package:wish_list_gx/core.dart';
 
 class BottomSheetSetting extends StatelessWidget {
-  BottomSheetSetting({Key? key}) : super(key: key);
-  final _homeController = Get.find<HomeController>();
+  const BottomSheetSetting({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
+    final _homeController = Get.find<HomeController>();
     return Container(
       decoration: BoxDecoration(
         color: Get.theme.disabledColor.withOpacity(0.3),
@@ -17,27 +18,6 @@ class BottomSheetSetting extends StatelessWidget {
       height: 400,
       child: Column(children: [
         const SizedBox(height: 20),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.end,
-        //   children: [
-        //     Text('light_shampoo'.tr, style: Get.theme.primaryTextTheme.button),
-        //     const SizedBox(width: 30),
-        //     Obx(
-        //       () => Switch(
-        //         value: _homeController.isThemeLightShampoo.value,
-        //         onChanged: (bool newValue) {
-        //           _homeController.onSwitchThemeMode();
-        //           _homeController.isThemeLightShampoo.value = newValue;
-        //         },
-        //         inactiveThumbColor: Colors.grey[200],
-        //         inactiveTrackColor: Colors.grey[600],
-        //         activeColor: Colors.grey[200],
-        //         activeTrackColor: Colors.grey[600],
-        //       ),
-        //     ),
-        //     const SizedBox(width: 20),
-        //   ],
-        // ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [

@@ -35,7 +35,11 @@ class HomeController extends GetxController{
     //   Get.find<ContactsXController>().updateContactWidget();
     // }
     if(index == 2){
-      isVisibleFAB.value = true;
+      if(user.userStatus == UserStatus.authenticated) {
+        isVisibleFAB.value = true;
+      }else{
+        isVisibleFAB.value = false;
+      }
       Get.find<WishListController>().bindListWish(user);
     }else{
       isVisibleFAB.value = false;

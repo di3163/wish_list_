@@ -30,7 +30,8 @@ abstract class UpdateUserProfile{
 }
 
 abstract class FetchAutchDataStream {
-  Stream<dynamic> fetchAutchDataStream();
+  //Stream<dynamic> fetchAutchDataStream();
+  Stream<dynamic> get autchDataStream;
 }
 
 abstract class ImageOperations{

@@ -6,21 +6,20 @@ import 'package:image_picker/image_picker.dart';
 import 'package:wish_list_gx/core.dart';
 
 class WishController extends GetxController{
-  WishController(this._firebaseRepository, this._picker);
 
-  final DataRepositoryInterface _firebaseRepository;
+  late final DataRepositoryInterface _dataRepository;
   final controllerTitle = TextEditingController().obs;
   final controllerDescription = TextEditingController().obs;
   final controllerLink = TextEditingController().obs;
 
-  final ImagePicker _picker;
+  //final ImagePicker _picker;
   late List<String> listImgT;
   Wish currentWish = Wish.empty();
   bool isChanged = false;
 
   Future<XFile?> _pickedFile() async{
     try {
-      return await _picker.pickImage(
+      return await ImagePicker().pickImage(
         source: ImageSource.gallery,
         imageQuality: 25,
       );
@@ -44,11 +43,11 @@ class WishController extends GetxController{
         SnackbarGet.showSnackBar('err_network'.tr);
       }
       try {
-        String firebasePatch = await _firebaseRepository.saveImage(File(pickedFile.path));
+        String firebasePatch = await _dataRepository.saveImage(File(pickedFile.path));
         listImgT.add(firebasePatch);
         update(['images']);
         currentWish.listPicURL.add(firebasePatch);
-        await _firebaseRepository.updateUserWish(currentWish);
+        await _dataRepository.updateUserWish(currentWish);
       } catch (e, s) {
         await FirebaseCrash.error(e, s, 'err_img_load'.tr, false);
         SnackbarGet.showSnackBar('err_img_load'.tr);
@@ -62,11 +61,11 @@ class WishController extends GetxController{
         SnackbarGet.showSnackBar('err_network'.tr);
       }
       try {
-        await _firebaseRepository.deleteImage(imgUrl);
+        await _dataRepository.deleteImage(imgUrl);
         listImgT.remove(imgUrl);
         update(['images']);
         currentWish.listPicURL.remove(imgUrl);
-        await _firebaseRepository.updateUserWish(currentWish);
+        await _dataRepository.updateUserWish(currentWish);
       } catch(e, s){
         await FirebaseCrash.error(e, s, 'err_img_load'.tr, false);
         SnackbarGet.showSnackBar('err'.tr);
@@ -79,7 +78,7 @@ class WishController extends GetxController{
 
   _addWishListPicURL()async{
       for(String element in listImgT){
-        String url = await _firebaseRepository.saveImage(File(element));
+        String url = await _dataRepository.saveImage(File(element));
         currentWish.listPicURL.add(url);
       }
   }
@@ -97,7 +96,7 @@ class WishController extends GetxController{
       currentWish.title = controllerTitle.value.text;
       currentWish.description = controllerDescription.value.text;
       currentWish.link = controllerLink.value.text;
-      await _firebaseRepository.addUserWish(currentWish);
+      await _dataRepository.addUserWish(currentWish);
     }catch(e, s){
       await FirebaseCrash.error(e, s, 'err_sav'.tr, false);
       SnackbarGet.showSnackBar('err_sav'.tr);
@@ -118,7 +117,7 @@ class WishController extends GetxController{
     currentWish.description = controllerDescription.value.text;
     currentWish.link = controllerLink.value.text;
     try {
-      await _firebaseRepository.updateUserWish(currentWish);
+      await _dataRepository.updateUserWish(currentWish);
     }catch(e, s){
       await FirebaseCrash.error(e, s, 'err_sav'.tr, false);
       SnackbarGet.showSnackBar('err_sav'.tr);
@@ -127,6 +126,7 @@ class WishController extends GetxController{
 
   @override
   void onInit() {
+    _dataRepository = Get.find<FirebaseDataRepository>();
     currentWish = Get.arguments;
     listImgT = currentWish.listPicURL.map((v) => v).toList();
     controllerTitle.value.text = currentWish.title;

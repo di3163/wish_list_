@@ -6,134 +6,97 @@ import 'package:get/get.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:wish_list_gx/core.dart';
 
-abstract class WishWidget extends StatelessWidget{
+abstract class WishWidget extends StatelessWidget {
   const WishWidget({Key? key}) : super(key: key);
 }
 
-class ErrWishWidget extends WishWidget{
+class ErrWishWidget extends WishWidget {
   const ErrWishWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       child: Center(
-        child: LineIcon.exclamationCircle(size: 30,),
+        child: LineIcon.exclamationCircle(
+          size: 30,
+        ),
       ),
     );
   }
 }
 
-class OtherWishWidget extends WishWidget{
-
+class OtherWishWidget extends WishWidget {
   const OtherWishWidget({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<WishController>();
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        const SizedBox(height: 10),
+        GetBuilder<WishController>(
+          id: 'images',
+          builder: (_) => const _WishImages(),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
           children: [
-            const SizedBox(height: 10),
-            GetBuilder<WishController>(
-              id: 'images',
-              builder: (controller) => const _WishImages(),
+            Expanded(
+                child: Text(
+              controller.currentWish.title,
+            )),
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Expanded(
+                child: Text(
+              controller.currentWish.description!,
+            )),
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                controller.currentWish.link!,
+              ),
             ),
-            const SizedBox(height: 10,),
-            Row(
-              children: [
-                Expanded(
-                    child: Text(
-                      controller.currentWish.title,
-                    )
-                ),
-              ],
-            ),
-            const SizedBox(height: 10,),
-            Row(
-              children: [
-                Expanded(
-                    child: Text(
-                      controller.currentWish.description!,
-                    )
-                ),
-              ],
-            ),
-            const SizedBox(height: 10,),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    controller.currentWish.link!,
-                  ),
-                ),
-                controller.currentWish.link!.isNotEmpty
-                    ? IconButton(
-                      onPressed: () =>
+            controller.currentWish.link!.isNotEmpty
+                ? IconButton(
+                    onPressed: () =>
                         UrlLaunch.launchURL(controller.currentWish.link!),
-                      icon: const Icon(iconView),
-                      color: Get.theme.hintColor,
-                    ) : const SizedBox(width: 1,)
-              ],
-            ),
-          ]
-      ),
+                    icon: const Icon(iconView),
+                    color: Get.theme.hintColor,
+                  )
+                : const SizedBox(
+                    width: 1,
+                  )
+          ],
+        ),
+      ]),
     );
   }
-
 }
 
-class ControlWidget extends StatefulWidget {
-  const ControlWidget({Key? key, required this.controller}) : super(key: key);
-  final WishController controller;
-
-  @override
-  _ControlWidgetState createState() => _ControlWidgetState();
-
-}
-
-class _ControlWidgetState extends State<ControlWidget> {
-
-  @override
-  void deactivate(){
-    super.deactivate();
-    if (widget.controller.isChanged){
-      showDialog(context: context,
-        builder: (BuildContext context){
-          return DialogBox(
-            title: 'save'.tr,
-            onClickAction: () async{
-              await widget.controller.updateWish();
-              Get.back();
-            },
-            onCancelAction: () => Get.back(),
-          );
-        },
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox(height: 10);
-  }
-}
-
-
-
-class UserWishWidget extends WishWidget{
-
+class UserWishWidget extends WishWidget {
   const UserWishWidget({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<WishController>();
     return Padding(
-        padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -141,29 +104,27 @@ class UserWishWidget extends WishWidget{
           //ControlWidget(controller: controller),
           GetBuilder<WishController>(
             id: 'images',
-            builder: (controller) => const _WishImages(),
+            builder: (controller) => _WishImages(),
           ),
           const SizedBox(
             height: 10,
           ),
-          controller.listImgT.isNotEmpty ?
-          Row(
-              children: [
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () => controller.addImage(),
-                child: const Icon(iconCameraSt),
-              ),
-            ),
-          ]) :
-          const SizedBox(height: 10),
+          controller.listImgT.isNotEmpty
+              ? Row(children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => controller.addImage(),
+                      child: const Icon(iconCameraSt),
+                    ),
+                  ),
+                ])
+              : const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
                 child: TextField(
                   onChanged: (_) => controller.isChanged = true,
-                  controller:
-                  controller.controllerTitle.value,
+                  controller: controller.controllerTitle.value,
                   decoration: InputDecoration(labelText: 'wish_title'.tr),
                 ),
               ),
@@ -178,11 +139,8 @@ class UserWishWidget extends WishWidget{
                 onChanged: (_) => controller.isChanged = true,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
-                controller: controller
-                    .controllerDescription
-                    .value,
-                decoration:
-                InputDecoration(labelText: 'wish_description'.tr),
+                controller: controller.controllerDescription.value,
+                decoration: InputDecoration(labelText: 'wish_description'.tr),
               ),
             ),
           ]),
@@ -198,44 +156,42 @@ class UserWishWidget extends WishWidget{
                 //       html.window.open(controller.currentWish.link!, '');
                 //     }
                 //   },
-                  child: TextField(
-                    onChanged: (_) => controller.isChanged = true,
-                    controller:
-                    controller.controllerLink.value,
-                    decoration: InputDecoration(labelText: 'wish_link'.tr),
-                  ),
+                child: TextField(
+                  onChanged: (_) => controller.isChanged = true,
+                  controller: controller.controllerLink.value,
+                  decoration: InputDecoration(labelText: 'wish_link'.tr),
                 ),
+              ),
               controller.currentWish.link!.isNotEmpty
-                    ? IconButton(
-                        onPressed: () =>
+                  ? IconButton(
+                      onPressed: () =>
                           UrlLaunch.launchURL(controller.currentWish.link!),
-                        icon: const Icon(iconView),
-                        color: Get.theme.hintColor,
-                  ) :
-                  const SizedBox(width: 1,)
+                      icon: const Icon(iconView),
+                      color: Get.theme.hintColor,
+                    )
+                  : const SizedBox(
+                      width: 1,
+                    )
             ],
           ),
-          !controller.currentWish.isSaved ?
-          Row(children: [
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () => controller.saveWish(),
-                child: const Icon(iconAdd),
-              ),
-            ),
-          ]):
-          const SizedBox(height: 20)
+          !controller.currentWish.isSaved
+              ? Row(children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => controller.saveWish(),
+                      child: const Icon(iconAdd),
+                    ),
+                  ),
+                ])
+              : const SizedBox(height: 20)
         ],
       ),
     );
   }
 }
 
-
-
 class _WishImages extends StatelessWidget {
   const _WishImages({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -268,7 +224,7 @@ class _WishImages extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: controller.listImgT
-                              .map((image) => _ImgIndicator(
+                              .map((image) =>  _ImgIndicator(
                                   isActive:
                                       controller.listImgT.indexOf(image) ==
                                           currentImage))
@@ -284,7 +240,6 @@ class _WishImages extends StatelessWidget {
 class _ImgContainer extends StatelessWidget {
   final String patch;
 
-
   const _ImgContainer({Key? key, required this.patch}) : super(key: key);
 
   @override
@@ -296,11 +251,8 @@ class _ImgContainer extends StatelessWidget {
         Expanded(
           flex: 2,
           child: GestureDetector(
-            onTap: () => Get.toNamed(
-                '/img',
-              arguments: patch
-            ),
-                //Get.find<WishListController>().fullImgShow(patch),
+            onTap: () => Get.toNamed('/img', arguments: patch),
+            //Get.find<WishListController>().fullImgShow(patch),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: controller.currentWish.isSaved
@@ -324,11 +276,24 @@ class _ImgContainer extends StatelessWidget {
             ),
           ),
         ),
-        Column(
-            children: [
+        Column(children: [
           Get.find<WishListController>().user.userStatus != UserStatus.other
               ? GestureDetector(
-                  onTap: () => controller.deleteImage(patch),
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return DialogBox(
+                        title: 'del'.tr,
+                        onClickAction: () {
+                          controller.deleteImage(patch);
+                          Get.back();
+                        },
+                        onCancelAction: () => Get.back(),
+                      );
+                    },
+                  ),
+
+                  // controller.deleteImage(patch),
                   child: Container(
                     height: 40,
                     width: 40,
@@ -341,7 +306,12 @@ class _ImgContainer extends StatelessWidget {
                     //Icons.delete_forever_outlined,
                   ),
                 )
-              : Container(),
+              :
+          //const Placeholder(),
+                Container(
+                  height: 40,
+                  width: 40,
+                ),
         ]),
       ],
     );
@@ -367,4 +337,3 @@ class _ImgIndicator extends StatelessWidget {
     );
   }
 }
-

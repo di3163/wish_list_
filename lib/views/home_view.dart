@@ -68,7 +68,7 @@ class HomeView extends StatelessWidget {
             //     index, Get.find<UserProfileController>().user.value
             // );
           },
-          children: const[
+          children: [
              ProfileView(),
              ContactXView(),
              WishList(),

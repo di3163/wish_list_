@@ -9,10 +9,8 @@ class ContactServiceException implements Exception {
 }
 
 class ContactsXController extends GetxController{
-  ContactsXController(this._firebaseRepository);
 
-  final AuthRepositoryInterface _firebaseRepository;
-  //List<UserOther> _userContactList = [];
+  late final AuthRepositoryInterface _authRepository;
   PermissionStatus contactsPermissionStatus = PermissionStatus.denied;
   Rx<ContactWidget> contactWidget = Rx<ContactWidget>(EmptyContactWidget());
 
@@ -24,6 +22,7 @@ class ContactsXController extends GetxController{
   }
 
   Future<List<Contact>> _fetchAllContactsFromDevice()async {
+
     try {
       return (await ContactsService.getContacts(
              withThumbnails: false))
@@ -31,6 +30,7 @@ class ContactsXController extends GetxController{
     } catch (e){
       throw ContactServiceException(e.toString());
     }
+
   }
 
   Future<List<UserOther>> _fetchUserContacts(List<Contact> contactList, Map<String, dynamic> allRegistredUsers)async{
@@ -78,7 +78,7 @@ class ContactsXController extends GetxController{
   Future<String> _fetchPhotoURL(String id)async{
     String photoURL = '';
     try {
-      photoURL = await _firebaseRepository.fetchUserAvatarURL(id);
+      photoURL = await _authRepository.fetchUserAvatarURL(id);
     }catch(e, s){
       await FirebaseCrash.error(e, s, 'err_photo_url'.tr, false);
       //SnackbarGet.showSnackBar('err'.tr);
@@ -113,31 +113,11 @@ class ContactsXController extends GetxController{
   }
 
 
-  // _getContactsOld()async {
-  //   contactWidget(LoadingContactWidget());
-  //   if (Get.find<UserProfileController>().
-  //   user.value.userStatus == UserStatus.unauthenticated){
-  //     _userContactList = [];
-  //     contactWidget(ErrorContactWidget('auth_req'.tr));
-  //   }else {
-  //     try {
-  //       final contactList = await _getAllContactsFromDevice();
-  //       final allRegistredUsers = await _firebaseRepository
-  //           .getAllRegistredUsers();
-  //       _userContactList =
-  //           await _getUserContacts(contactList, allRegistredUsers);
-  //       contactWidget(LoadedContactWidget(_userContactList));
-  //     } on Exception {
-  //       contactWidget(ErrorContactWidget('err'.tr));
-  //     }
-  //   }
-  // }
-
   Future<List<UserOther>> _fetchContacts()async {
     List<UserOther> userContactList = [];
     try{
       final contactList = await _fetchAllContactsFromDevice();
-      final allRegistredUsers = await _firebaseRepository
+      final allRegistredUsers = await _authRepository
           .fetchAllRegistredUsers();
       userContactList = await _fetchUserContacts(contactList, allRegistredUsers);
     } catch(e){
@@ -149,6 +129,7 @@ class ContactsXController extends GetxController{
 
   @override
   void onInit() async{
+    _authRepository = Get.find<FirebaseAuthRepository>();
     await checkPermit();
     await updateContactWidget();
     super.onInit();

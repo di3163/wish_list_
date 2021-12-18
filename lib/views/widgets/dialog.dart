@@ -52,17 +52,3 @@ class DialogBox extends StatelessWidget {
   }
 }
 
-// class _DialogButtonWidget extends StatelessWidget {
-//   final FormButton formButton;
-//
-//   const _DialogButtonWidget({Key? key, this.formButton = const EmptyFormButton()})
-//       : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return ElevatedButton(
-//       onPressed: formButton.onButtonClicked,
-//       child: Text(formButton.text),
-//     );
-//   }
-// }

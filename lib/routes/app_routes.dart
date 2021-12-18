@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
-import 'package:wish_list_gx/views/img_view.dart';
 
 
 abstract class Routes{
@@ -16,7 +15,7 @@ class AppPages{
     GetPage(
       name: Routes.home,
       page: () => HomeView(),
-      //binding: HomeBinding(),
+      //binding: HomeBindings(),
     ),
     GetPage(
         name: Routes.wish,

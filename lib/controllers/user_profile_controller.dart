@@ -8,9 +8,8 @@ import 'package:wish_list_gx/core.dart';
 
 class UserProfileController extends GetxController {
 
-  UserProfileController(this._authRepository);
 
-  final AuthRepositoryInterface _authRepository;
+  late final AuthRepositoryInterface _authRepository;
   late SharedPreferences preferences;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController formControllerEmail = TextEditingController();
@@ -20,13 +19,14 @@ class UserProfileController extends GetxController {
 
   Rx<UserApp> user = Rx<UserApp>(UserEmpty.empty());
   Rx<String> avatarURL = Rx<String>('');
-  Rx<AppForm> appFormWidget = Rx<AppForm>(RegisterPhoneForm());
+  Rx<AppForm> appFormWidget = Rx<AppForm>(const RegisterPhoneForm());
   Rx<ProfileViewWidget> profileWidget = Rx<ProfileViewWidget>(
       const LoginWidget());
   Rx<dynamic> autchData = Rx<dynamic>('');
 
   void _bindUid(){
-    autchData.bindStream(_authRepository.fetchAutchDataStream());
+    //autchData.bindStream(_authRepository.fetchAutchDataStream());
+    autchData.bindStream(_authRepository.autchDataStream);
   }
 
   void signUpWithSMSCode() async {
@@ -41,7 +41,7 @@ class UserProfileController extends GetxController {
       Get.find<ContactsXController>().updateContactWidget();
     } catch (e, s) {
       user.value = UserEmpty.empty();
-      appFormWidget(LoginPhoneForm());
+      appFormWidget(const LoginPhoneForm());
       await FirebaseCrash.error(e, s, 'err_auth'.tr, false);
       SnackbarGet.showSnackBar('err_auth'.tr);
     }
@@ -61,11 +61,11 @@ class UserProfileController extends GetxController {
             email: formControllerEmail.text.trim()
          );
          if (user.value.userStatus == UserStatus.unauthenticated ){
-            appFormWidget(LoginPhoneForm());
+            appFormWidget(const LoginPhoneForm());
          }
        } catch (e, s) {
         user.value = UserEmpty.empty();
-        appFormWidget(RegisterPhoneForm());
+        appFormWidget(const RegisterPhoneForm());
         await FirebaseCrash.error(e, s, 'err_auth'.tr, false);
         SnackbarGet.showSnackBar('err_auth'.tr);
       }
@@ -74,7 +74,7 @@ class UserProfileController extends GetxController {
 
   void verificationFiled(Exception? err, StackTrace? s) async{
     user.value = UserEmpty.empty();
-    appFormWidget(RegisterPhoneForm());
+    appFormWidget(const RegisterPhoneForm());
     await FirebaseCrash.error(err, s, 'err_auth'.tr, false);
     SnackbarGet.showSnackBar('err_auth'.tr);
   }
@@ -85,7 +85,7 @@ class UserProfileController extends GetxController {
       _confirmUser();
       Get.find<ContactsXController>().updateContactWidget();
     }else{
-      appFormWidget(LoginPhoneForm());
+      appFormWidget(const LoginPhoneForm());
     }
 
   }
@@ -93,13 +93,14 @@ class UserProfileController extends GetxController {
 
   void signOut() async {
     await _authRepository.signOut();
+    //Get.find<WishListController>().clearListWish();
     Get.delete<WishListController>();
     Get.lazyPut<WishListController>(() =>
-        WishListController(FirebaseDataRepository()));
+        WishListController());
     user.value = UserEmpty.empty();
     profileWidget(const LoginWidget());
     Get.find<ContactsXController>().updateContactWidget();
-    _bindUid();
+    //_bindUid();
   }
 
   void _confirmUser() {
@@ -111,7 +112,7 @@ class UserProfileController extends GetxController {
       Get.find<HomeController>().user = user.value;
       //autchData.close();
     }else{
-      _bindUid();
+      //_bindUid();
     }
   }
 
@@ -185,10 +186,11 @@ class UserProfileController extends GetxController {
 
   @override
   void onInit() async{
+    _authRepository = Get.find<FirebaseAuthRepository>();
     _confirmUser();
     await _fetchPreferencesInstance();
     _initPreferences();
-
+    _bindUid();
     super.onInit();
   }
 

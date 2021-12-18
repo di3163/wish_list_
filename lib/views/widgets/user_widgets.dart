@@ -40,7 +40,7 @@ class OtherUserWidget extends AppUserWidget{
 class UserWidget extends AppUserWidget{
   @override
   Widget appBarLeading() {
-   return Container();
+   return const SizedBox(height: 40, width: 40,);
   }
 
   @override

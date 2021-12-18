@@ -87,7 +87,9 @@ class _ListViewWish extends StatelessWidget {
                     style: const TextStyle(fontSize: 18),
                   ),
                   subtitle: const Text(''),
-                  trailing: IconButton(
+                  trailing:
+                  wishListController.user.userStatus != UserStatus.other?
+                  IconButton(
                     onPressed: () {
                       showDialog(context: context,
                           builder: (BuildContext context){
@@ -109,7 +111,7 @@ class _ListViewWish extends StatelessWidget {
                       iconDelete,
                       color: Get.theme.focusColor,
                     ),
-                  ),
+                  ) : const SizedBox(height: 40, width: 40,),
                 ),
           );
 

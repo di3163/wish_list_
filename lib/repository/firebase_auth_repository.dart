@@ -238,10 +238,13 @@ class FirebaseAuthRepository implements AuthRepositoryInterface{
     }
   }
 
+  // @override
+  // Stream<dynamic> fetchAutchDataStream() {
+  //   return _autchDataController.stream;
+  // }
+
   @override
-  Stream<dynamic> fetchAutchDataStream() {
-    return _autchDataController.stream;
-  }
+  Stream get autchDataStream => _autchDataController.stream;
 
 
 }

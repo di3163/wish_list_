@@ -57,16 +57,13 @@ class ContactsXController extends GetxController{
             if(allRegistredUsers.containsKey(phoneN)) {
               photoURL = await _fetchPhotoURL(allRegistredUsers[phoneN]);
               contactMaps[phoneN] =
-                  UserOther.fromJson(
-                      {
-                        "id": allRegistredUsers[phoneN],
-                        "userStatus": UserStatus.other,
-                        "name": element.displayName ?? '',
-                        "email": email,
-                        "phone": phoneN,
-                        "photoURL": photoURL
-                      }
-                  );
+                  UserOther(
+                      id: allRegistredUsers[phoneN],
+                      userStatus: UserStatus.other,
+                      photoURL: photoURL,
+                      name: element.displayName ?? '',
+                      email: email,
+                      phone: phoneN);
             }
           }
         }
@@ -129,7 +126,7 @@ class ContactsXController extends GetxController{
 
   @override
   void onInit() async{
-    _authRepository = Get.find<FirebaseAuthRepository>();
+    _authRepository = Get.find<AuthRepositoryInterface>();
     await checkPermit();
     await updateContactWidget();
     super.onInit();

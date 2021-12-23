@@ -39,6 +39,7 @@ class UserProfileController extends GetxController {
       _confirmUser();
       //Get.find<ContactsXController>().getContacts();
       Get.find<ContactsXController>().updateContactWidget();
+      _authRepository.autchComplete();
     } catch (e, s) {
       user.value = UserEmpty.empty();
       appFormWidget(const LoginPhoneForm());
@@ -81,13 +82,13 @@ class UserProfileController extends GetxController {
 
 
   void autoVerification() {
-    if(_authRepository.fetchCurrentUser() != null) {
-      _confirmUser();
+    _confirmUser();
+    if(user.value.userStatus == UserStatus.authenticated){
       Get.find<ContactsXController>().updateContactWidget();
+      _authRepository.autchComplete();
     }else{
       appFormWidget(const LoginPhoneForm());
     }
-
   }
 
 
@@ -103,7 +104,8 @@ class UserProfileController extends GetxController {
     //_bindUid();
   }
 
-  void _confirmUser() {
+  void _confirmUser() async{
+    try{
     user.value =
         UserFirebase.fromFirebaseUser(_authRepository.fetchCurrentUser());
     avatarURL.value = user.value.photoURL;
@@ -111,8 +113,12 @@ class UserProfileController extends GetxController {
       profileWidget(const ProfileWidget());
       Get.find<HomeController>().user = user.value;
       //autchData.close();
-    }else{
+    }
       //_bindUid();
+    }on NullFromFirebaseException catch(e) {
+      user.value = UserEmpty.empty();
+    }catch (e, s){
+      await FirebaseCrash.error(e, s, 'err_img_load'.tr, false);
     }
   }
 
@@ -122,8 +128,8 @@ class UserProfileController extends GetxController {
         source: ImageSource.gallery,
         imageQuality: 25,
       );
-    } catch (e, s) {
-      await FirebaseCrash.error(e, s, 'err_img_load'.tr, false);
+    } catch (e) {
+      //await FirebaseCrash.error(e, s, 'err_img_load'.tr, false);
       SnackbarGet.showSnackBar('err_img_load'.tr);
     }
   }
@@ -132,15 +138,21 @@ class UserProfileController extends GetxController {
     final pickedFile = await _pickedFile();
     if (pickedFile == null) {
       SnackbarGet.showSnackBar('err_img_load'.tr);
-      return;
-    }
-    if (!await CheckConnect.check()) {
-      SnackbarGet.showSnackBar('err_network'.tr);
-    }
-    try {
-      if (user.value.photoURL.isNotEmpty) {
-        await _authRepository.deleteImage(user.value.photoURL);
+    } else{
+      if (!await CheckConnect.check()) {
+        SnackbarGet.showSnackBar('err_network'.tr);
+      }else {
+        if (user.value.photoURL.isNotEmpty) {
+          await _deleteAvatar(user.value.photoURL);
+        }
+        _saveAvatar(pickedFile);
       }
+    }
+
+  }
+
+  void _saveAvatar(XFile pickedFile) async{
+    try {
       String photoURL = await _authRepository.saveImage(
           File(pickedFile.path));
       await _authRepository.updateUserProfile(photoURL);
@@ -149,8 +161,15 @@ class UserProfileController extends GetxController {
       await FirebaseCrash.error(e, s, 'err_img_load'.tr, false);
       SnackbarGet.showSnackBar('err_img_load'.tr);
     }
-
   }
+
+  Future<void> _deleteAvatar(String url)async{
+    try{
+      await _authRepository.deleteImage(url);
+    }on DeleteFileException catch(e,s){
+      await FirebaseCrash.error(e, s, 'err_file_delete'.tr, false);
+    }
+}
 
 
   String _correctPhoneNum(String phoneNum){
@@ -186,7 +205,7 @@ class UserProfileController extends GetxController {
 
   @override
   void onInit() async{
-    _authRepository = Get.find<FirebaseAuthRepository>();
+    _authRepository = Get.find<AuthRepositoryInterface>();
     _confirmUser();
     await _fetchPreferencesInstance();
     _initPreferences();

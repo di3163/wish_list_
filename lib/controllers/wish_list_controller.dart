@@ -23,6 +23,11 @@ class WishListController extends GetxController{
 
   }
 
+  // Future<String> cachedUrl(String sourseUrl)async{
+  //   var fetchedFile = await DefaultCacheManager().getSingleFile(sourseUrl);
+  //   return fetchedFile.path;
+  // }
+
   void bindListWish(UserApp user){
     this.user = user;
     if (user.userStatus == UserStatus.other) {
@@ -39,7 +44,7 @@ class WishListController extends GetxController{
 
   @override
   void onInit(){
-    _dataRepository = Get.find<FirebaseDataRepository>();
+    _dataRepository = Get.find<DataRepositoryInterface>();
     super.onInit();
   }
 

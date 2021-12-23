@@ -41,13 +41,15 @@ class Messages extends Translations{
           "err_photo_url": "fetch photoURL error",
           "contact_service_err": "contact service error",
           "err_img_load": "image loading error",
+          "err_file_delete": "file delete",
           "err_auth": "authorization error",
           "warn_title": "the name is not filled in",
           "err_network": "network error",
           "err_sav": "saving error",
           "warning": "!",
           "ok": "Ok",
-          "cancel": "Cancel"
+          "cancel": "Cancel",
+          "select_img": "File or Cam"
 
         },
         'ru_RU': {
@@ -88,13 +90,15 @@ class Messages extends Translations{
           "err_photo_url":"fetch photoURL error",
           "contact_service_err":"contact service error",
           "err_img_load": "ошибка загрузки изображения",
+          "err_file_delete": "ошибка удаления файла",
           "err_auth": "ошибка авторизации",
           "warn_title": "название не заполнено, сохранение невозможно",
           "err_network": "ошибка сети",
           "err_sav": "ошибка сохранения",
           "warning": "!",
           "ok": "Да",
-          "cancel": "Нет"
+          "cancel": "Нет",
+          "select_img": "Файл или Камера"
         },
       };
 }

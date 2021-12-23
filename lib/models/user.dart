@@ -38,13 +38,21 @@ class UserFirebase extends UserApp {
     );
   }
 
-  factory UserFirebase.fromFirebaseUser(User? user){
+  factory UserFirebase.fromFirebaseUser(User user){
     return UserFirebase(
-        id: user != null ? user.uid : '',
-        userStatus: user != null ? UserStatus.authenticated : UserStatus.unauthenticated,
-        photoURL: user != null ? user.photoURL ?? '' : ''
+        id: user.uid,
+        userStatus: UserStatus.authenticated,
+        photoURL: user.photoURL ?? ''
     );
   }
+
+  // factory UserFirebase.fromFirebaseUser(User? user){
+  //   return UserFirebase(
+  //       id: user != null ? user.uid : '',
+  //       userStatus: user != null ? UserStatus.authenticated : UserStatus.unauthenticated,
+  //       photoURL: user != null ? user.photoURL ?? '' : ''
+  //   );
+  // }
 }
 
 class UserOther extends UserApp{

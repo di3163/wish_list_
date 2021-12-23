@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:wish_list_gx/core.dart';
@@ -15,13 +16,12 @@ class ImgView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        //child: Padding(
-        //padding: const EdgeInsets.all(10.0),
         children: [
           Expanded(
             child: InteractiveViewer(
               child: Get.find<WishController>().currentWish.isSaved
                   ? CachedNetworkImage(
+                      cacheManager: Get.find<CacheManager>(),
                       imageUrl: patch,
                       fit: BoxFit.fitWidth,
                       placeholder: (context, url) => Icon(

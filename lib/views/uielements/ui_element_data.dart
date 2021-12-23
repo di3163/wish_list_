@@ -30,6 +30,7 @@ const iconCode =  Icons.app_registration;
 const iconAdd = Icons.add;
 final iconPhone = LineIcons.byName('phone');
 final iconDelete = LineIcons.byName('trash');
+const iconImage = Icons.image;
 
 extension AppTabNamesLocal on AppTab{
   String localization(){

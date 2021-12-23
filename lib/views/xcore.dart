@@ -7,7 +7,7 @@ export 'widgets/contacts_widget.dart';
 export 'widgets/bottom_sheet_widget.dart';
 export 'widgets/user_widgets.dart';
 export 'uielements/ui_element_data.dart';
-export 'widgets/app_button.dart';
+export 'widgets/button_widget.dart';
 export 'widgets/app_form_widget.dart';
 export 'widgets/profile_widget.dart';
 export 'widgets/wish_widget.dart';

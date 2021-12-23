@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:wish_list_gx/core.dart';
@@ -113,7 +114,32 @@ class UserWishWidget extends WishWidget {
               ? Row(children: [
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () => controller.addImage(),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return DialogBox(
+                              title: 'select_img'.tr,
+                              buttonWidgetLeft: IconButtonWidget(
+                                icon: const Icon(iconCameraSt),
+                                formButton: OkButton(onClic: () {
+                                  controller.addImageCamera();
+                                  Get.back();
+                                }),
+                              ),
+                              buttonWidgetRight: IconButtonWidget(
+                                icon: const Icon(iconImage),
+                                formButton: OkButton(onClic: () {
+                                  controller.addImageGallery();
+                                  Get.back();
+                                }),
+                              ),
+                            );
+                          },
+                        );
+                      },
+
+                      //=> controller.addImage(),
                       child: const Icon(iconCameraSt),
                     ),
                   ),
@@ -205,8 +231,30 @@ class _WishImages extends StatelessWidget {
                         icon: const Icon(iconCameraSt),
                         color: Get.theme.focusColor,
                         iconSize: 100,
-                        onPressed: () => controller.addImage(),
-                      )
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return DialogBox(
+                                title: 'select_img'.tr,
+                                buttonWidgetLeft: IconButtonWidget(
+                                  icon: const Icon(iconCameraSt),
+                                  formButton: OkButton(onClic: () {
+                                    controller.addImageCamera();
+                                    Get.back();
+                                  }),
+                                ),
+                                buttonWidgetRight: IconButtonWidget(
+                                  icon: const Icon(iconImage),
+                                  formButton: OkButton(onClic: () {
+                                    controller.addImageGallery();
+                                    Get.back();
+                                  }),
+                                ),
+                              );
+                            },
+                          );
+                        })
                     : Container(
                         height: 150,
                         child: PageView(
@@ -224,7 +272,7 @@ class _WishImages extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: controller.listImgT
-                              .map((image) =>  _ImgIndicator(
+                              .map((image) => _ImgIndicator(
                                   isActive:
                                       controller.listImgT.indexOf(image) ==
                                           currentImage))
@@ -252,11 +300,11 @@ class _ImgContainer extends StatelessWidget {
           flex: 2,
           child: GestureDetector(
             onTap: () => Get.toNamed('/img', arguments: patch),
-            //Get.find<WishListController>().fullImgShow(patch),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: controller.currentWish.isSaved
                   ? CachedNetworkImage(
+                      cacheManager: Get.find<CacheManager>(),
                       imageUrl: patch,
                       fit: BoxFit.scaleDown,
                       placeholder: (context, url) => Icon(
@@ -284,11 +332,19 @@ class _ImgContainer extends StatelessWidget {
                     builder: (BuildContext context) {
                       return DialogBox(
                         title: 'del'.tr,
-                        onClickAction: () {
-                          controller.deleteImage(patch);
-                          Get.back();
-                        },
-                        onCancelAction: () => Get.back(),
+                        buttonWidgetLeft: ElevatedButtonWidget(
+                          formButton: CancelButton(
+                            onClic: () => Get.back(),
+                          ),
+                        ),
+                        buttonWidgetRight: ElevatedButtonWidget(
+                          formButton: OkButton(
+                            onClic: () {
+                              controller.deleteImage(patch);
+                              Get.back();
+                            },
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -307,8 +363,8 @@ class _ImgContainer extends StatelessWidget {
                   ),
                 )
               :
-          //const Placeholder(),
-                Container(
+              //const Placeholder(),
+              Container(
                   height: 40,
                   width: 40,
                 ),

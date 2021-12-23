@@ -69,17 +69,37 @@ class CancelButton extends FormButton{
   void onButtonClicked() => onClic();
 }
 
-class ButtonWidget extends StatelessWidget {
+abstract class ButtonWidget extends StatelessWidget{
+  const ButtonWidget({Key? key, required this.formButton}) : super(key: key);
   final FormButton formButton;
+}
 
-  const ButtonWidget({Key? key, this.formButton = const EmptyFormButton()})
-      : super(key: key);
+class ElevatedButtonWidget extends ButtonWidget {
+  const ElevatedButtonWidget({Key? key, required FormButton formButton})
+      : super(key: key, formButton: formButton);
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: formButton.onButtonClicked,
       child: Text(formButton.text),
+    );
+  }
+}
+
+class IconButtonWidget extends ButtonWidget{
+  const IconButtonWidget({Key? key, required FormButton formButton, required this.icon})
+      : super(key: key, formButton: formButton);
+
+  final Icon icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        onPressed: formButton.onButtonClicked,
+        icon: icon,
+      iconSize: 60,
+      color:  Get.theme.focusColor,
     );
   }
 }

@@ -6,14 +6,18 @@ class DialogBox extends StatelessWidget {
   const DialogBox(
           {Key? key,
             required this.title,
-            required this.onClickAction,
-            required this.onCancelAction
+            // required this.onClickAction,
+            // required this.onCancelAction,
+            required this.buttonWidgetLeft,
+            required this.buttonWidgetRight
           }
         ) : super(key: key);
 
   final String title;
-  final Function onClickAction;
-  final Function onCancelAction;
+  // final Function onClickAction;
+  // final Function onCancelAction;
+  final ButtonWidget buttonWidgetLeft;
+  final ButtonWidget buttonWidgetRight;
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +45,10 @@ class DialogBox extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ButtonWidget(formButton: CancelButton(onClic: onCancelAction)),
-                    ButtonWidget(formButton: OkButton(onClic: onClickAction)),
+                    buttonWidgetLeft,
+                    buttonWidgetRight
+                    // ButtonWidget(formButton: CancelButton(onClic: onCancelAction)),
+                    // ButtonWidget(formButton: OkButton(onClic: onClickAction)),
                   ],
                 )
               ],

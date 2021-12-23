@@ -34,6 +34,10 @@ abstract class FetchAutchDataStream {
   Stream<dynamic> get autchDataStream;
 }
 
+abstract class AutchComplete{
+  void autchComplete();
+}
+
 abstract class ImageOperations{
   Future<String> saveImage(File image);
   Future deleteImage(String imgUrl);

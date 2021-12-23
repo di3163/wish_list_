@@ -39,7 +39,7 @@ class RegisterPhoneForm extends AppForm{
             decoration: _buildInputDecoration('phone' .tr , Icon(iconPhone, size: 30)),
           ),
           const SizedBox(height: 20),
-          ButtonWidget(formButton: RegisterPhoneButton(onClic: () => Get.find<UserProfileController>().verifyPhone())),
+          ElevatedButtonWidget(formButton: RegisterPhoneButton(onClic: () => Get.find<UserProfileController>().verifyPhone())),
         ],
       ),
     );
@@ -70,7 +70,7 @@ class LoginPhoneForm extends AppForm{
             decoration: _buildInputDecoration('code' .tr, const Icon(iconCode, size: 30,)),
           ),
           const SizedBox(height: 20),
-          ButtonWidget(formButton: CodeSendButton(onClic: () => Get.find<UserProfileController>().signUpWithSMSCode())),
+          ElevatedButtonWidget(formButton: CodeSendButton(onClic: () => Get.find<UserProfileController>().signUpWithSMSCode())),
         ],
       ),
     );

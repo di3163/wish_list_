@@ -17,7 +17,7 @@ class WishController extends GetxController{
   Wish currentWish = Wish.empty();
   bool isChanged = false;
 
-  Future<XFile?> _pickedFile() async{
+  Future<XFile?> _pickedFileGallery() async{
     try {
       return await ImagePicker().pickImage(
         source: ImageSource.gallery,
@@ -29,12 +29,39 @@ class WishController extends GetxController{
     }
   }
 
-  void addImage() async {
-    final pickedFile = await _pickedFile();
+  Future<XFile?> _pickedFileCamera() async{
+    try {
+      return await ImagePicker().pickImage(
+        source: ImageSource.camera,
+        imageQuality: 25,
+      );
+    }catch(e, s){
+      await FirebaseCrash.error(e, s, 'err_img_load'.tr, false);
+      SnackbarGet.showSnackBar('err_img_load'.tr);
+    }
+  }
+
+  void addImageCamera() async {
+    XFile? pickedFile;
+    pickedFile = await _pickedFileCamera();
     if (pickedFile == null) {
       SnackbarGet.showSnackBar('err_img_load'.tr);
       return;
     }
+    _saveImage(pickedFile);
+  }
+
+  void addImageGallery() async {
+    XFile? pickedFile;
+    pickedFile = await _pickedFileGallery();
+    if (pickedFile == null) {
+      SnackbarGet.showSnackBar('err_img_load'.tr);
+      return;
+    }
+    _saveImage(pickedFile);
+  }
+
+  void _saveImage(XFile pickedFile) async{
     if (!currentWish.isSaved) {
       listImgT.add(pickedFile.path);
       update(['images']);
@@ -126,7 +153,7 @@ class WishController extends GetxController{
 
   @override
   void onInit() {
-    _dataRepository = Get.find<FirebaseDataRepository>();
+    _dataRepository = Get.find<DataRepositoryInterface>();
     currentWish = Get.arguments;
     listImgT = currentWish.listPicURL.map((v) => v).toList();
     controllerTitle.value.text = currentWish.title;

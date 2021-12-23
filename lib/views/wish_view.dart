@@ -36,11 +36,21 @@ class WishView extends StatelessWidget {
             builder: (BuildContext context) {
               return DialogBox(
                 title: 'save'.tr,
-                onClickAction: () async {
-                  await Get.find<WishController>().updateWish();
-                  return Navigator.of(context).pop(true);
-                },
-                onCancelAction: () => Navigator.of(context).pop(true),
+                buttonWidgetLeft:
+                ElevatedButtonWidget(
+                  formButton: CancelButton(
+                    onClic: () => Navigator.of(context).pop(true),
+                  ),
+                ),
+                buttonWidgetRight:
+                ElevatedButtonWidget(
+                  formButton: OkButton(
+                    onClic: () async {
+                      await Get.find<WishController>().updateWish();
+                      return Navigator.of(context).pop(true);
+                    },
+                  ),
+                ),
               );
             },
           )

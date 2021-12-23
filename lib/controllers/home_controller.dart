@@ -80,7 +80,7 @@ class HomeController extends GetxController{
     }
   }
 
-  _getPreferencesInstance() async {
+  _fetchPreferencesInstance() async {
     preferences = await SharedPreferences.getInstance();
   }
 
@@ -92,7 +92,7 @@ class HomeController extends GetxController{
 
   @override
   void onInit()async{
-    await _getPreferencesInstance();
+    await _fetchPreferencesInstance();
     user = Get.find<UserProfileController>().user.value;
     _setThemeSwitch();
     super.onInit();

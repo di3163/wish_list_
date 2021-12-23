@@ -11,14 +11,16 @@ class ProfileView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 43.0),
         child: GetX<UserProfileController>(
             builder: (UserProfileController userProfileController) {
-              if(userProfileController.autchData.value is Exception){
-                userProfileController.verificationFiled(
+
+                if(userProfileController.autchData.value is Exception){
+                  userProfileController.verificationFiled(
                     userProfileController.autchData.value,
                     userProfileController.autchData.value.stackTrace
-                );
-              }else if(userProfileController.autchData.value.isNotEmpty){
-                userProfileController.autoVerification();
-              }
+                  );
+                }else if(userProfileController.autchData.value.isNotEmpty){
+                  userProfileController.autoVerification();
+                }
+
               return userProfileController.profileWidget.value;
             }
         )

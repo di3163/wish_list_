@@ -399,12 +399,19 @@ packages:
     source: hosted
     version: "0.6.0"
   flutter_cache_manager:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_cache_manager
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.2"
+    version: "3.3.0"
+  flutter_cache_manager_firebase:
+    dependency: "direct main"
+    description:
+      name: flutter_cache_manager_firebase
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   flutter_driver:
     dependency: "direct dev"
     description: flutter

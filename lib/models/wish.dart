@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class Wish {
   String id = '';
@@ -34,4 +35,13 @@ class Wish {
     'link': link,
     'listImg': listPicURL
   };
+
+  // Future<List<String>> _listCachedUrl(List<String> dataUrl)async{
+  //   List<String> _listUrl = [];
+  //   for (String element in dataUrl){
+  //     var fetchedFile = await DefaultCacheManager().getSingleFile(element);
+  //     _listUrl.add(fetchedFile.path);
+  //   }
+  //   return _listUrl;
+  // }
 }

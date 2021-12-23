@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:wish_list_gx/core.dart';
 
@@ -61,6 +62,7 @@ class LoadedContactWidget extends ContactWidget{
         Icon(iconPerson, color: Get.theme.accentColor) :
 
         CachedNetworkImage(
+          cacheManager: Get.find<CacheManager>(),
           imageUrl: contacts[val].photoURL,
           imageBuilder: (context, imageProvider) => Container(
             height: 40,
